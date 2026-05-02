@@ -7,7 +7,7 @@ export function Home() {
   const [item, setItem] = useState("");
 
   const enviarPedido = async () => {
-    await axios.post("http://localhost:3000/orders", {
+    await axios.post("https://fornoesabor-backend.onrender.com/orders", {
       nome,
       itens: [item],
       total: 20,
