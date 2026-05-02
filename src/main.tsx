@@ -4,9 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { theme } from "./styles/theme";
 import { GlobalStyles } from "./styles/global";
-import { Home } from "./pages/home";
-import { About } from "./pages/about";
 import { App } from "./app";
+import { Home } from "./pages/home";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -16,7 +15,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route element={<App />}>
             <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
           </Route>
         </Routes>
       </BrowserRouter>
