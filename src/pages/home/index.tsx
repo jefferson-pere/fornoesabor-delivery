@@ -1,47 +1,80 @@
-import axios from "axios";
-import { Container } from "./style";
 import { useState } from "react";
+import type { ComboType } from "../../types";
+import { api } from "../../services/api";
+import { ComboSelector } from "../../components/comboSelector";
+import { SaboresSelector } from "../../components/SaboresSelector";
+import { RefriSelector } from "../../components/RefriSelector";
+import {
+  cidades,
+  combosDisponiveis,
+  saboresLista,
+  saboresRefri,
+} from "../../data/menu";
 
-export function Home() {
-  const [nome, setNome] = useState("");
-  const [item, setItem] = useState("");
+export default function Home() {
+  const [combo, setCombo] = useState<ComboType | null>(null);
+  const [sabores, setSabores] = useState<string[]>([]);
+  const [refri, setRefri] = useState("");
+  const [cidade, setCidade] = useState("");
 
-  const enviarPedido = async () => {
-    await axios.post("https://fornoesabor-backend.onrender.com/orders", {
-      nome,
-      itens: [item],
-      total: 20,
+  const toggleSabor = (s: string) => {
+    setSabores((prev) =>
+      prev.includes(s) ? prev.filter((i) => i !== s) : [...prev, s],
+    );
+  };
+
+  const frete = cidades.find((c) => c.nome === cidade)?.frete || 0;
+  const total = combo ? combo.preco + frete : 0;
+
+  const enviar = async () => {
+    if (!combo) return alert("Escolha combo");
+
+    await api.post("/orders", {
+      combo,
+      sabores,
+      refri: combo.tipo === "prime" ? refri : null,
+      total,
+      cidade,
     });
 
-    alert("Pedido enviado!");
+    alert("Pedido enviado");
   };
 
   return (
-    <Container>
-      <p>Bem-vindo ao projeto base!</p>
-      <div style={{ padding: 20 }}>
-        <h1>Fazer Pedido</h1>
+    <div>
+      <h1>Forno e Sabor</h1>
 
-        <input
-          placeholder="Seu nome"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
+      <ComboSelector
+        combos={combosDisponiveis}
+        selected={combo}
+        onSelect={setCombo}
+      />
+
+      <SaboresSelector
+        sabores={saboresLista}
+        selecionados={sabores}
+        onToggle={toggleSabor}
+      />
+
+      {combo?.tipo === "prime" && (
+        <RefriSelector
+          tipo={combo.refri}
+          value={refri}
+          onChange={setRefri}
+          opcoes={saboresRefri}
         />
+      )}
 
-        <br />
-        <br />
+      <select onChange={(e) => setCidade(e.target.value)}>
+        <option>Escolha cidade</option>
+        {cidades.map((c) => (
+          <option key={c.nome}>{c.nome}</option>
+        ))}
+      </select>
 
-        <input
-          placeholder="Item"
-          value={item}
-          onChange={(e) => setItem(e.target.value)}
-        />
+      <h2>Total: R$ {total.toFixed(2)}</h2>
 
-        <br />
-        <br />
-
-        <button onClick={enviarPedido}>Enviar Pedido</button>
-      </div>
-    </Container>
+      <button onClick={enviar}>Enviar</button>
+    </div>
   );
 }
