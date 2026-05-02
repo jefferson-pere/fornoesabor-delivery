@@ -2,24 +2,32 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   min-height: 100vh;
-  background: #f5f5f5;
+  background: #f7f7f7;
   display: flex;
   justify-content: center;
-  padding: 20px;
 
-  .card {
+  .content {
     width: 100%;
     max-width: 500px;
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding-bottom: 100px;
   }
 
-  .title {
+  .header {
+    background: #ff4d4f;
+    color: white;
+    padding: 20px;
     text-align: center;
-    margin-bottom: 20px;
-    font-size: 22px;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .section {
+    padding: 15px;
+  }
+
+  .section-title {
+    margin-bottom: 10px;
+    font-weight: bold;
   }
 
   .input,
@@ -28,8 +36,7 @@ export const Container = styled.div`
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #ddd;
-    margin-bottom: 12px;
-    font-size: 14px;
+    margin-bottom: 10px;
 
     &:focus {
       border-color: #ff4d4f;
@@ -37,40 +44,62 @@ export const Container = styled.div`
     }
   }
 
-  .section {
-    margin-top: 20px;
-  }
-
-  .section-title {
+  .combo-card {
+    border: 2px solid #eee;
+    border-radius: 10px;
+    padding: 12px;
     margin-bottom: 10px;
-    font-weight: bold;
-  }
-
-  .option {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 6px;
+    background: white;
     cursor: pointer;
+    transition: 0.2s;
+
+    &:hover {
+      border-color: #ff4d4f;
+    }
+
+    &.selected {
+      border-color: #ff4d4f;
+      background: #fff5f5;
+    }
   }
 
-  .total {
-    margin-top: 20px;
-    text-align: right;
-    font-size: 18px;
-    font-weight: bold;
+  .sabores-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .sabor-item {
+    background: white;
+    border-radius: 8px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    font-size: 13px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 500px;
+    background: white;
+    border-top: 1px solid #ddd;
+    padding: 10px;
   }
 
   .button {
     width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
     background: #ff4d4f;
     color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
     font-weight: bold;
+    font-size: 16px;
     cursor: pointer;
-    margin-top: 15px;
 
     &:hover {
       background: #e63b3d;

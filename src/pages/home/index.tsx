@@ -9,22 +9,14 @@ import {
   saboresRefri,
 } from "../../data/menu";
 
-// 👉 tipo derivado (sem any)
 type ComboType = (typeof combosDisponiveis)[number];
 
 export function Home() {
   const [nome, setNome] = useState("");
-  const [telefone, setTelefone] = useState("");
   const [cidade, setCidade] = useState("");
-  const [endereco, setEndereco] = useState("");
-
   const [combo, setCombo] = useState<ComboType | null>(null);
   const [sabores, setSabores] = useState<string[]>([]);
   const [refri, setRefri] = useState("");
-
-  // ======================
-  // FUNÇÕES
-  // ======================
 
   const toggleSabor = (s: string) => {
     setSabores((prev) =>
@@ -35,117 +27,71 @@ export function Home() {
   const frete = cidades.find((c) => c.nome === cidade)?.frete || 0;
   const total = combo ? combo.preco + frete : 0;
 
-  const enviarPedido = async () => {
-    try {
-      // validações
-      if (!nome || !cidade || !combo) {
-        return alert("Preencha os campos obrigatórios");
-      }
-
-      if (cidade !== "Retirada" && !endereco) {
-        return alert("Informe o endereço");
-      }
-
-      if (sabores.length === 0) {
-        return alert("Escolha pelo menos 1 sabor");
-      }
-
-      if (combo.tipo === "prime" && !refri) {
-        return alert("Escolha o refri");
-      }
-
-      await axios.post("https://fornoesabor-backend.onrender.com/orders", {
-        nomeCliente: nome,
-        telefone,
-        cidade,
-        endereco,
-        combo,
-        sabores,
-        refri: combo.tipo === "prime" ? refri : null,
-        total,
-      });
-
-      alert("Pedido enviado com sucesso!");
-
-      // reset
-      setNome("");
-      setTelefone("");
-      setCidade("");
-      setEndereco("");
-      setCombo(null);
-      setSabores([]);
-      setRefri("");
-    } catch (err) {
-      console.error(err);
-      alert("Erro ao enviar pedido");
+  const enviar = async () => {
+    if (!nome || !combo || !cidade) {
+      return alert("Preencha os campos obrigatórios");
     }
-  };
 
-  // ======================
-  // UI
-  // ======================
+    if (combo.tipo === "prime" && !refri) {
+      return alert("Escolha o refri");
+    }
+
+    await axios.post("https://fornoesabor-backend.onrender.com/orders", {
+      nomeCliente: nome,
+      cidade,
+      combo,
+      sabores,
+      refri,
+      total,
+    });
+
+    alert("Pedido enviado!");
+  };
 
   return (
     <Container>
-      <div className="card">
-        <h1 className="title">🍕 Forno e Sabor</h1>
+      <div className="content">
+        <div className="header">🍕 Forno e Sabor</div>
 
-        {/* NOME */}
-        <input
-          className="input"
-          placeholder="Seu nome"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-        />
-
-        {/* TELEFONE */}
-        <input
-          className="input"
-          placeholder="Telefone"
-          value={telefone}
-          onChange={(e) => setTelefone(e.target.value)}
-        />
-
-        {/* CIDADE */}
-        <select
-          className="select"
-          value={cidade}
-          onChange={(e) => setCidade(e.target.value)}
-        >
-          <option value="">Escolha a cidade</option>
-          {cidades.map((c) => (
-            <option key={c.nome} value={c.nome}>
-              {c.nome} (+ R$ {c.frete})
-            </option>
-          ))}
-        </select>
-
-        {/* ENDEREÇO */}
-        {cidade !== "Retirada" && cidade && (
+        {/* FORM */}
+        <div className="section">
           <input
             className="input"
-            placeholder="Endereço"
-            value={endereco}
-            onChange={(e) => setEndereco(e.target.value)}
+            placeholder="Seu nome"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
           />
-        )}
+
+          <select
+            className="select"
+            value={cidade}
+            onChange={(e) => setCidade(e.target.value)}
+          >
+            <option value="">Escolha cidade</option>
+            {cidades.map((c) => (
+              <option key={c.nome} value={c.nome}>
+                {c.nome} (+ R$ {c.frete})
+              </option>
+            ))}
+          </select>
+        </div>
 
         {/* COMBOS */}
         <div className="section">
           <p className="section-title">Combos</p>
 
           {combosDisponiveis.map((c) => (
-            <label key={c.id} className="option">
-              <input
-                type="radio"
-                checked={combo?.id === c.id}
-                onChange={() => {
-                  setCombo(c);
-                  setRefri("");
-                }}
-              />
-              {c.nome} - R$ {c.preco}
-            </label>
+            <div
+              key={c.id}
+              className={`combo-card ${combo?.id === c.id ? "selected" : ""}`}
+              onClick={() => {
+                setCombo(c);
+                setRefri("");
+              }}
+            >
+              <strong>{c.nome}</strong>
+              <div>R$ {c.preco}</div>
+            </div>
           ))}
         </div>
 
@@ -153,16 +99,18 @@ export function Home() {
         <div className="section">
           <p className="section-title">Sabores</p>
 
-          {saboresLista.map((s) => (
-            <label key={s} className="option">
-              <input
-                type="checkbox"
-                checked={sabores.includes(s)}
-                onChange={() => toggleSabor(s)}
-              />
-              {s}
-            </label>
-          ))}
+          <div className="sabores-grid">
+            {saboresLista.map((s) => (
+              <label key={s} className="sabor-item">
+                <input
+                  type="checkbox"
+                  checked={sabores.includes(s)}
+                  onChange={() => toggleSabor(s)}
+                />
+                {s}
+              </label>
+            ))}
+          </div>
         </div>
 
         {/* REFRI */}
@@ -175,20 +123,19 @@ export function Home() {
               value={refri}
               onChange={(e) => setRefri(e.target.value)}
             >
-              <option value="">Escolha o refri</option>
+              <option value="">Escolha</option>
               {saboresRefri[combo.refri].map((r) => (
                 <option key={r}>{r}</option>
               ))}
             </select>
           </div>
         )}
+      </div>
 
-        {/* TOTAL */}
-        <div className="total">Total: R$ {total.toFixed(2)}</div>
-
-        {/* BOTÃO */}
-        <button className="button" onClick={enviarPedido}>
-          Enviar Pedido
+      {/* FOOTER FIXO */}
+      <div className="footer">
+        <button className="button" onClick={enviar}>
+          Fazer Pedido • R$ {total.toFixed(2)}
         </button>
       </div>
     </Container>
