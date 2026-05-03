@@ -371,10 +371,10 @@ export function Pedido() {
                 onClick={() => {
                   if (itens.length === 0) return;
                   setStep(3);
-                  navigate("/revisao");
+                  navigate("/pagamento");
                 }}
               >
-                {itens.length === 0 ? "Adicione um combo" : "Revisar pedido"}
+                {itens.length === 0 ? "Adicione um combo" : "Continuar Pagamento"}
               </button>
             </div>
           )}

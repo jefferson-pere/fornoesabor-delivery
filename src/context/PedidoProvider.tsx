@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, useCallback, type ReactNode } from "react";
 import { PedidoContext } from "./PedidoContext";
 import type {
   EnderecoType,
@@ -6,70 +6,49 @@ import type {
   ItemPedido,
 } from "../types/pedido";
 
-function getInitialData() {
-  const data = localStorage.getItem("pedido");
-
-  if (!data) return null;
-
-  try {
-    return JSON.parse(data);
-  } catch {
-    return null;
-  }
-}
-
 export function PedidoProvider({ children }: { children: ReactNode }) {
-  const initial = getInitialData();
+  const [step, setStep] = useState(1);
 
-  const [step, setStep] = useState(initial?.step ?? 1);
+  const [nome, setNome] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [cidade, setCidade] = useState("");
 
-  const [nome, setNome] = useState(initial?.nome ?? "");
-  const [telefone, setTelefone] = useState(initial?.telefone ?? "");
-  const [cidade, setCidade] = useState(initial?.cidade ?? "");
+  const [endereco, setEndereco] = useState<EnderecoType>({
+    rua: "",
+    numero: "",
+    referencia: "",
+  });
 
-  const [endereco, setEndereco] = useState<EnderecoType>(
-    initial?.endereco ?? {
+  const [itens, setItens] = useState<ItemPedido[]>([]);
+
+  const [pagamento, setPagamento] = useState<FormaPagamentoType>("pix");
+
+  const [troco, setTroco] = useState("");
+  const [observacao, setObservacao] = useState("");
+
+  // 🔥 RESET CENTRALIZADO (MELHOR PRÁTICA)
+  const resetPedido = useCallback(() => {
+    setStep(1);
+
+    setNome("");
+    setTelefone("");
+    setCidade("");
+
+    setEndereco({
       rua: "",
       numero: "",
       referencia: "",
-    },
-  );
+    });
 
-  const [itens, setItens] = useState<ItemPedido[]>(initial?.itens ?? []);
+    setItens([]);
 
-  const [pagamento, setPagamento] = useState<FormaPagamentoType>(
-    initial?.pagamento ?? "pix",
-  );
+    setPagamento("pix");
+    setTroco("");
+    setObservacao("");
 
-  const [troco, setTroco] = useState(initial?.troco ?? "");
-  const [observacao, setObservacao] = useState(initial?.observacao ?? "");
-
-  useEffect(() => {
-    localStorage.setItem(
-      "pedido",
-      JSON.stringify({
-        step,
-        nome,
-        telefone,
-        cidade,
-        endereco,
-        itens,
-        pagamento,
-        troco,
-        observacao,
-      }),
-    );
-  }, [
-    step,
-    nome,
-    telefone,
-    cidade,
-    endereco,
-    itens,
-    pagamento,
-    troco,
-    observacao,
-  ]);
+    // 🔥 se estiver usando persistência
+    localStorage.removeItem("pedido");
+  }, []);
 
   return (
     <PedidoContext.Provider
@@ -97,6 +76,9 @@ export function PedidoProvider({ children }: { children: ReactNode }) {
 
         observacao,
         setObservacao,
+
+        // 🔥 NOVO
+        resetPedido,
       }}
     >
       {children}

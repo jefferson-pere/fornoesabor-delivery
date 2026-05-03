@@ -15,7 +15,7 @@ export type EnderecoType = {
 export type FormaPagamentoType = "pix" | "cartao" | "dinheiro";
 
 /* =========================
-   REFRI EXTRA (🔥 NOVO)
+   REFRI EXTRA
 ========================= */
 export type RefriExtraType = {
   lata: number;
@@ -36,7 +36,7 @@ export type ItemPedido = {
 
   observacaoItem?: string;
 
-  refriExtra?: RefriExtraType; // 🔥 NOVO
+  refriExtra?: RefriExtraType;
 };
 
 /* =========================
@@ -69,4 +69,7 @@ export type PedidoContextType = {
 
   observacao: string;
   setObservacao: React.Dispatch<React.SetStateAction<string>>;
+
+  // 🔥 MELHOR PRÁTICA (RESET CENTRALIZADO)
+  resetPedido: () => void;
 };

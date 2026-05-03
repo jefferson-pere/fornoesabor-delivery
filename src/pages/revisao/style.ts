@@ -1,42 +1,56 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+  width: 100%;
+  min-height: 100vh;
+  background: #f5f5f5;
   display: flex;
   justify-content: center;
-  background: #f5f5f5;
-  min-height: 100vh;
 
   .content {
     width: 100%;
-    max-width: 500px;
-    background: #fff;
-    padding-bottom: 90px;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
   }
-
-  .header {
-    background: #ff4d4f;
-    color: white;
-    padding: 18px;
-    text-align: center;
-    font-weight: bold;
-  }
-
-  .section {
+  .hero-overlay {
+    position: absolute;
+    bottom: 0;
     padding: 16px;
-    border-bottom: 1px solid #eee;
+    width: 100%;
+    color: #fff;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
   }
 
-  .title {
+  .hero-title {
+    font-size: 20px;
     font-weight: bold;
-    margin-bottom: 8px;
   }
 
-  .item {
-    margin-bottom: 10px;
+  /* FORM */
+  .form {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
-  .item-title {
-    font-weight: bold;
+  .label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+  }
+
+  /* CARDS */
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px;
+    border: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
   }
 
   .sub {
@@ -44,29 +58,112 @@ export const Container = styled.div`
     color: #666;
   }
 
-  .total {
-    font-size: 18px;
-    font-weight: bold;
-    text-align: right;
+  /* ITENS */
+  .item {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #eee;
   }
 
-  .footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    max-width: 500px;
+  .item strong {
+    font-size: 14px;
+    color: #222;
+  }
+
+  /* TOTAL */
+  .total-card {
     background: #fff;
-    padding: 12px;
-    border-top: 1px solid #eee;
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid #eee;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .row strong {
+    font-weight: 600;
+  }
+
+  .row.extra {
+    color: #ff4d4f;
+    font-weight: 500;
+  }
+
+  .divider {
+    height: 1px;
+    background: #eee;
+    margin: 10px 0;
+  }
+
+  .row.total {
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  /* FOOTER */
+  .footer {
+    position: sticky;
+    bottom: 0;
+    background: #f5f5f5;
+    padding: 16px;
+    display: flex;
+    gap: 10px;
   }
 
   .button {
-    width: 100%;
-    padding: 14px;
-    background: #ff4d4f;
-    color: white;
+    flex: 1;
+    height: 52px;
     border-radius: 10px;
     border: none;
+    background: #d90000;
+    color: #fff;
     font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .button:active {
+    transform: scale(0.97);
+  }
+
+  .button.cancel {
+    background: #ddd;
+    color: #333;
+  }
+
+  /* RESPONSIVO */
+  @media (min-width: 768px) {
+    .hero {
+      height: 260px;
+    }
+
+    .hero-title {
+      font-size: 24px;
+    }
+
+    .form {
+      padding: 24px;
+      gap: 20px;
+    }
+
+    .card {
+      padding: 18px;
+    }
+
+    .total-card {
+      padding: 20px;
+    }
+
+    .button {
+      height: 56px;
+      font-size: 18px;
+    }
   }
 `;
