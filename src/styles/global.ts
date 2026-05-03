@@ -7,10 +7,6 @@ export const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  html {
-    -webkit-text-size-adjust: 100%;
-  }
-
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: ${({ theme }) => theme.colors.text};
@@ -18,23 +14,65 @@ export const GlobalStyles = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
   }
 
-  /* 🔥 FIX IOS ZOOM INPUT */
-  input,
-  select,
-  textarea {
-    font-size: 16px; /* 👈 ESSENCIAL */
-    -webkit-text-size-adjust: 100%;
+  /* INPUT GLOBAL */
+  input, select, textarea {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+
+    border: 1px solid #d1d5db; /* 👈 atualizado */
+
+    font-size: 14px;
+    background: #fafafa;
+    transition: all 0.2s ease;
   }
 
-  button {
-    font-family: inherit;
-    cursor: pointer;
+  input::placeholder {
+    color: #9ca3af; /* 👈 placeholder mais bonito */
   }
 
-  input,
-  select,
-  textarea,
-  button {
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #ff4d4f;
+    background: #fff;
     outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.15);
+  }
+
+  /* ERRO */
+  .input-error {
+    border-color: #ff4d4f !important;
+    background: #fff5f5 !important;
+  }
+  .error-text {
+    font-size: 12px;
+    color: #ff4d4f;
+  }
+
+  .input-error-text {
+    font-size: 12px;
+    color: #ff4d4f;
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
+
+  /* LABEL */
+  .label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  /* BUTTON */
+  button {
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  button:active {
+    transform: scale(0.98);
   }
 `;
