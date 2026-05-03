@@ -11,6 +11,7 @@ import { Home } from "./pages/home";
 import { PedidoProvider } from "./context/PedidoProvider";
 import { Confirmacao } from "./pages/confirmacao";
 import { Pagamento } from "./pages/pagamento";
+import { Admin } from "./pages/Admin";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -25,6 +26,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/revisao" element={<Revisao />} />
               <Route path="/confirmacao" element={<Confirmacao />} />
               <Route path="/pagamento" element={<Pagamento />} />
+              <Route path="/admin" element={<Admin />} />
             </Route>
           </Routes>
         </BrowserRouter>

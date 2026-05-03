@@ -3,13 +3,20 @@ import axios from "axios";
 import { Container } from "./style";
 import { socket } from "../../services/socket";
 
-type Pedido = {
-  id: number;
-  nomeCliente: string;
-  cidade: string;
+type Item = {
   combo: { nome: string };
   sabores: Record<string, number>;
   refri?: string;
+  maioneseQtd: number;
+};
+
+type Pedido = {
+  id: number;
+  codigo: string;
+  nomeCliente: string;
+  cidade: string;
+  itens: Item[];
+  pagamento: string;
   total: number;
   status: string;
 };
@@ -23,7 +30,6 @@ export function Admin() {
         const { data } = await axios.get(
           "https://fornoesabor-backend.onrender.com/orders",
         );
-
         setPedidos(data.reverse());
       } catch (err) {
         console.error("Erro ao carregar pedidos:", err);
@@ -32,74 +38,81 @@ export function Admin() {
 
     init();
 
-    socket.on("novo-pedido", (pedido: Pedido) => {
+    const handler = (pedido: Pedido) => {
       setPedidos((prev) => [pedido, ...prev]);
-    });
+    };
+
+    socket.on("novo-pedido", handler);
 
     return () => {
-      socket.off("novo-pedido");
+      socket.off("novo-pedido", handler);
     };
   }, []);
 
-  // atualizar status
-  const atualizar = async (id: number, status: string) => {
+  const atualizar = (id: number, status: string) => {
     socket.emit(`pedido-${status}`, id);
 
     setPedidos((prev) => prev.map((p) => (p.id === id ? { ...p, status } : p)));
   };
 
+  const renderColuna = (status: string, titulo: string) => (
+    <div className="coluna">
+      <div className="coluna-header">{titulo}</div>
+
+      {pedidos
+        .filter((p) => p.status === status)
+        .map((p) => (
+          <div key={p.id} className="card">
+            <div className="topo">
+              <strong>{p.nomeCliente}</strong>
+              <span>{p.codigo}</span>
+            </div>
+
+            <div className="sub">{p.cidade}</div>
+
+            {p.itens.map((item, i) => (
+              <div key={i} className="item">
+                <strong>{item.combo.nome}</strong>
+
+                {Object.entries(item.sabores).map(([s, q]) =>
+                  q > 0 ? (
+                    <div key={s} className="sub">
+                      {q}x {s}
+                    </div>
+                  ) : null,
+                )}
+
+                {item.refri && <div className="sub">🥤 {item.refri}</div>}
+
+                {item.maioneseQtd > 0 && (
+                  <div className="sub">🧄 {item.maioneseQtd}x</div>
+                )}
+              </div>
+            ))}
+
+            <div className="footer">
+              <strong>R$ {p.total.toFixed(2)}</strong>
+
+              <div className="acoes">
+                <button onClick={() => atualizar(p.id, "recebido")}>✔</button>
+
+                <button onClick={() => atualizar(p.id, "impresso")}>🖨️</button>
+
+                <button onClick={() => atualizar(p.id, "erro")}>❌</button>
+              </div>
+            </div>
+          </div>
+        ))}
+    </div>
+  );
+
   return (
     <Container>
-      <div className="title">📦 Pedidos</div>
-
-      {pedidos.map((p) => (
-        <div key={p.id} className="pedido">
-          <div className="linha">
-            <strong>{p.nomeCliente}</strong>
-            <span>#{p.id}</span>
-          </div>
-
-          <div>{p.cidade}</div>
-
-          <div>
-            <strong>{p.combo.nome}</strong>
-          </div>
-
-          <div>
-            {Object.entries(p.sabores)
-              .filter(([, q]) => q > 0)
-              .map(([s, q]) => (
-                <div key={s}>
-                  {q}x {s}
-                </div>
-              ))}
-          </div>
-
-          {p.refri && <div>🥤 {p.refri}</div>}
-
-          <div className="linha">
-            <strong>R$ {p.total}</strong>
-            <span className="status">{p.status}</span>
-          </div>
-
-          <div className="acoes">
-            <button
-              className="recebido"
-              onClick={() => atualizar(p.id, "recebido")}
-            >
-              Recebido
-            </button>
-
-            <button className="ok" onClick={() => atualizar(p.id, "impresso")}>
-              Impresso
-            </button>
-
-            <button className="erro" onClick={() => atualizar(p.id, "erro")}>
-              Erro
-            </button>
-          </div>
-        </div>
-      ))}
+      <div className="grid">
+        {renderColuna("enviado", "🟡 Recebidos")}
+        {renderColuna("impresso", "🟢 Impressos")}
+        {renderColuna("erro", "🔴 Erros")}
+      </div>
     </Container>
   );
 }
