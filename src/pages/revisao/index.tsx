@@ -178,12 +178,48 @@ export function Revisao() {
 
           <button
             className="button"
-            onClick={() => {
-              setStep(4);
-              navigate("/confirmacao");
+            onClick={async () => {
+              try {
+                const pedido = {
+                  nomeCliente: nome,
+                  cidade,
+                  endereco: cidade !== "Retirada" ? endereco : null,
+
+                  itens,
+
+                  pagamento,
+                  troco,
+                  observacao,
+                };
+
+                const res = await fetch(
+                  "https://fornoesabor-backend.onrender.com/orders",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(pedido),
+                  },
+                );
+
+                if (!res.ok) {
+                  const error = await res.json();
+                  alert(error.error || "Erro ao enviar pedido");
+                  return;
+                }
+
+                console.log("✅ Pedido enviado!");
+
+                setStep(4);
+                navigate("/confirmacao");
+              } catch (err) {
+                console.error(err);
+                alert("Erro de conexão com servidor");
+              }
             }}
           >
-            Finalizar Pedido
+            Confirmar Pedido
           </button>
         </div>
       </div>
