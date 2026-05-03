@@ -346,7 +346,7 @@ export function Pedido() {
               <div className="row">
                 <span>Frete</span>
                 <strong>
-                  {frete === 0 ? "Grátis" : `R$ ${frete.toFixed(2)}`}
+                  {frete === 0 ? "Retirada no local" : `R$ ${frete.toFixed(2)}`}
                 </strong>
               </div>
 

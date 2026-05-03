@@ -27,6 +27,17 @@ export const GlobalStyles = createGlobalStyle`
     transition: all 0.2s ease;
   }
 
+  //logo
+   .hero {
+    position: relative;
+    height: 230px;
+  }
+
+  .hero img {
+    width: 100%;
+    height: 100%;
+  }
+
   input::placeholder {
     color: #9ca3af; /* 👈 placeholder mais bonito */
   }

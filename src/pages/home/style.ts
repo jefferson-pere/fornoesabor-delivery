@@ -14,17 +14,6 @@ export const Container = styled.div`
     flex-direction: column;
   }
 
-  /* HERO */
-  .hero {
-    position: relative;
-    height: 230px;
-  }
-
-  .hero img {
-    width: 100%;
-    height: 100%;
-  }
-
   .hero-overlay {
     position: absolute;
     bottom: 0;
@@ -163,7 +152,6 @@ export const Container = styled.div`
     justify-content: center;
     font-size: 18px;
   }
-  
 
   .icon-btn.edit {
     background: #ff4d4f;

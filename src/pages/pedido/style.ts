@@ -14,17 +14,7 @@ export const Container = styled.div`
     flex-direction: column;
   }
 
-  .hero {
-    position: relative;
-    height: 180px;
-    overflow: hidden;
-  }
-
-  .hero img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+ 
 
   .hero-overlay {
     position: absolute;
