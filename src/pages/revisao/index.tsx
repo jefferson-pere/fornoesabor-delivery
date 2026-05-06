@@ -193,7 +193,7 @@ export function Revisao() {
                 };
 
                 const res = await fetch(
-                  "https://fornoesabor-backend.onrender.com/orders",
+                  `${import.meta.env.VITE_API_URL}/orders`,
                   {
                     method: "POST",
                     headers: {
