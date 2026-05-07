@@ -124,17 +124,48 @@ export const Container = styled.div`
 
   @media (max-width: 480px) {
     .fechado-card h1 {
-      font-size: 42px;
-      line-height: 44px;
+      font-size: 32px;
+      line-height: 34px;
+    }
+    .fechado-card {
+      max-width: 340px;
+      padding: 20px 10px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
 
     .descricao {
-      font-size: 20px;
+      font-size: 14px;
     }
 
     .horario-time span {
       width: 100px;
-      font-size: 18px;
+      font-size: 14px;
+    }
+
+    .hero {
+      height: 120px;
+      img {
+        width: 100%;
+        border-radius: 8px;
+      }
+    }
+
+    .horario-item strong {
+      font-size: 14px;
+    }
+
+    .horario-time span {
+      font-size: 14px;
+    }
+    .horario-box {
+      padding: 10px 5px;
+      margin-bottom: 0px;
+    }
+
+    .footer-text {
+      margin-top: 5px;
     }
   }
 `;
