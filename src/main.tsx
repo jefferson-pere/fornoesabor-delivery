@@ -8,10 +8,11 @@ import { App } from "./app";
 import { Pedido } from "./pages/pedido";
 import { Revisao } from "./pages/revisao";
 import { Home } from "./pages/home";
-import { PedidoProvider } from "./context/PedidoProvider";
 import { Confirmacao } from "./pages/confirmacao";
 import { Pagamento } from "./pages/pagamento";
-import { Admin } from "./pages/Admin";
+import { Painel } from "./pages/painel";
+import { PedidoProvider } from "./context/PedidoProvider";
+import { StoreGuard } from "./utils/StoreGuard";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -20,14 +21,20 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <PedidoProvider>
         <BrowserRouter>
           <Routes>
-            <Route element={<App />}>
+            <Route
+              element={
+                <StoreGuard>
+                  <App />
+                </StoreGuard>
+              }
+            >
               <Route path="/" element={<Home />} />
               <Route path="/pedido" element={<Pedido />} />
               <Route path="/revisao" element={<Revisao />} />
               <Route path="/confirmacao" element={<Confirmacao />} />
               <Route path="/pagamento" element={<Pagamento />} />
-              <Route path="/admin" element={<Admin />} />
             </Route>
+            <Route path="/painel" element={<Painel />} />
           </Routes>
         </BrowserRouter>
       </PedidoProvider>

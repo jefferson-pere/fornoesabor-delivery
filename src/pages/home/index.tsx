@@ -1,20 +1,35 @@
 import { useNavigate } from "react-router-dom";
 import { Container } from "./style";
 import { usePedido } from "../../hook/usePedido";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { MdPerson, MdPhone, MdLocalShipping } from "react-icons/md";
 import { MdKeyboardArrowDown } from "react-icons/md";
 
+import { getStoreStatus } from "../../services/store";
+import { StoreBlock } from "../StoreBlock";
+
 export function Home() {
   const { setStep, setNome, setTelefone, setCidade, setEndereco } = usePedido();
+
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+
   const [tipoEntrega, setTipoEntrega] = useState<"entrega" | "retirada" | null>(
     null,
   );
 
+  // 🔥 STORE
+  const [loadingStore, setLoadingStore] = useState(true);
+
+  const [store, setStore] = useState({
+    aberto: true,
+    altaDemanda: false,
+    mensagem: "",
+  });
+
+  // 🔥 DADOS
   const [nomeLocal, setNomeLocal] = useState("");
   const [telefoneLocal, setTelefoneLocal] = useState("");
 
@@ -23,6 +38,7 @@ export function Home() {
   const [numero, setNumero] = useState("");
   const [referencia, setReferencia] = useState("");
 
+  // 🔥 ERROS
   const [errors, setErrors] = useState({
     nome: false,
     telefone: false,
@@ -33,82 +49,141 @@ export function Home() {
     tipoEntrega: false,
   });
 
+  // 🔥 LOAD STORE
+  useEffect(() => {
+    async function loadStore() {
+      try {
+        const data = await getStoreStatus();
+
+        setStore(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingStore(false);
+      }
+    }
+
+    loadStore();
+  }, []);
+
+  // 🔥 TELEFONE
   const formatarTelefone = (value: string) => {
     const nums = value.replace(/\D/g, "").slice(0, 11);
 
     if (nums.length <= 2) return `(${nums}`;
-    if (nums.length <= 6) return `(${nums.slice(0, 2)}) ${nums.slice(2)}`;
+
+    if (nums.length <= 6) {
+      return `(${nums.slice(0, 2)}) ${nums.slice(2)}`;
+    }
 
     return `(${nums.slice(0, 2)}) ${nums.slice(2, 7)}-${nums.slice(7)}`;
   };
 
+  // 🔥 CONTINUAR
   const handleContinuar = () => {
     const newErrors = {
       nome: !nomeLocal,
+
       telefone: telefoneLocal.replace(/\D/g, "").length < 10,
+
       tipoEntrega: !tipoEntrega,
 
       cidade: tipoEntrega === "entrega" && !cidadeLocal,
+
       rua: tipoEntrega === "entrega" && !rua,
+
       numero: tipoEntrega === "entrega" && !numero,
+
       referencia: tipoEntrega === "entrega" && !referencia,
     };
 
     setErrors(newErrors);
+
     if (Object.values(newErrors).some(Boolean)) return;
 
     setLoading(true);
 
     setTimeout(() => {
       setNome(nomeLocal);
+
       setTelefone(telefoneLocal);
 
       if (tipoEntrega === "retirada") {
         setCidade("Retirada");
       } else {
         setCidade(cidadeLocal);
-        setEndereco({ rua, numero, referencia });
+
+        setEndereco({
+          rua,
+          numero,
+          referencia,
+        });
       }
 
       setStep(2);
+
       navigate("/pedido");
     }, 700);
   };
 
+  // 🔥 LOADING STORE
+  if (loadingStore) {
+    return null;
+  }
+
+  // 🔥 FECHADO
+  if (!store.aberto) {
+    return <StoreBlock tipo="fechado" mensagem={store.mensagem} />;
+  }
+
+  // 🔥 ALTA DEMANDA
+  if (store.altaDemanda) {
+    return <StoreBlock tipo="demanda" mensagem={store.mensagem} />;
+  }
+
   return (
     <Container>
       <div className="content">
+        {/* HERO */}
         <div className="hero">
           <img
             src="/banner.png"
             onError={(e) => (e.currentTarget.style.display = "none")}
           />
+
           <div className="hero-overlay">
             <div className="hero-title">Seja bem-vindo(a)</div>
+
             <p>Agilize seu pedido e aproveite nosso cardápio</p>
           </div>
         </div>
 
+        {/* FORM */}
         <div className="form">
           {/* NOME */}
           <div>
             <div className="label">Nome</div>
+
             <div className={`input-box ${errors.nome ? "error" : ""}`}>
               <MdPerson className="input-icon" />
+
               <input
-                placeholder="Nome de sobrenome"
+                placeholder="Nome e sobrenome"
                 value={nomeLocal}
                 onChange={(e) => setNomeLocal(e.target.value)}
               />
             </div>
+
             {errors.nome && <p className="error-text">Campo obrigatório</p>}
           </div>
 
           {/* TELEFONE */}
           <div>
             <div className="label">Telefone</div>
+
             <div className={`input-box ${errors.telefone ? "error" : ""}`}>
               <MdPhone className="input-icon" />
+
               <input
                 placeholder="(00) 00000-0000"
                 value={telefoneLocal}
@@ -117,6 +192,7 @@ export function Home() {
                 }
               />
             </div>
+
             {errors.telefone && <p className="error-text">Telefone inválido</p>}
           </div>
 
@@ -144,26 +220,31 @@ export function Home() {
           </div>
 
           {errors.tipoEntrega && (
-            <p className="error-text">Selecione uma opção de entrega</p>
+            <p className="error-text">Selecione uma opção</p>
           )}
 
-          {/* CAMPOS ENTREGA */}
+          {/* ENTREGA */}
           {tipoEntrega === "entrega" && (
             <div className="fade-slide">
               {/* CIDADE */}
               <div>
                 <div className={`input-box ${errors.cidade ? "error" : ""}`}>
                   <MdLocalShipping className="input-icon" />
+
                   <select
                     value={cidadeLocal}
                     onChange={(e) => setCidadeLocal(e.target.value)}
                   >
-                    <option value="">Selecione a opção</option>
+                    <option value="">Selecione a cidade</option>
+
                     <option value="Cariús">Cariús</option>
+
                     <option value="Jucás">Jucás</option>
                   </select>
+
                   <MdKeyboardArrowDown className="select-arrow" />
                 </div>
+
                 {errors.cidade && (
                   <p className="error-text">Campo obrigatório</p>
                 )}
@@ -178,6 +259,7 @@ export function Home() {
                     onChange={(e) => setRua(e.target.value)}
                   />
                 </div>
+
                 {errors.rua && <p className="error-text">Campo obrigatório</p>}
               </div>
 
@@ -190,6 +272,7 @@ export function Home() {
                     onChange={(e) => setNumero(e.target.value)}
                   />
                 </div>
+
                 {errors.numero && (
                   <p className="error-text">Campo obrigatório</p>
                 )}
@@ -206,6 +289,7 @@ export function Home() {
                     onChange={(e) => setReferencia(e.target.value)}
                   />
                 </div>
+
                 {errors.referencia && (
                   <p className="error-text">Campo obrigatório</p>
                 )}
@@ -214,6 +298,7 @@ export function Home() {
           )}
         </div>
 
+        {/* FOOTER */}
         <div className="footer">
           <button
             className={`button ${loading ? "loading" : ""}`}
