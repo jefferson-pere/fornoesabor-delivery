@@ -27,13 +27,9 @@ export function StoreClosed() {
 
         <p className="descricao">
           A Forno e Sabor agradece
-          <br />
           pela sua preferência.
-          <br />
           Em breve estaremos de volta
-          <br />
           com nossas deliciosas esfihas
-          <br />
           artesanais feitas com carinho.
         </p>
 
