@@ -38,11 +38,11 @@ export function StoreGuard({ children }: Props) {
   }
 
   if (!store.aberto) {
-    return <StoreBlock tipo="fechado" mensagem={store.mensagem} />;
+    return <StoreBlock tipo="fechado" />;
   }
 
   if (store.altaDemanda) {
-    return <StoreBlock tipo="demanda" mensagem={store.mensagem} />;
+    return <StoreBlock tipo="demanda" />;
   }
 
   return <>{children}</>;
