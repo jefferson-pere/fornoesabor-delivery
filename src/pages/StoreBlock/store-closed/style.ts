@@ -4,9 +4,8 @@ export const Container = styled.div`
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 20px;
   .hero {
+    margin-top: 30px;
     height: 160px;
     img {
       width: 100%;
@@ -17,9 +16,7 @@ export const Container = styled.div`
     width: 100%;
     max-width: 340px;
     background: #f8f6f5;
-    border: 2px solid #d8cfc8;
     border-radius: 10px;
-    padding: 30px 22px;
     text-align: center;
     position: relative;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -129,7 +126,6 @@ export const Container = styled.div`
     }
     .fechado-card {
       max-width: 340px;
-      padding: 20px 10px;
       text-align: center;
       position: relative;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);

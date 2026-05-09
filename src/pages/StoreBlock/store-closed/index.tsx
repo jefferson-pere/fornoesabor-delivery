@@ -1,10 +1,6 @@
-import { FiAlertCircle } from "react-icons/fi";
 import { Container } from "./style";
 import { LuClock3 } from "react-icons/lu";
 
-// type Props = {
-//   mensagem: string;
-// };
 
 export function StoreClosed() {
   return (
@@ -13,10 +9,7 @@ export function StoreClosed() {
         <div className="hero">
           <img src="/banner.png" />
         </div>
-        <div className="aviso-badge">
-          <FiAlertCircle size={16} />
-          <span>AVISO</span>
-        </div>
+        
 
         <h1>
           ESTAMOS <br />

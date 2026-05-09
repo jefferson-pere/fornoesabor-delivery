@@ -5,7 +5,7 @@ export const Container = styled.div`
 
   border-radius: 18px;
 
-  padding: 18px;
+  padding: 10px;
 
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 
@@ -16,7 +16,7 @@ export const Container = styled.div`
 
     align-items: center;
 
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 
     strong {
       font-size: 16px;
@@ -30,7 +30,7 @@ export const Container = styled.div`
   }
   .infoendpag {
     display: flex;
-    margin: 10px;
+    margin: 2px 25px;
     justify-content: space-between;
   }
   .combo {
@@ -88,7 +88,7 @@ export const Container = styled.div`
   .avancar {
     flex: 1;
 
-    height: 40px;
+    height: 30px;
 
     border: none;
 
