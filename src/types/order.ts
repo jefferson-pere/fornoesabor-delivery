@@ -5,11 +5,30 @@ export type OrderStatus =
   | "FINALIZADO"
   | "CANCELADO";
 
+export type Endereco = {
+  rua: string;
+
+  numero: string;
+
+  referencia?: string;
+};
+
+export type RefriExtra = {
+  nome: string;
+
+  tipo: "lata" | "1l";
+
+  preco: number;
+};
+
 export type ItemPedido = {
   combo: {
     nome: string;
+
     preco: number;
+
     unidades: number;
+
     refri: string;
   };
 
@@ -17,7 +36,11 @@ export type ItemPedido = {
 
   refri?: string;
 
+  refriExtra?: RefriExtra | null;
+
   maioneseQtd: number;
+
+  observacaoItem?: string;
 };
 
 export type Pedido = {
@@ -27,7 +50,11 @@ export type Pedido = {
 
   nomeCliente: string;
 
+  telefone?: string;
+
   cidade: string;
+
+  endereco?: Endereco;
 
   itens: ItemPedido[];
 

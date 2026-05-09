@@ -28,7 +28,11 @@ export const Container = styled.div`
       font-size: 13px;
     }
   }
-
+  .infoendpag {
+    display: flex;
+    margin: 10px;
+    justify-content: space-between;
+  }
   .combo {
     color: #444;
 

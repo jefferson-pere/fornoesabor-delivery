@@ -6,22 +6,18 @@ type Props = {
   orders: Pedido[];
 };
 
-export function DashboardMetrics({
-  orders,
-}: Props) {
+export function DashboardMetrics({ orders }: Props) {
   const totalPedidos = orders.length;
 
   const totalFinalizados = orders.filter(
     (o) => o.status === "FINALIZADO",
   ).length;
 
-  const totalPendentes = orders.filter(
-    (o) => o.status !== "FINALIZADO",
-  ).length;
+  const totalPendentes = orders.filter((o) => o.status !== "FINALIZADO").length;
 
-  const totalPago = orders
-    .filter((o) => o.pago)
-    .reduce((acc, o) => acc + o.total, 0);
+  // const totalPago = orders
+  //   .filter((o) => o.pago)
+  //   .reduce((acc, o) => acc + o.total, 0);
 
   const totalNaoPago = orders
     .filter((o) => !o.pago)
@@ -36,31 +32,26 @@ export function DashboardMetrics({
       </div>
 
       <div className="card">
+        <span>Pendentes</span>
+
+        <strong>{totalPendentes}</strong>
+      </div>
+      <div className="card">
         <span>Finalizados</span>
 
         <strong>{totalFinalizados}</strong>
       </div>
 
-      <div className="card">
-        <span>Pendentes</span>
-
-        <strong>{totalPendentes}</strong>
-      </div>
-
-      <div className="card success">
+      {/* <div className="card success">
         <span>Total Pago</span>
 
-        <strong>
-          R$ {totalPago.toFixed(2)}
-        </strong>
-      </div>
+        <strong>R$ {totalPago.toFixed(2)}</strong>
+      </div> */}
 
       <div className="card danger">
         <span>Não Pago</span>
 
-        <strong>
-          R$ {totalNaoPago.toFixed(2)}
-        </strong>
+        <strong>R$ {totalNaoPago.toFixed(2)}</strong>
       </div>
     </Container>
   );

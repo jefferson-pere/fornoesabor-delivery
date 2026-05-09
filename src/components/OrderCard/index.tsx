@@ -37,12 +37,34 @@ export function OrderCard({
   return (
     <Container>
       <div className="topo">
-        <strong>{order.nomeCliente}</strong>
+        <div>
+          <strong>{order.nomeCliente}</strong>
+
+          <div className="hora">
+            {new Date(order.createdAt).toLocaleTimeString("pt-BR", {
+              hour: "2-digit",
+
+              minute: "2-digit",
+            })}
+          </div>
+        </div>
 
         <span>{order.codigo}</span>
       </div>
 
-      <div className="combo">{order.itens[0]?.combo.nome}</div>
+      <div className="combo">
+        {order.itens.map((item, i) => (
+          <div key={i}>• {item.combo.nome}</div>
+        ))}
+      </div>
+      <div className="infoendpag">
+        <div className="cidade">📍 {order.cidade}</div>
+
+        <div className="pagamento">💳 {order.pagamento}</div>
+      </div>
+      {/* {order.itens.some((i) => i.refriExtra) && (
+        <div className="extra">🥤 Refri extra</div>
+      )} */}
 
       <div className="footer">
         <strong>R$ {order.total.toFixed(2)}</strong>

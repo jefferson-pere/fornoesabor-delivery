@@ -147,9 +147,9 @@ export function Painel() {
       {/* TOPO */}
       <div className="topo">
         <div>
-          <h1>⚙️ Painel de Produção</h1>
+          <h1>🍕 Forno e sabor</h1>
 
-          <p>Gerencie pedidos em tempo real</p>
+          <p>Painel de controle</p>
         </div>
         <div>
           {/* STATUS LOJA */}
@@ -175,7 +175,7 @@ export function Painel() {
       <div className="grid">
         {/* NOVOS */}
         <KanbanColumn
-          title="🟡 Novos"
+          title="📦 Novos pedidos"
           orders={orders.filter((o) => o.status === "NOVO")}
           onMove={moveOrder}
           onTogglePayment={togglePayment}

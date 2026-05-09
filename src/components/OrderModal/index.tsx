@@ -19,23 +19,18 @@ export function OrderModal({ order, onClose }: Props) {
 
   const [form, setForm] = useState<Pedido | null>(null);
 
-  // 🔥 sem pedido
   if (!order) {
     return null;
   }
 
-  // 🔥 pedido seguro
   const safeOrder = order;
 
-  // 🔥 sincroniza
   if (form?.id !== safeOrder.id) {
     setForm(safeOrder);
   }
 
-  // 🔥 pedido atual
   const currentOrder = form ?? safeOrder;
 
-  // 🔥 salvar
   async function handleSave() {
     try {
       await updateOrder(safeOrder.id, currentOrder);
@@ -50,7 +45,6 @@ export function OrderModal({ order, onClose }: Props) {
     }
   }
 
-  // 🔥 apagar
   async function handleDelete() {
     const password = prompt("Digite a senha para apagar");
 
@@ -77,29 +71,29 @@ export function OrderModal({ order, onClose }: Props) {
     }
   }
 
-  // 🔥 imprimir
   function handlePrint() {
     window.print();
   }
 
   return (
     <Container>
-      {/* CUPOM */}
       <Receipt order={currentOrder} />
 
-      {/* MODAL */}
       <div className="overlay no-print">
         <div className="modal">
-          {/* TOPO */}
           <div className="topo">
-            <h2>{safeOrder.codigo}</h2>
+            <div>
+              <h2>{safeOrder.codigo}</h2>
+
+              <small>
+                {new Date(safeOrder.createdAt).toLocaleString("pt-BR")}
+              </small>
+            </div>
 
             <button onClick={onClose}>✕</button>
           </div>
 
-          {/* CONTEÚDO */}
           <div className="content">
-            {/* CLIENTE */}
             <label>Cliente</label>
 
             <input
@@ -114,7 +108,20 @@ export function OrderModal({ order, onClose }: Props) {
               }
             />
 
-            {/* CIDADE */}
+            <label>Telefone</label>
+
+            <input
+              disabled={!editing}
+              value={currentOrder.telefone || ""}
+              onChange={(e) =>
+                setForm({
+                  ...currentOrder,
+
+                  telefone: e.target.value,
+                })
+              }
+            />
+
             <label>Cidade</label>
 
             <input
@@ -129,7 +136,31 @@ export function OrderModal({ order, onClose }: Props) {
               }
             />
 
-            {/* PAGAMENTO */}
+            {currentOrder.cidade !== "Retirada" && (
+              <>
+                <label>Rua</label>
+
+                <input
+                  disabled={!editing}
+                  value={currentOrder.endereco?.rua || ""}
+                />
+
+                <label>Número</label>
+
+                <input
+                  disabled={!editing}
+                  value={currentOrder.endereco?.numero || ""}
+                />
+
+                <label>Referência</label>
+
+                <input
+                  disabled={!editing}
+                  value={currentOrder.endereco?.referencia || ""}
+                />
+              </>
+            )}
+
             <label>Pagamento</label>
 
             <select
@@ -143,15 +174,22 @@ export function OrderModal({ order, onClose }: Props) {
                 })
               }
             >
-              <option value="PIX">PIX</option>
+              <option value="pix">PIX</option>
 
-              <option value="Dinheiro">Dinheiro</option>
+              <option value="dinheiro">Dinheiro</option>
 
-              <option value="Cartão">Cartão</option>
+              <option value="cartao">Cartão</option>
             </select>
 
-            {/* OBS */}
-            <label>Observação</label>
+            {currentOrder.troco && (
+              <>
+                <label>Troco</label>
+
+                <input disabled value={currentOrder.troco} />
+              </>
+            )}
+
+            {/* <label>Observação admin</label>
 
             <textarea
               disabled={!editing}
@@ -163,9 +201,8 @@ export function OrderModal({ order, onClose }: Props) {
                   observacao: e.target.value,
                 })
               }
-            />
-
-            {/* PAGO */}
+            /> */}
+            {/* 
             <div className="pago">
               <label>Pago</label>
 
@@ -181,9 +218,8 @@ export function OrderModal({ order, onClose }: Props) {
                   })
                 }
               />
-            </div>
+            </div> */}
 
-            {/* TOTAL */}
             <div className="total">
               <strong>Total:</strong>
 
@@ -192,7 +228,6 @@ export function OrderModal({ order, onClose }: Props) {
 
             <hr />
 
-            {/* ITENS */}
             {currentOrder.itens.map((item, i) => (
               <div key={i} className="item">
                 <strong>{item.combo.nome}</strong>
@@ -205,12 +240,19 @@ export function OrderModal({ order, onClose }: Props) {
 
                 {item.refri && <div>🥤 {item.refri}</div>}
 
+                {item.refriExtra && (
+                  <div>
+                    🥤 Extra: {item.refriExtra.nome} ({item.refriExtra.tipo})
+                  </div>
+                )}
+
                 {item.maioneseQtd > 0 && <div>🧄 {item.maioneseQtd}x</div>}
+
+                {item.observacaoItem && <div>📝 {item.observacaoItem}</div>}
               </div>
             ))}
           </div>
 
-          {/* AÇÕES */}
           <div className="acoes">
             <button onClick={handlePrint}>🖨️ Imprimir</button>
 

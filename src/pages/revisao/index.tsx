@@ -176,11 +176,10 @@ export function Revisao() {
                 try {
                   const pedido = {
                     nomeCliente: nome,
+                    telefone,
                     cidade,
                     endereco: cidade !== "Retirada" ? endereco : null,
-
                     itens,
-
                     pagamento,
                     troco,
                     observacao,
