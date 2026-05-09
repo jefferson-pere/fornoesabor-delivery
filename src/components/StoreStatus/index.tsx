@@ -108,20 +108,14 @@ export function StoreStatus() {
 
   return (
     <Container>
-      {/* HEADER */}
-      <div className="header">
-        <div>
-          <h2>Status da Loja</h2>
+      <div className="info">
+        <h2>Status da Loja</h2>
 
-          <p>Controle funcionamento da loja</p>
-        </div>
-
-        {renderStatus()}
+        <p>{store.mensagem || "Loja funcionando normalmente"}</p>
       </div>
 
-      {/* CARD */}
-      <div className="card">
-        <div className="label">Status atual</div>
+      <div className="actions">
+        {renderStatus()}
 
         <select
           disabled={loading}
@@ -134,10 +128,6 @@ export function StoreStatus() {
 
           <option value="demanda">⚠️ Alta demanda</option>
         </select>
-
-        <div className="mensagem">
-          {store.mensagem || "Loja funcionando normalmente"}
-        </div>
       </div>
     </Container>
   );

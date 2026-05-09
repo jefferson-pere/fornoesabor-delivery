@@ -13,6 +13,7 @@ import { Pagamento } from "./pages/pagamento";
 import { Painel } from "./pages/painel";
 import { PedidoProvider } from "./context/PedidoProvider";
 import { StoreGuard } from "./utils/StoreGuard";
+import { Historico } from "./pages/historico";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -35,6 +36,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/pagamento" element={<Pagamento />} />
             </Route>
             <Route path="/painel" element={<Painel />} />
+            <Route path="/historico" element={<Historico />} />
           </Routes>
         </BrowserRouter>
       </PedidoProvider>

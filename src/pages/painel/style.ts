@@ -3,60 +3,108 @@ import styled from "styled-components";
 export const Container = styled.div`
   min-height: 100vh;
 
-  padding: 40px;
+  background: #ececec;
 
-  background: #f5f5f5;
+  padding: 20px;
 
-  .login-card {
+  .topo {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 28px;
+
+    h1 {
+      font-size: 32px;
+
+      font-weight: 800;
+
+      color: #111;
+
+      margin-bottom: 6px;
+    }
+
+    p {
+      color: #666;
+
+      font-size: 15px;
+    }
+  }
+
+  .grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 20px;
+
+    align-items: flex-start;
+  }
+  .logout {
+    height: 48px;
+
+    padding: 0 20px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background: #dc2626;
+
+    color: #fff;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+  }
+
+  .logout:hover {
+    opacity: 0.92;
+
+    transform: translateY(-2px);
+  }
+  /* LOGIN */
+  .login {
     width: 100%;
+
     max-width: 420px;
 
     margin: 80px auto;
 
     background: #fff;
 
-    padding: 30px;
+    border-radius: 24px;
 
-    border-radius: 20px;
+    padding: 40px;
 
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
 
-    h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
-    }
+    display: flex;
 
-    p {
-      color: #666;
-      margin-bottom: 24px;
-    }
+    flex-direction: column;
 
-    input {
-      width: 100%;
+    gap: 20px;
 
-      height: 52px;
+    text-align: center;
 
-      border-radius: 12px;
+    h2 {
+      font-size: 28px;
 
-      border: 1px solid #ddd;
+      color: #111;
 
-      padding: 0 14px;
-
-      font-size: 16px;
-
-      outline: none;
-
-      margin-bottom: 16px;
+      font-weight: 700;
     }
 
     button {
-      width: 100%;
-
       height: 52px;
 
       border: none;
 
-      border-radius: 12px;
+      border-radius: 14px;
 
       background: #111;
 
@@ -67,34 +115,66 @@ export const Container = styled.div`
       font-weight: bold;
 
       cursor: pointer;
+
+      transition: 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.92;
+
+      transform: translateY(-2px);
     }
   }
 
-  .topo {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  /* SCROLL */
+  ::-webkit-scrollbar {
+    width: 8px;
 
-    margin-bottom: 30px;
+    height: 8px;
+  }
 
-    h1 {
-      font-size: 32px;
+  ::-webkit-scrollbar-thumb {
+    background: #cfcfcf;
+
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* RESPONSIVO */
+  @media (max-width: 1200px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 
-  .logout {
-    border: none;
+  @media (max-width: 700px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
 
-    background: #ef4444;
+    .topo {
+      flex-direction: column;
 
-    color: #fff;
+      align-items: flex-start;
 
-    padding: 12px 18px;
+      gap: 10px;
 
-    border-radius: 12px;
+      h1 {
+        font-size: 24px;
+      }
+    }
 
-    cursor: pointer;
+    .login {
+      padding: 24px;
 
-    font-weight: bold;
+      border-radius: 18px;
+
+      h2 {
+        font-size: 22px;
+      }
+    }
   }
 `;

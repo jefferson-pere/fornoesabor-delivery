@@ -1,74 +1,222 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { Container } from "./style";
+import {
+  getOrders,
+  updateOrderStatus,
+  updatePayment,
+} from "../../services/orders";
+
+import { socket } from "../../services/socket";
+
+import type { Pedido, OrderStatus } from "../../types/order";
+
+import { KanbanColumn } from "../../components/KanbanColumn";
+
+import { DashboardMetrics } from "../../components/DashboardMetrics";
 
 import { StoreStatus } from "../../components/StoreStatus";
 
+import { OrderModal } from "../../components/OrderModal";
+
+import { Container } from "./style";
+
 export function Painel() {
-  const [autenticado, setAutenticado] = useState(false);
+  const [orders, setOrders] = useState<Pedido[]>([]);
 
-  const [senha, setSenha] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState<Pedido | null>(null);
 
-  const SENHA = import.meta.env.VITE_ADMIN_PASSWORD;
+  const [hideFinished, setHideFinished] = useState(true);
+  const [authorized, setAuthorized] = useState(() => {
+    const saved = localStorage.getItem("painel-auth");
 
-  function entrar() {
-    if (senha === SENHA) {
-      setAutenticado(true);
-
-      sessionStorage.setItem("admin-auth", "true");
-
-      return;
+    if (!saved) {
+      return false;
     }
 
-    alert("Senha inválida");
+    const parsed = JSON.parse(saved);
+
+    const now = Date.now();
+
+    // 12 horas
+    const TWELVE_HOURS = 1000 * 60 * 60 * 12;
+
+    if (now - parsed.time > TWELVE_HOURS) {
+      localStorage.removeItem("painel-auth");
+
+      return false;
+    }
+
+    return true;
+  });
+  // 🔥 carregar pedidos
+  useEffect(() => {
+    async function init() {
+      try {
+        const data = await getOrders();
+
+        setOrders(data);
+      } catch (err) {
+        console.error("Erro pedidos:", err);
+      }
+    }
+
+    init();
+
+    // 🔥 novo pedido
+    socket.on("novo-pedido", (pedido: Pedido) => {
+      setOrders((prev) => [pedido, ...prev]);
+    });
+
+    // 🔥 atualização realtime
+    socket.on("pedido-atualizado", (pedido: Pedido) => {
+      setOrders((prev) => prev.map((o) => (o.id === pedido.id ? pedido : o)));
+    });
+
+    // 🔥 remoção realtime
+    socket.on("pedido-removido", (id: number) => {
+      setOrders((prev) => prev.filter((o) => o.id !== id));
+    });
+
+    return () => {
+      socket.off("novo-pedido");
+
+      socket.off("pedido-atualizado");
+
+      socket.off("pedido-removido");
+    };
+  }, []);
+
+  // 🔥 mover status
+  async function moveOrder(id: number, status: OrderStatus) {
+    try {
+      const updated = await updateOrderStatus(id, status);
+
+      setOrders((prev) => prev.map((o) => (o.id === id ? updated : o)));
+    } catch (err) {
+      console.error("Erro status:", err);
+    }
   }
 
-  // 🔥 sessão salva
-  if (!autenticado && sessionStorage.getItem("admin-auth") === "true") {
-    setAutenticado(true);
+  // 🔥 pagamento
+  async function togglePayment(id: number, pago: boolean) {
+    try {
+      const updated = await updatePayment(id, pago);
+
+      setOrders((prev) => prev.map((o) => (o.id === id ? updated : o)));
+    } catch (err) {
+      console.error("Erro pagamento:", err);
+    }
   }
 
-  // 🔥 LOGIN
-  if (!autenticado) {
+  // 🔒 proteção painel
+  if (!authorized) {
     return (
       <Container>
-        <div className="login-card">
-          <h1>🔒 Painel Admin</h1>
+        <div className="login">
+          <h2>🔒 Painel Protegido</h2>
 
-          <p>Digite a senha para acessar</p>
+          <button
+            onClick={() => {
+              const password = prompt("Digite a senha do painel");
 
-          <input
-            type="password"
-            placeholder="Senha"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-          />
+              if (password === import.meta.env.VITE_ADMIN_PASSWORD) {
+                localStorage.setItem(
+                  "painel-auth",
+                  JSON.stringify({
+                    time: Date.now(),
+                  }),
+                );
 
-          <button onClick={entrar}>Entrar</button>
+                setAuthorized(true);
+
+                return;
+              }
+
+              alert("Senha inválida");
+            }}
+          >
+            Entrar
+          </button>
         </div>
       </Container>
     );
   }
 
-  // 🔥 PAINEL
   return (
     <Container>
+      {/* TOPO */}
       <div className="topo">
-        <h1>⚙️ Painel</h1>
+        <div>
+          <h1>⚙️ Painel de Produção</h1>
+
+          <p>Gerencie pedidos em tempo real</p>
+        </div>
+        <div>
+          {/* STATUS LOJA */}
+          <StoreStatus />
+        </div>
 
         <button
           className="logout"
           onClick={() => {
-            sessionStorage.removeItem("admin-auth");
+            localStorage.removeItem("painel-auth");
 
-            window.location.reload();
+            setAuthorized(false);
           }}
         >
           Sair
         </button>
       </div>
 
-      <StoreStatus />
+      {/* MÉTRICAS */}
+      <DashboardMetrics orders={orders} />
+
+      {/* KANBAN */}
+      <div className="grid">
+        {/* NOVOS */}
+        <KanbanColumn
+          title="🟡 Novos"
+          orders={orders.filter((o) => o.status === "NOVO")}
+          onMove={moveOrder}
+          onTogglePayment={togglePayment}
+          onDetails={setSelectedOrder}
+        />
+
+        {/* PRODUÇÃO */}
+        <KanbanColumn
+          title="👨‍🍳 Produção"
+          orders={orders.filter((o) => o.status === "PRODUCAO")}
+          onMove={moveOrder}
+          onTogglePayment={togglePayment}
+          onDetails={setSelectedOrder}
+        />
+
+        {/* ENTREGA */}
+        <KanbanColumn
+          title="🛵 Entrega"
+          orders={orders.filter((o) => o.status === "ENTREGA")}
+          onMove={moveOrder}
+          onTogglePayment={togglePayment}
+          onDetails={setSelectedOrder}
+        />
+
+        {/* FINALIZADOS */}
+        <KanbanColumn
+          title="✅ Finalizados"
+          orders={orders.filter((o) => o.status === "FINALIZADO")}
+          collapsed={hideFinished}
+          onToggleCollapse={() => setHideFinished(!hideFinished)}
+          onMove={moveOrder}
+          onTogglePayment={togglePayment}
+          onDetails={setSelectedOrder}
+        />
+      </div>
+
+      {/* MODAL */}
+      <OrderModal
+        order={selectedOrder}
+        onClose={() => setSelectedOrder(null)}
+      />
     </Container>
   );
 }

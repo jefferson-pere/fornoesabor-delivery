@@ -1,96 +1,125 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  width: 100%;
+  background: #fff;
 
-  .header {
+  border-radius: 14px;
+
+  padding: 14px 18px;
+
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  width: fit-content;
+
+  min-width: 420px;
+
+  .info {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
 
-    margin-bottom: 20px;
+    flex-direction: column;
+
+    gap: 2px;
 
     h2 {
-      font-size: 24px;
-      margin-bottom: 4px;
+      font-size: 16px;
+
+      margin: 0;
     }
 
     p {
+      font-size: 13px;
+
       color: #666;
-      font-size: 14px;
+
+      margin: 0;
     }
   }
 
-  .card {
-    background: #fff;
+  .actions {
+    display: flex;
 
-    padding: 20px;
+    align-items: center;
 
-    border-radius: 16px;
-
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  }
-
-  .label {
-    font-size: 14px;
-    font-weight: 600;
-
-    margin-bottom: 10px;
-
-    color: #444;
+    gap: 12px;
   }
 
   select {
-    width: 100%;
+    width: 160px;
 
-    height: 50px;
+    height: 40px;
 
-    border-radius: 12px;
+    border-radius: 10px;
 
     border: 1px solid #ddd;
 
-    padding: 0 14px;
+    padding: 0 12px;
 
-    font-size: 15px;
+    font-size: 14px;
 
-    outline: none;
+    background: #fff;
 
     cursor: pointer;
 
-    background: #fff;
-  }
-
-  .mensagem {
-    margin-top: 18px;
-
-    color: #666;
-
-    line-height: 1.5;
-
-    font-size: 14px;
+    outline: none;
   }
 
   .badge {
-    padding: 10px 14px;
+    padding: 8px 12px;
 
     border-radius: 999px;
 
-    font-size: 13px;
+    font-size: 12px;
+
     font-weight: 700;
+
+    white-space: nowrap;
   }
 
   .aberto {
     background: #dcfce7;
+
     color: #166534;
   }
 
   .fechado {
     background: #fee2e2;
+
     color: #991b1b;
   }
 
   .demanda {
     background: #fef3c7;
+
     color: #92400e;
+  }
+
+  @media (max-width: 700px) {
+    width: 100%;
+
+    min-width: unset;
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+    .actions {
+      width: 100%;
+
+      flex-direction: column;
+
+      align-items: stretch;
+    }
+
+    select {
+      width: 100%;
+    }
   }
 `;
