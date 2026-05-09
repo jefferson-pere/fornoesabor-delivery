@@ -8,6 +8,7 @@ import { getStoreStatus } from "../../services/store";
 import { StoreBlock } from "../StoreBlock";
 export function Home() {
   const { setStep, setNome, setTelefone, setCidade, setEndereco } = usePedido();
+
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [tipoEntrega, setTipoEntrega] = useState<"entrega" | "retirada" | null>(
@@ -19,8 +20,8 @@ export function Home() {
     altaDemanda: false,
     mensagem: "",
   });
-
   const [nomeLocal, setNomeLocal] = useState("");
+  const [sobrenomeLocal, setSobrenomeLocal] = useState("");
   const [telefoneLocal, setTelefoneLocal] = useState("");
   const [cidadeLocal, setCidadeLocal] = useState("");
   const [rua, setRua] = useState("");
@@ -28,6 +29,7 @@ export function Home() {
   const [referencia, setReferencia] = useState("");
   const [errors, setErrors] = useState({
     nome: false,
+    sobrenome: false,
     telefone: false,
     cidade: false,
     rua: false,
@@ -53,7 +55,9 @@ export function Home() {
 
   const formatarTelefone = (value: string) => {
     const nums = value.replace(/\D/g, "").slice(0, 11);
-    if (nums.length <= 2) return `(${nums}`;
+    if (nums.length <= 2) {
+      return `(${nums}`;
+    }
     if (nums.length <= 6) {
       return `(${nums.slice(0, 2)}) ${nums.slice(2)}`;
     }
@@ -62,43 +66,52 @@ export function Home() {
 
   const handleContinuar = () => {
     const newErrors = {
-      nome: !nomeLocal,
+      nome: !nomeLocal.trim(),
+      sobrenome: !sobrenomeLocal.trim(),
       telefone: telefoneLocal.replace(/\D/g, "").length < 10,
       tipoEntrega: !tipoEntrega,
       cidade: tipoEntrega === "entrega" && !cidadeLocal,
-      rua: tipoEntrega === "entrega" && !rua,
-      numero: tipoEntrega === "entrega" && !numero,
-      referencia: tipoEntrega === "entrega" && !referencia,
+      rua: tipoEntrega === "entrega" && !rua.trim(),
+      numero: tipoEntrega === "entrega" && !numero.trim(),
+      referencia: tipoEntrega === "entrega" && !referencia.trim(),
     };
-
     setErrors(newErrors);
+    if (Object.values(newErrors).some(Boolean)) {
+      return;
+    }
 
-    if (Object.values(newErrors).some(Boolean)) return;
     setLoading(true);
     setTimeout(() => {
-      setNome(nomeLocal);
+      setNome(`${nomeLocal.trim()} ${sobrenomeLocal.trim()}`);
       setTelefone(telefoneLocal);
       if (tipoEntrega === "retirada") {
         setCidade("Retirada");
+        setEndereco({
+          rua: "",
+          numero: "",
+          referencia: "",
+        });
       } else {
         setCidade(cidadeLocal);
         setEndereco({
-          rua,
-          numero,
-          referencia,
+          rua: rua.trim(),
+          numero: numero.trim(),
+          referencia: referencia.trim(),
         });
       }
-
       setStep(2);
       navigate("/pedido");
     }, 700);
   };
+
   if (loadingStore) {
     return null;
   }
+
   if (!store.aberto) {
     return <StoreBlock tipo="fechado" />;
   }
+
   if (store.altaDemanda) {
     return <StoreBlock tipo="demanda" />;
   }
@@ -122,12 +135,26 @@ export function Home() {
             <div className={`input-box ${errors.nome ? "error" : ""}`}>
               <MdPerson className="input-icon" />
               <input
-                placeholder="Nome e sobrenome"
+                placeholder="Nome"
                 value={nomeLocal}
                 onChange={(e) => setNomeLocal(e.target.value)}
               />
             </div>
             {errors.nome && <p className="error-text">Campo obrigatório</p>}
+          </div>
+          <div>
+            <div className="label">Sobrenome</div>
+            <div className={`input-box ${errors.sobrenome ? "error" : ""}`}>
+              <MdPerson className="input-icon" />
+              <input
+                placeholder="Sobrenome"
+                value={sobrenomeLocal}
+                onChange={(e) => setSobrenomeLocal(e.target.value)}
+              />
+            </div>
+            {errors.sobrenome && (
+              <p className="error-text">Campo obrigatório</p>
+            )}
           </div>
           <div>
             <div className="label">Telefone</div>
@@ -143,6 +170,7 @@ export function Home() {
             </div>
             {errors.telefone && <p className="error-text">Telefone inválido</p>}
           </div>
+          <div className="label">Tipo de entrega:</div>
           <div
             className={`delivery-options ${errors.tipoEntrega ? "error" : ""}`}
           >
@@ -163,7 +191,6 @@ export function Home() {
               📍 Retirada no local
             </div>
           </div>
-
           {errors.tipoEntrega && (
             <p className="error-text">Selecione uma opção</p>
           )}
@@ -177,17 +204,15 @@ export function Home() {
                     onChange={(e) => setCidadeLocal(e.target.value)}
                   >
                     <option value="">Selecione a cidade</option>
-                    <option value="Cariús">Cariús</option>
-                    <option value="Jucás">Jucás</option>
+                    <option value="Cariús">Cariús - 3,00 R$</option>
+                    <option value="Jucás">Jucás - 5,00 R$</option>
                   </select>
                   <MdKeyboardArrowDown className="select-arrow" />
                 </div>
-
                 {errors.cidade && (
                   <p className="error-text">Campo obrigatório</p>
                 )}
               </div>
-
               <div>
                 <div className={`input-box ${errors.rua ? "error" : ""}`}>
                   <input
@@ -198,10 +223,10 @@ export function Home() {
                 </div>
                 {errors.rua && <p className="error-text">Campo obrigatório</p>}
               </div>
-
               <div>
                 <div className={`input-box ${errors.numero ? "error" : ""}`}>
                   <input
+                    type="number"
                     placeholder="Número"
                     value={numero}
                     onChange={(e) => setNumero(e.target.value)}
@@ -211,7 +236,6 @@ export function Home() {
                   <p className="error-text">Campo obrigatório</p>
                 )}
               </div>
-
               <div>
                 <div
                   className={`input-box ${errors.referencia ? "error" : ""}`}
@@ -228,14 +252,14 @@ export function Home() {
               </div>
             </div>
           )}
-        </div>
-        <div className="footer">
-          <button
-            className={`button ${loading ? "loading" : ""}`}
-            onClick={handleContinuar}
-          >
-            {loading ? <div className="spinner" /> : "Fazer pedido →"}
-          </button>
+          <div className="footer">
+            <button
+              className={`button ${loading ? "loading" : ""}`}
+              onClick={handleContinuar}
+            >
+              {loading ? <div className="spinner" /> : "Fazer pedido →"}
+            </button>
+          </div>
         </div>
       </div>
     </Container>

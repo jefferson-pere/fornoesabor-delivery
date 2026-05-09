@@ -12,6 +12,20 @@ export const Container = styled.div`
     max-width: 420px;
     display: flex;
     flex-direction: column;
+    background: #fff;
+  }
+
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+  }
+
+  .hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .hero-overlay {
@@ -39,42 +53,37 @@ export const Container = styled.div`
     background: #111;
   }
 
-  /* FORM */
   .form {
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 5px;
   }
 
   .label {
     font-size: 13px;
     font-weight: 600;
     color: #555;
+    margin-bottom: 6px;
   }
 
-  /* INPUT COM ÍCONE */
   .input-box {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 5px;
-
     background: #f7f7f7;
     border-radius: 14px;
-    padding: 14px;
-
+    padding: 2px 12px;
     border: 1px solid #ff9191;
     transition: 0.2s;
+    min-height: 52px;
   }
 
   .input-box:focus-within {
     border-color: #ff4d4f;
     background: #fff;
     box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1);
-  }
-  input {
-    border: 1px solid #fd0101;
   }
 
   .input-box.error {
@@ -85,6 +94,7 @@ export const Container = styled.div`
   .input-icon {
     font-size: 18px;
     color: #ff4d4f;
+    min-width: 18px;
   }
 
   .input-box input,
@@ -93,16 +103,15 @@ export const Container = styled.div`
     border: none;
     outline: none;
     background: transparent;
-
-    font-size: 16px; /* 👈 AQUI */
-    font-weight: 500; /* 👈 deixa mais legível */
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
   }
 
   .select-arrow {
     color: #999;
   }
 
-  /* ENTREGA */
   .delivery-options {
     display: flex;
     gap: 10px;
@@ -117,6 +126,12 @@ export const Container = styled.div`
     cursor: pointer;
     border: 1px solid #fab6b6;
     transition: 0.2s;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .delivery-btn:hover {
+    transform: translateY(-2px);
   }
 
   .delivery-btn.active {
@@ -126,9 +141,11 @@ export const Container = styled.div`
     font-weight: bold;
   }
 
-  /* ANIMAÇÃO */
   .fade-slide {
     animation: fadeSlide 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
   @keyframes fadeSlide {
@@ -142,37 +159,26 @@ export const Container = styled.div`
     }
   }
 
-  /* FOOTER */
   .footer {
-    padding: 16px;
-  }
-  .icon-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
+    padding: 16px 0;
+    margin-top: auto;
   }
 
-  .icon-btn.edit {
-    background: #ff4d4f;
-  }
-
-  .icon-btn.delete {
-    background: #333;
-  }
-
-  .icon-btn:hover {
-    transform: scale(1.1);
-  }
   .button {
     width: 100%;
-    height: 52px;
-    border-radius: 10px;
+    height: 56px;
+    border-radius: 14px;
     border: none;
     background: #d90000;
     color: #fff;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .button:hover {
+    opacity: 0.9;
   }
 
   .loading {
@@ -189,14 +195,67 @@ export const Container = styled.div`
     margin: auto;
   }
 
+  .error-text {
+    font-size: 13px;
+    color: #ff4d4f;
+    margin-top: 4px;
+  }
+
   @keyframes spin {
     to {
       transform: rotate(360deg);
     }
   }
-  @media (min-width: 768px) {
+
+  @media (min-width: 1024px) {
+    padding: 0;
+
+    .content {
+      max-width: 100%;
+      width: 100%;
+      min-height: 100vh;
+
+      display: grid;
+      grid-template-columns: 1fr 520px;
+
+      background: #fff;
+    }
+
     .hero {
-      height: 300px; /* 👈 maior no desktop */
+      height: 100vh;
+    }
+
+    .hero img {
+      height: 100vh;
+    }
+
+    .hero-overlay {
+      padding: 40px;
+    }
+
+    .hero-title {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    .hero-overlay p {
+      font-size: 18px;
+      max-width: 500px;
+    }
+
+    .form {
+      padding: 10px 40px ;
+      overflow-y: auto;
+      justify-content: center;
+    }
+
+    .footer {
+      padding:  0px;
+    }
+
+    .delivery-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
     }
   }
 `;
