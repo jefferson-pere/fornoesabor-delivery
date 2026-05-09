@@ -18,6 +18,7 @@ export function Confirmacao() {
         {/* HERO */}
         <div className="hero">
           <img src="/banner.png" />
+
           <div className="hero-overlay">
             <div className="hero-title">Pedido confirmado</div>
           </div>
@@ -38,6 +39,20 @@ export function Confirmacao() {
             <span>Obrigado pela preferência 🙌</span>
           </div>
 
+          {/* WHATSAPP */}
+          <button
+            className="button whatsapp"
+            onClick={() =>
+              window.open(
+                "https://wa.me/5588996445671?text=Olá,%20acabei%20de%20fazer%20um%20pedido%20😊",
+                "_blank",
+              )
+            }
+          >
+            Falar no WhatsApp
+          </button>
+
+          {/* VOLTAR */}
           <button className="button" onClick={() => navigate("/")}>
             Voltar ao início
           </button>

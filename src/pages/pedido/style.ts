@@ -12,9 +12,22 @@ export const Container = styled.div`
     max-width: 420px;
     display: flex;
     flex-direction: column;
+    background: #fff;
   }
 
- 
+  /* HERO */
+  .hero {
+    position: relative;
+    height: 18%;
+    min-height: 180px;
+    overflow: hidden;
+  }
+
+  .hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
   .hero-overlay {
     position: absolute;
@@ -30,6 +43,7 @@ export const Container = styled.div`
     font-weight: bold;
   }
 
+  /* FORM */
   .form {
     padding: 16px;
     display: flex;
@@ -46,19 +60,27 @@ export const Container = styled.div`
     padding: 4px;
     border: 1px solid #fdb4b4;
   }
-  .button.disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    opacity: 0.7;
-  }
 
+  .input-box input,
   .input-box select {
     flex: 1;
     border: none;
     outline: none;
     background: transparent;
     font-size: 16px;
+    padding: 10px;
   }
+
+  .margem {
+    margin: 15px 0;
+  }
+
+  .button.disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
   .input-refri {
     background: #f7e2e2 !important;
     margin: 10px 0;
@@ -89,7 +111,9 @@ export const Container = styled.div`
     color: #fff;
     font-weight: bold;
     font-size: 20px;
+    cursor: pointer;
   }
+
   .button.cancel {
     background: #4e4c4c;
   }
@@ -113,6 +137,7 @@ export const Container = styled.div`
     font-weight: bold;
     font-size: 16px;
     margin-top: 10px;
+    cursor: pointer;
   }
 
   .total-card {
@@ -145,5 +170,69 @@ export const Container = styled.div`
   .total-card .total {
     font-size: 16px;
     font-weight: bold;
+  }
+
+  /* DESKTOP */
+  @media (min-width: 1024px) {
+    .label {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .footer{
+      
+    }
+
+    .content {
+      max-width: 100%;
+      width: 100%;
+      min-height: 100vh;
+
+      display: grid;
+      grid-template-columns: 1fr 550px;
+
+      background: #fff;
+    }
+
+    /* IMAGEM */
+    .hero {
+      height: 100vh;
+      position: sticky;
+      top: 0;
+    }
+
+    .hero img {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+    }
+
+    .hero-overlay {
+      padding: 40px;
+    }
+
+    .hero-title {
+      font-size: 38px;
+    }
+
+    /* FORM LATERAL */
+    .form {
+      padding: 40px;
+      gap: 14px;
+      overflow-y: auto;
+      height: 100vh;
+    }
+
+    .item {
+      padding: 14px;
+    }
+
+    .button {
+      height: 56px;
+      font-size: 17px;
+    }
+
+    .total-card {
+      margin-top: 20px;
+    }
   }
 `;

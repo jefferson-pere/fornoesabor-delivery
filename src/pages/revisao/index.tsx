@@ -168,7 +168,6 @@ export function Revisao() {
               <strong>R$ {total.toFixed(2)}</strong>
             </div>
           </div>
-        </div>
 
         {/* FOOTER */}
         <div className="footer">
@@ -224,6 +223,7 @@ export function Revisao() {
           >
             Confirmar Pedido
           </button>
+        </div>
         </div>
       </div>
     </Container>

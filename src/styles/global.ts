@@ -26,7 +26,12 @@ export const GlobalStyles = createGlobalStyle`
     background: #fafafa;
     transition: all 0.2s ease;
   }
-
+ .label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
+  }
   //logo
    .hero {
     position: relative;

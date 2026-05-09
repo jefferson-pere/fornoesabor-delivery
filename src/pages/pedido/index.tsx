@@ -8,17 +8,30 @@ import {
   saboresRefri,
   type ComboType,
 } from "../../data/menu";
+
 import { usePedido } from "../../hook/usePedido";
+
 import { MdDelete, MdEdit } from "react-icons/md";
 
 export function Pedido() {
   const { step, setStep, itens, setItens, cidade } = usePedido();
+
   const navigate = useNavigate();
 
   const [combo, setCombo] = useState<ComboType | null>(null);
+
   const [sabores, setSabores] = useState<Record<string, number>>({});
+
   const [refri, setRefri] = useState("");
+
+  const [refriExtra, setRefriExtra] = useState<{
+    nome: string;
+    tipo: "lata" | "1l";
+    preco: number;
+  } | null>(null);
+
   const [maioneseQtd, setMaioneseQtd] = useState(0);
+
   const [observacaoItem, setObservacaoItem] = useState("");
 
   const saboresRef = useRef<HTMLDivElement | null>(null);
@@ -68,23 +81,36 @@ export function Pedido() {
 
     if (Object.values(newErrors).some(Boolean)) return;
 
-    setItens((prev) => [
-      ...prev,
-      {
-        combo: combo!,
-        sabores,
-        refri,
-        maioneseQtd,
-        observacaoItem,
-      },
-    ]);
+    const novoItem = {
+      combo: combo!,
+      sabores,
+      refri,
+      refriExtra,
+      maioneseQtd,
+      observacaoItem,
+    };
+
+    console.log("ITEM ENVIADO:", novoItem);
+
+    setItens((prev) => [...prev, novoItem]);
 
     setCombo(null);
+
     setSabores({});
+
     setRefri("");
+
+    setRefriExtra(null);
+
     setMaioneseQtd(0);
+
     setObservacaoItem("");
-    setErrors({ combo: false, sabores: false, refri: false });
+
+    setErrors({
+      combo: false,
+      sabores: false,
+      refri: false,
+    });
   };
 
   const removerItem = (index: number) => {
@@ -95,17 +121,25 @@ export function Pedido() {
     const item = itens[index];
 
     setCombo(item.combo);
+
     setSabores(item.sabores);
+
     setRefri(item.refri || "");
+
+    setRefriExtra(item.refriExtra || null);
+
     setMaioneseQtd(item.maioneseQtd || 0);
+
     setObservacaoItem(item.observacaoItem || "");
 
     removerItem(index);
   };
 
   const subtotal = itens.reduce((acc, item) => acc + item.combo.preco, 0);
+
   const adicional = itens.reduce(
-    (acc, item) => acc + item.maioneseQtd * 0.99,
+    (acc, item) =>
+      acc + item.maioneseQtd * 0.99 + (item.refriExtra?.preco || 0),
     0,
   );
 
@@ -116,12 +150,15 @@ export function Pedido() {
       <div className="content">
         <div className="hero">
           <img src="/banner.png" />
+
           <div className="hero-overlay">
-            <div className="hero-title">Monte seu pedido</div>
+            <div className="hero-title">Monte seu pedido de esfihas</div>
           </div>
         </div>
 
         <div className="form">
+          <div className="label">Escolha seu combo:</div>
+
           <div className={`input-box ${errors.combo ? "error" : ""}`}>
             <select
               value={combo?.id || ""}
@@ -131,13 +168,20 @@ export function Pedido() {
                 );
 
                 setCombo(c || null);
+
                 setSabores({});
+
                 setRefri("");
+
+                setRefriExtra(null);
+
                 setMaioneseQtd(0);
+
                 setObservacaoItem("");
               }}
             >
               <option value="">Escolha um combo</option>
+
               {combosDisponiveis.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.nome} — R$ {c.preco}
@@ -158,7 +202,7 @@ export function Pedido() {
                     totalSabores === combo.unidades ? "#16a34a" : "#ff4d4f",
                 }}
               >
-                Combo: {totalSabores} de {combo.unidades}
+                Combo: {totalSabores} de {combo.unidades} unidades
               </div>
 
               {errors.sabores && (
@@ -188,13 +232,16 @@ export function Pedido() {
           )}
 
           {combo && combo.refri !== "none" && (
-            <>
+            <div className="margem">
+              <div className="label">Escolha seu refrigerante:</div>
+
               <div className={`input-box ${errors.refri ? "error" : ""}`}>
                 <select
                   value={refri}
                   onChange={(e) => setRefri(e.target.value)}
                 >
                   <option value="">Escolha o refrigerante</option>
+
                   {saboresRefri[combo.refri].map((r) => (
                     <option key={r} value={r}>
                       {r}
@@ -206,13 +253,15 @@ export function Pedido() {
               {errors.refri && (
                 <p className="error-text">Escolha o refrigerante</p>
               )}
-            </>
+            </div>
           )}
 
           {combo && (
             <div>
+              <div className="label">Alguma observação no combo?</div>
+
               <input
-                placeholder="Observação do combo (ex: sem catupiry...)"
+                placeholder="Observação do combo"
                 value={observacaoItem}
                 onChange={(e) => setObservacaoItem(e.target.value)}
               />
@@ -231,7 +280,7 @@ export function Pedido() {
                     Quer adicionar mais? (R$ 0,99)
                   </>
                 ) : (
-                  "Adicionar Maionese? (R$ 0,99)"
+                  "Deseja Maionese? R$ 0,99"
                 )}
               </span>
 
@@ -255,26 +304,94 @@ export function Pedido() {
             </div>
           )}
 
-          <div style={{ display: "flex", gap: 10 }}>
-            {combo && (
+          {combo && (
+            <div className="margem">
+              <div className="label">Deseja refrigerante extra?</div>
+
+              <div className="input-box">
+                <select
+                  value={
+                    refriExtra ? `${refriExtra.nome}-${refriExtra.tipo}` : ""
+                  }
+                  onChange={(e) => {
+                    if (!e.target.value) {
+                      setRefriExtra(null);
+
+                      return;
+                    }
+
+                    const [nome, tipo] = e.target.value.split("-");
+
+                    setRefriExtra({
+                      nome,
+                      tipo: tipo as "lata" | "1l",
+                      preco: tipo === "lata" ? 3 : 8,
+                    });
+                  }}
+                >
+                  <option value="">Não quero</option>
+
+                  {saboresRefri.lata.map((r) => (
+                    <option key={`${r}-lata`} value={`${r}-lata`}>
+                      {r} Lata — R$ 3,00
+                    </option>
+                  ))}
+
+                  {saboresRefri["1l"].map((r) => (
+                    <option key={`${r}-1l`} value={`${r}-1l`}>
+                      {r} 1L — R$ 8,00
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
+
+          {combo && (
+            <div style={{ display: "flex", gap: 10 }}>
               <button
                 className="button cancel"
                 onClick={() => {
                   setCombo(null);
+
                   setSabores({});
+
                   setRefri("");
+
+                  setRefriExtra(null);
+
                   setMaioneseQtd(0);
+
                   setObservacaoItem("");
-                  setErrors({ combo: false, sabores: false, refri: false });
+
+                  setErrors({
+                    combo: false,
+                    sabores: false,
+                    refri: false,
+                  });
                 }}
               >
                 Cancelar
               </button>
-            )}
-            <button className="button button-add" onClick={adicionarItem}>
-              {itens.length > 0 ? "Adicionar combo" : "Adicionar ao pedido"}
+
+              <button className="button button-add" onClick={adicionarItem}>
+                Adicionar ao pedido
+              </button>
+            </div>
+          )}
+
+          {!combo && itens.length > 0 && (
+            <button
+              className="button button-add"
+              onClick={() => {
+                setCombo(combosDisponiveis[0]);
+              }}
+            >
+              Adicionar outro combo
             </button>
-          </div>
+          )}
+
+          <div className="label">Seus combos: ({itens.length})</div>
 
           {!combo &&
             itens.map((item, index) => (
@@ -302,6 +419,12 @@ export function Pedido() {
                     </div>
                   )}
 
+                  {item.refriExtra && (
+                    <div style={{ fontSize: 13, marginTop: 4 }}>
+                      🥤 Extra: {item.refriExtra.nome} ({item.refriExtra.tipo})
+                    </div>
+                  )}
+
                   {item.maioneseQtd > 0 && (
                     <div style={{ fontSize: 13, marginTop: 4 }}>
                       🧄 {item.maioneseQtd}x maionese
@@ -310,7 +433,11 @@ export function Pedido() {
                 </div>
 
                 <div
-                  style={{ display: "flex", flexDirection: "column", gap: 6 }}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 6,
+                  }}
                 >
                   <button
                     className="btn icon-btn edit"
@@ -333,18 +460,21 @@ export function Pedido() {
             <div className="total-card">
               <div className="row">
                 <span>Subtotal</span>
+
                 <strong>R$ {subtotal.toFixed(2)}</strong>
               </div>
 
               {adicional > 0 && (
                 <div className="row extra">
                   <span>Adicionais</span>
+
                   <strong>+ R$ {adicional.toFixed(2)}</strong>
                 </div>
               )}
 
               <div className="row">
                 <span>Frete</span>
+
                 <strong>
                   {frete === 0 ? "Retirada no local" : `R$ ${frete.toFixed(2)}`}
                 </strong>
@@ -353,7 +483,8 @@ export function Pedido() {
               <div className="divider" />
 
               <div className="row total">
-                <span>Total: </span>
+                <span>Total:</span>
+
                 <strong>R$ {(subtotal + adicional + frete).toFixed(2)}</strong>
               </div>
             </div>
@@ -370,11 +501,17 @@ export function Pedido() {
                 disabled={itens.length === 0}
                 onClick={() => {
                   if (itens.length === 0) return;
+
+                  console.log("PEDIDO FINAL:", itens);
+
                   setStep(3);
+
                   navigate("/pagamento");
                 }}
               >
-                {itens.length === 0 ? "Adicione um combo" : "Continuar Pagamento"}
+                {itens.length === 0
+                  ? "Adicione um combo"
+                  : "Continuar Pagamento"}
               </button>
             </div>
           )}

@@ -12,14 +12,33 @@ export const Container = styled.div`
     max-width: 420px;
     display: flex;
     flex-direction: column;
+    background: #fff;
+    min-height: 100vh;
   }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+  }
+
+  .hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
   .hero-overlay {
     position: absolute;
     bottom: 0;
+    left: 0;
     padding: 16px;
     width: 100%;
     color: #fff;
     background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    z-index: 2;
   }
 
   .hero-title {
@@ -108,10 +127,7 @@ export const Container = styled.div`
 
   /* FOOTER */
   .footer {
-    position: sticky;
-    bottom: 0;
-    background: #f5f5f5;
-    padding: 16px;
+    padding: 16px 0;
     display: flex;
     gap: 10px;
   }
@@ -129,6 +145,10 @@ export const Container = styled.div`
     transition: 0.2s;
   }
 
+  .button:hover {
+    opacity: 0.9;
+  }
+
   .button:active {
     transform: scale(0.97);
   }
@@ -138,32 +158,86 @@ export const Container = styled.div`
     color: #333;
   }
 
-  /* RESPONSIVO */
-  @media (min-width: 768px) {
+  /* DESKTOP */
+  @media (min-width: 1024px) {
+    .content {
+      width: 100%;
+      max-width: 100%;
+      height: 100vh;
+
+      display: grid;
+      grid-template-columns: 1fr 560px;
+
+      overflow: hidden;
+      background: #fff;
+    }
+
+    /* IMAGEM FIXA */
     .hero {
-      height: 260px;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow: hidden;
+    }
+
+    .hero img {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+    }
+
+    .hero-overlay {
+      padding: 40px;
     }
 
     .hero-title {
-      font-size: 24px;
+      font-size: 42px;
     }
 
+    /* LADO DIREITO */
     .form {
-      padding: 24px;
+      height: 100vh;
+      overflow-y: auto;
+
+      padding: 40px 40px 20px;
+
+      display: flex;
+      flex-direction: column;
       gap: 20px;
     }
 
     .card {
       padding: 18px;
+      border-radius: 18px;
     }
 
     .total-card {
       padding: 20px;
     }
 
-    .button {
-      height: 56px;
+    .row {
+      font-size: 15px;
+    }
+
+    .row.total {
       font-size: 18px;
+    }
+
+    /* FOOTER FIXO */
+    .footer {
+      padding: 10px 0 40px;
+
+      margin-top: auto;
+
+      position: sticky;
+      bottom: 0;
+
+      background: #fff;
+    }
+
+    .button {
+      height: 58px;
+      font-size: 17px;
     }
   }
 `;

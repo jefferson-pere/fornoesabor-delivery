@@ -18,8 +18,11 @@ export type FormaPagamentoType = "pix" | "cartao" | "dinheiro";
    REFRI EXTRA
 ========================= */
 export type RefriExtraType = {
-  lata: number;
-  "1l": number;
+  nome: string;
+
+  tipo: "lata" | "1l";
+
+  preco: number;
 };
 
 /* =========================
@@ -36,7 +39,7 @@ export type ItemPedido = {
 
   observacaoItem?: string;
 
-  refriExtra?: RefriExtraType;
+  refriExtra?: RefriExtraType | null;
 };
 
 /* =========================

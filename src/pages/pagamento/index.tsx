@@ -35,10 +35,7 @@ export function Pagamento() {
   );
 
   const adicionalRefri = itens.reduce(
-    (acc, item) =>
-      acc +
-      (item.refriExtra?.lata || 0) * 5 +
-      (item.refriExtra?.["1l"] || 0) * 8,
+    (acc, item) => acc + (item.refriExtra?.preco || 0),
     0,
   );
 
@@ -57,14 +54,29 @@ export function Pagamento() {
 
   const continuar = () => {
     const erroPag = !pagamento;
+
     const erroTroco = pagamento === "dinheiro" && !troco;
 
-    setErrorPagamento(erroPag);
-    setErrorTroco(erroTroco);
+    let trocoMenor = false;
 
-    if (erroPag || erroTroco) return;
+    if (pagamento === "dinheiro" && troco) {
+      const valorTroco = Number(
+        troco.replace("R$", "").replace(/\./g, "").replace(",", "."),
+      );
+
+      trocoMenor = valorTroco < total;
+    }
+
+    setErrorPagamento(erroPag);
+
+    setErrorTroco(erroTroco || trocoMenor);
+
+    if (erroPag || erroTroco || trocoMenor) {
+      return;
+    }
 
     setStep(4);
+
     navigate("/revisao");
   };
 
@@ -75,7 +87,7 @@ export function Pagamento() {
         <div className="hero">
           <img src="/banner.png" />
           <div className="hero-overlay">
-            <div className="hero-title">Pagamento</div>
+            <div className="hero-title">Forma de pagamento</div>
           </div>
         </div>
 
@@ -170,33 +182,68 @@ export function Pagamento() {
 
               <div className={`input-box ${errorTroco ? "error" : ""}`}>
                 <input
-                  placeholder="Troco para quanto?"
+                  placeholder="R$ 0,00"
                   value={troco}
                   onChange={(e) => {
-                    setTroco(e.target.value);
+                    let valor = e.target.value.replace(/\D/g, "");
+
+                    valor = (Number(valor) / 100).toFixed(2);
+
+                    valor = valor.replace(".", ",");
+
+                    setTroco(`R$ ${valor}`);
+
                     setErrorTroco(false);
                   }}
                 />
               </div>
 
-              {errorTroco && <p className="error-text">Informe o troco</p>}
+              {errorTroco && (
+                <p className="error-text">Valor insuficiente para o pedido</p>
+              )}
+
+              {troco &&
+                (() => {
+                  const valorTroco = Number(
+                    troco
+                      .replace("R$", "")
+                      .replace(/\./g, "")
+                      .replace(",", "."),
+                  );
+
+                  const restante = valorTroco - total;
+
+                  return (
+                    <div
+                      style={{
+                        marginTop: 10,
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: restante < 0 ? "#ef4444" : "#16a34a",
+                      }}
+                    >
+                      {restante < 0 ? "Falta:" : "Troco:"} R${" "}
+                      {Math.abs(restante).toFixed(2).replace(".", ",")}
+                    </div>
+                  );
+                })()}
             </div>
           )}
-        </div>
 
-        {/* FOOTER */}
-        <div className="footer">
-          <div style={{ display: "flex", gap: 10 }}>
-            <button
-              className="button cancel"
-              onClick={() => navigate("/pedido")}
-            >
-              Voltar
-            </button>
+          {/* FOOTER */}
+          <div className="footer">
+            <div style={{ display: "flex", gap: 10 }}>
+              <button
+                className="button cancel"
+                onClick={() => navigate("/pedido")}
+              >
+                Voltar
+              </button>
 
-            <button className="button" onClick={continuar}>
-              Revisar e confirmar
-            </button>
+              <button className="button" onClick={continuar}>
+                Revisar e confirmar
+              </button>
+            </div>
           </div>
         </div>
       </div>

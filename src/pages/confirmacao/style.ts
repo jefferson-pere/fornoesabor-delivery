@@ -12,15 +12,33 @@ export const Container = styled.div`
     max-width: 420px;
     display: flex;
     flex-direction: column;
+    background: #fff;
+    min-height: 100vh;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+  }
+
+  .hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 
   .hero-overlay {
     position: absolute;
     bottom: 0;
+    left: 0;
     padding: 16px;
     width: 100%;
     color: #fff;
     background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    z-index: 2;
   }
 
   .hero-title {
@@ -56,7 +74,7 @@ export const Container = styled.div`
     font-size: 14px;
     color: #666;
     margin-bottom: 16px;
-    line-height: 1.4;
+    line-height: 1.5;
   }
 
   .info {
@@ -76,10 +94,19 @@ export const Container = styled.div`
     font-size: 16px;
     cursor: pointer;
     transition: 0.2s;
+    margin-top: 10px;
+  }
+
+  .button:hover {
+    opacity: 0.9;
   }
 
   .button:active {
     transform: scale(0.97);
+  }
+
+  .whatsapp {
+    background: #22c55e;
   }
 
   /* ANIMAÇÃO */
@@ -88,29 +115,91 @@ export const Container = styled.div`
       opacity: 0;
       transform: translateY(15px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
 
-  /* RESPONSIVO */
-  @media (min-width: 768px) {
+  /* DESKTOP */
+  @media (min-width: 1024px) {
+    .content {
+      width: 100%;
+      max-width: 100%;
+      height: 100vh;
+
+      display: grid;
+      grid-template-columns: 1fr 520px;
+
+      overflow: hidden;
+      background: #fff;
+    }
+
+    /* IMAGEM FIXA */
     .hero {
-      height: 260px;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow: hidden;
+    }
+
+    .hero img {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+    }
+
+    .hero-overlay {
+      padding: 40px;
     }
 
     .hero-title {
-      font-size: 24px;
+      font-size: 42px;
     }
 
+    /* LADO DIREITO */
     .card {
-      margin: 24px;
-      padding: 28px;
+      margin: 0;
+      height: 100vh;
+
+      overflow-y: auto;
+
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding: 40px;
+    }
+
+    .icon {
+      font-size: 90px;
+      margin-bottom: 20px;
     }
 
     h1 {
-      font-size: 24px;
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .info {
+      font-size: 15px;
+      margin-bottom: 30px;
+    }
+
+    .button {
+      height: 58px;
+      font-size: 18px;
     }
   }
 `;
