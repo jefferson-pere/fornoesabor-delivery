@@ -31,10 +31,7 @@ export function Revisao() {
   );
 
   const adicionalRefri = itens.reduce(
-    (acc, item) =>
-      acc +
-      (item.refriExtra?.lata || 0) * 5 +
-      (item.refriExtra?.["1l"] || 0) * 8,
+    (acc, item) => acc + (item.refriExtra?.preco || 0),
     0,
   );
 
@@ -93,13 +90,11 @@ export function Revisao() {
                 {/* REFRI */}
                 {item.refri && <div className="sub">🥤 {item.refri}</div>}
 
-                {/* REFRI EXTRA */}
-                {(item.refriExtra?.lata || 0) > 0 && (
-                  <div className="sub">🥤 {item.refriExtra?.lata}x lata</div>
-                )}
-
-                {(item.refriExtra?.["1l"] || 0) > 0 && (
-                  <div className="sub">🥤 {item.refriExtra?.["1l"]}x 1L</div>
+                {item.refriExtra && (
+                  <div className="sub">
+                    🥤 Extra: {item.refriExtra.nome} ({item.refriExtra.tipo}) —
+                    R$ {item.refriExtra.preco.toFixed(2)}
+                  </div>
                 )}
 
                 {/* MAIONESE */}
@@ -169,61 +164,61 @@ export function Revisao() {
             </div>
           </div>
 
-        {/* FOOTER */}
-        <div className="footer">
-          <button className="button cancel" onClick={() => navigate(-1)}>
-            Voltar
-          </button>
+          {/* FOOTER */}
+          <div className="footer">
+            <button className="button cancel" onClick={() => navigate(-1)}>
+              Voltar
+            </button>
 
-          <button
-            className="button"
-            onClick={async () => {
-              try {
-                const pedido = {
-                  nomeCliente: nome,
-                  cidade,
-                  endereco: cidade !== "Retirada" ? endereco : null,
+            <button
+              className="button"
+              onClick={async () => {
+                try {
+                  const pedido = {
+                    nomeCliente: nome,
+                    cidade,
+                    endereco: cidade !== "Retirada" ? endereco : null,
 
-                  itens,
+                    itens,
 
-                  pagamento,
-                  troco,
-                  observacao,
-                };
+                    pagamento,
+                    troco,
+                    observacao,
+                  };
 
-                const res = await fetch(
-                  `${import.meta.env.VITE_API_URL}/orders`,
-                  {
-                    method: "POST",
+                  const res = await fetch(
+                    `${import.meta.env.VITE_API_URL}/orders`,
+                    {
+                      method: "POST",
 
-                    headers: {
-                      "Content-Type": "application/json",
-                      "x-api-key": import.meta.env.VITE_API_KEY,
+                      headers: {
+                        "Content-Type": "application/json",
+                        "x-api-key": import.meta.env.VITE_API_KEY,
+                      },
+
+                      body: JSON.stringify(pedido),
                     },
+                  );
 
-                    body: JSON.stringify(pedido),
-                  },
-                );
+                  if (!res.ok) {
+                    const error = await res.json();
+                    alert(error.error || "Erro ao enviar pedido");
+                    return;
+                  }
 
-                if (!res.ok) {
-                  const error = await res.json();
-                  alert(error.error || "Erro ao enviar pedido");
-                  return;
+                  console.log("PEDIDO ENVIADO:", pedido);
+
+                  setStep(4);
+                  navigate("/confirmacao");
+                } catch (err) {
+                  console.error(err);
+                  alert("Erro de conexão com servidor");
                 }
-
-                console.log("✅ Pedido enviado!");
-
-                setStep(4);
-                navigate("/confirmacao");
-              } catch (err) {
-                console.error(err);
-                alert("Erro de conexão com servidor");
-              }
-            }}
-          >
-            Confirmar Pedido
-          </button>
-        </div>
+              }}
+            >
+              Confirmar Pedido
+            </button>
+          </div>
         </div>
       </div>
     </Container>
