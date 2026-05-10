@@ -18,7 +18,7 @@ export type CidadeType = {
 export const combosDisponiveis: ComboType[] = [
   {
     id: 1,
-    nome: "COMBO PRIME 1 - 15 Mini esfihas + 1 refri lata",
+    nome: "Combo PRIME 1 - 15 Mini esfihas com 1 refri lata",
     preco: 21.99,
     unidades: 15,
     tipo: "prime",
@@ -28,7 +28,7 @@ export const combosDisponiveis: ComboType[] = [
 
   {
     id: 2,
-    nome: "COMBO PRIME 2 - 20 Mini esfihas + 1 refri lata",
+    nome: "Combo PRIME 2 - 20 Mini esfihas com 1 refri lata",
     preco: 26.99,
     unidades: 20,
     tipo: "prime",
@@ -38,7 +38,7 @@ export const combosDisponiveis: ComboType[] = [
 
   {
     id: 3,
-    nome: "COMBO PRIME 3 - 30 Mini esfihas + 1 refri 1L + Maionese caseira",
+    nome: "Combo PRIME 3 - 30 Mini esfihas com 1 refri 1L e Maionese caseira inclusa",
     preco: 39.99,
     unidades: 30,
     tipo: "prime",

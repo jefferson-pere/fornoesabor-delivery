@@ -1,75 +1,100 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+  * {
+    box-sizing: border-box;
+  }
+
   display: none;
 
   @media print {
     display: block;
 
     position: fixed;
-
     inset: 0;
 
     background: #fff;
 
     z-index: 999999;
 
-    body * {
-      visibility: hidden;
-    }
-
-    .receipt-print,
-    .receipt-print * {
-      visibility: visible;
-    }
+    margin: 0;
+    padding: 0;
 
     .receipt-print {
-      position: absolute;
+      margin: 0;
+      padding: 0;
+    }
 
-      top: 0;
+    .receipt-content {
+      margin: 0;
+      padding: 0;
 
-      left: 0;
+      width: fit-content;
+      min-width: 100%;
 
-      width: 100%;
+      box-sizing: border-box;
     }
 
     .no-print {
       display: none;
     }
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  .receipt-print {
+    margin: 0;
+    padding: 0;
+
+    page-break-after: avoid;
   }
 
   .receipt-content {
-    width: 100%;
+    margin: 0;
+    padding: 0;
 
     font-family: monospace;
 
-    font-size: 18px;
+    font-size: 12px;
 
     font-weight: bold;
 
-    line-height: 1.1;
+    line-height: 1.2;
 
     color: #000;
+
+    background: #fff;
+
+    page-break-inside: avoid;
   }
 
   h1 {
     text-align: center;
 
-    font-size: 24px;
-
-    margin-bottom: 6px;
-  }
-
-  h2 {
     font-size: 18px;
 
-    margin: 6px 0 2px;
+    margin: 0;
+
+    font-weight: 900;
+  }
+
+  .pedido {
+    text-align: center;
+
+    margin-top: 2px;
+
+    margin-bottom: 6px;
+
+    font-size: 13px;
   }
 
   .divider {
-    border-top: 1px solid #000;
+    border-top: 1px dashed #000;
 
-    margin: 4px 0;
+    margin: 5px 0;
   }
 
   .line,
@@ -78,44 +103,70 @@ export const Container = styled.div`
     display: flex;
 
     justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 4px;
   }
 
-  .line,
+  .line {
+    margin-bottom: 1px;
+
+    font-size: 12px;
+  }
+
+  .lineEnd {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    margin-bottom: 2px;
+    font-size: 12px;
+  }
+
+  .itemCupom {
+    margin-top: 4px;
+  }
+
+  h2 {
+    font-size: 13px;
+
+    margin: 0 0 3px;
+
+    font-weight: 900;
+  }
+
   .flavor {
-    font-size: 17px;
-  }
+    font-size: 12px;
 
-  .item {
-    margin: 6px 0;
+    margin-bottom: 1px;
   }
 
   .obs {
-    margin-top: 4px;
+    margin-top: 2px;
+  }
 
-    font-size: 15px;
+  .combo-divider {
+    border-top: 1px dashed #000;
 
-    font-style: italic;
+    margin: 5px 0;
   }
 
   .total {
     margin-top: 8px;
 
-    font-size: 24px;
+    font-size: 18px;
+
+    font-weight: 900;
   }
 
   .footer {
-    margin-top: 16px;
-
-    text-align: center;
-
-    font-size: 22px;
-
-    line-height: 1.2;
-  }
-
-  @page {
-    size: 58mm auto;
-
-    margin: 0;
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: 900;
+    display: flex;
+    flex-direction: column;
+    span {
+      text-align: right;
+    }
   }
 `;

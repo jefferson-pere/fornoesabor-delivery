@@ -7,137 +7,110 @@ type Props = {
 };
 
 export function Receipt({ order }: Props) {
+  const totalCombos = order.itens.reduce(
+    (acc, item) => acc + item.combo.preco,
+    0,
+  );
+
+  const totalRefri = order.itens.reduce(
+    (acc, item) => acc + (item.refriExtra?.preco || 0),
+    0,
+  );
+
+  const totalMaionese = order.itens.reduce(
+    (acc, item) => acc + item.maioneseQtd * 0.99,
+    0,
+  );
+
+  const frete =
+    order.cidade === "Retirada" ? 0 : order.cidade === "Cariús" ? 3 : 5;
+
   return (
     <Container className="receipt-print">
       <div className="receipt-content">
         <h1>FORNO & SABOR</h1>
 
-        <div className="divider" />
-
-        <div className="line">
-          <strong>Pedido:</strong>
-
-          <span>{order.codigo}</span>
+        <div className="pedido">
+          Pedido Nº: {order.codigo}
+          <br />
+          {new Date(order.createdAt).toLocaleString("pt-BR")}
         </div>
 
-        <div className="line">
-          <strong>Cliente:</strong>
+        <div className="divider" />
 
+        <div className="lineEnd">
+          <span>Cliente:</span>
           <span>{order.nomeCliente}</span>
         </div>
 
-        {order.telefone && (
-          <div className="line">
-            <strong>Telefone:</strong>
-
-            <span>{order.telefone}</span>
-          </div>
-        )}
-
-        <div className="line">
-          <strong>Cidade:</strong>
-
+        <div className="lineEnd">
+          <span>Telefone:</span>
+          <span>{order.telefone}</span>
+        </div>
+        <div className="lineEnd">
+          <span>Cidade:</span>
           <span>{order.cidade}</span>
         </div>
 
         {order.endereco && order.cidade !== "Retirada" && (
           <>
-            <div className="line">
-              <strong>Rua:</strong>
-
-              <span>{order.endereco.rua}</span>
-            </div>
-
-            <div className="line">
-              <strong>Número:</strong>
-
-              <span>{order.endereco.numero}</span>
+            <div className="lineEnd">
+              <span>End:</span>
+              <span>
+                {order.endereco.rua}, Nº: {order.endereco.numero}
+              </span>
             </div>
 
             {order.endereco.referencia && (
-              <div className="line">
-                <strong>Referência:</strong>
-
+              <div className="lineEnd">
+                <span>Ref:</span>
                 <span>{order.endereco.referencia}</span>
               </div>
             )}
           </>
         )}
 
-        <div className="line">
-          <strong>Pagamento:</strong>
-
-          <span>{order.pagamento}</span>
-        </div>
-
-        <div className="line">
-          <strong>Pago:</strong>
-          <span>{order.pago ? "SIM" : "NÃO"}</span>
-        </div>
-
-        <div className="line">
-          <strong>Hora:</strong>
-
-          <span>{new Date(order.createdAt).toLocaleString("pt-BR")}</span>
-        </div>
-
-        {order.observacao && (
-          <>
-            <div className="divider" />
-
-            <div className="obs">
-              <strong>Observação:</strong>
-
-              <span>{order.observacao}</span>
-            </div>
-          </>
-        )}
-
         <div className="divider" />
 
         {order.itens.map((item, index) => (
-          <div key={index} className="item">
-            <h2>{item.combo.nome}</h2>
+          <div key={index} className="itemCupom">
+            <div className="line">
+              <strong>
+                Combo {index + 1} - {item.combo.nome}
+              </strong>
+            </div>
 
-            {Object.entries(item.sabores).map(([sabor, qtd]) => (
-              <div key={sabor} className="flavor">
-                <span>{sabor}</span>
-
-                <span>{qtd}x</span>
-              </div>
-            ))}
-
-            {item.refri && (
-              <div className="line">
-                <strong>Refri:</strong>
-
-                <span>{item.refri}</span>
-              </div>
-            )}
+            {item.refri && <div className="obs">* Refri: {item.refri}</div>}
 
             {item.refriExtra && (
-              <div className="line">
-                <strong>Refri extra:</strong>
-
-                <span>
-                  {item.refriExtra.nome} ({item.refriExtra.tipo})
-                </span>
+              <div className="obs">
+                * Refri Extra: {item.refriExtra.nome} R${" "}
+                {item.refriExtra.preco.toFixed(2)}
               </div>
             )}
 
             {item.maioneseQtd > 0 && (
-              <div className="line">
-                <strong>Maionese:</strong>
-
-                <span>{item.maioneseQtd}x</span>
+              <div className="obs">
+                * Maionese caseira ({item.maioneseQtd}x)
               </div>
             )}
 
+            <div style={{ marginTop: 4 }}>
+              <strong>Sabores:</strong>
+            </div>
+
+            {Object.entries(item.sabores).map(([sabor, qtd]) => (
+              <div key={sabor} className="flavor">
+                <span>{sabor}</span>
+                <span>{qtd}x</span>
+              </div>
+            ))}
+
             {item.observacaoItem && (
               <div className="obs">
-                <strong>Obs item:</strong>
-
-                <span>{item.observacaoItem}</span>
+                <strong>Obs:</strong>
+                <br />
+                {item.observacaoItem}
               </div>
             )}
 
@@ -146,72 +119,69 @@ export function Receipt({ order }: Props) {
         ))}
 
         <div className="line">
-          <strong>Preço do Combo:</strong>
-          <span>
-            {order.itens
-              .reduce((acc, item) => acc + item.combo.preco, 0)
-              .toFixed(2)}
-          </span>
+          <strong>Combo {order.itens.length}</strong>
+          <strong>R$ {totalCombos.toFixed(2)}</strong>
         </div>
 
-        {order.itens.some((item) => item.refriExtra) && (
+        {totalRefri > 0 && (
           <div className="line">
-            <strong>Preço do Refri:</strong>
-            <span>
-              {order.itens
-                .reduce((acc, item) => acc + (item.refriExtra?.preco || 0), 0)
-                .toFixed(2)}
-            </span>
+            <strong>Refri extra</strong>
+            <strong>R$ {totalRefri.toFixed(2)}</strong>
           </div>
         )}
 
-        {order.itens.some((item) => item.maioneseQtd) && (
+        {totalMaionese > 0 && (
           <div className="line">
-            <strong>Preço da Maionese:</strong>
-            <span>
-              {order.itens
-                .reduce((acc, item) => acc + item.maioneseQtd * 0.99, 0)
-                .toFixed(2)}
-            </span>
+            <strong>Maionese</strong>
+            <strong>R$ {totalMaionese.toFixed(2)}</strong>
           </div>
         )}
 
         <div className="line">
-          <strong>Frete:</strong>
-          <span>
-            {order.cidade === "Retirada"
-              ? "Grátis"
-              : order.cidade === "Cariús"
-                ? "R$ 3,00"
-                : "R$ 5,00"}
-          </span>
+          <strong>Frete</strong>
+          <strong>{frete === 0 ? "GRÁTIS" : `R$ ${frete.toFixed(2)}`}</strong>
         </div>
+
+        <div className="line">
+          <strong>Pagamento</strong>
+          <strong>{order.pagamento.toUpperCase()}</strong>
+        </div>
+
+        <div className="line">
+          <strong>Status</strong>
+          <strong>{order.pago ? "PAGO" : "NÃO PAGO"}</strong>
+        </div>
+
         {order.troco && (
           <div className="line">
-            <strong>Troco:</strong>
-
-            <span>{order.troco}</span>
+            <strong>Troco</strong>
+            <strong>{order.troco}</strong>
           </div>
         )}
 
-        {order.pagamento === "cartao" && (
-          <div className="line">
-            <strong>Taxa cartão:</strong>
+        {order.observacao && (
+          <>
+            <div className="divider" />
 
-            <span>R$ 1,00</span>
-          </div>
+            <div className="obs">
+              <strong>Obs:</strong>
+              <br />
+              {order.observacao}
+            </div>
+          </>
         )}
+
         <div className="divider" />
 
         <div className="total">
-          TOTAL:
+          <span>TOTAL</span>
           <span>R$ {order.total.toFixed(2)}</span>
         </div>
 
         <div className="footer">
           Deus é bom...
           <br />
-          ...o tempo todo!
+          <span>...o tempo todo!</span>
         </div>
       </div>
     </Container>
