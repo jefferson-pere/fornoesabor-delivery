@@ -37,7 +37,9 @@ export function Revisao() {
 
   const frete = cidade === "Cariús" ? 3 : cidade === "Jucás" ? 5 : 0;
 
-  const total = subtotal + adicional + adicionalRefri + frete;
+  const taxaCartao = pagamento === "cartao" ? 1 : 0;
+
+  const total = subtotal + adicional + adicionalRefri + frete + taxaCartao;
 
   return (
     <Container>
@@ -146,6 +148,13 @@ export function Revisao() {
               <div className="row extra">
                 <span>Refrigerantes</span>
                 <strong>+ R$ {adicionalRefri.toFixed(2)}</strong>
+              </div>
+            )}
+            {taxaCartao > 0 && (
+              <div className="row extra">
+                <span>Taxa cartão</span>
+
+                <strong>+ R$ 1,00</strong>
               </div>
             )}
 

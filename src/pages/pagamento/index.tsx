@@ -41,7 +41,9 @@ export function Pagamento() {
 
   const frete = cidade === "Cariús" ? 3 : cidade === "Jucás" ? 5 : 0;
 
-  const total = subtotal + adicional + adicionalRefri + frete;
+  const taxaCartao = pagamento === "cartao" ? 1 : 0;
+
+  const total = subtotal + adicional + adicionalRefri + frete + taxaCartao;
 
   // PIX
   const chavePix = "8896445671";
@@ -94,7 +96,21 @@ export function Pagamento() {
         <div className="form">
           {/* TOTAL */}
           <div className="total-box">
-            <span>Total do pedido</span>
+            <span>
+              Total do pedido
+              {pagamento === "cartao" && (
+                <div
+                  style={{
+                    marginTop: 8,
+                    fontSize: 13,
+                    color: "#666",
+                  }}
+                >
+                  + Taxa cartão: R$ 1,00
+                </div>
+              )}
+            </span>
+
             <strong>R$ {total.toFixed(2)}</strong>
           </div>
 
@@ -152,6 +168,7 @@ export function Pagamento() {
               <span>Cartão</span>
               <p className="option-desc">
                 Pagar com entregador na hora da entrega
+                <br /> Acescimo de R$ 1,00
               </p>
             </div>
           </div>

@@ -70,17 +70,8 @@ export function Receipt({ order }: Props) {
           <span>{order.pagamento}</span>
         </div>
 
-        {order.troco && (
-          <div className="line">
-            <strong>Troco:</strong>
-
-            <span>{order.troco}</span>
-          </div>
-        )}
-
         <div className="line">
           <strong>Pago:</strong>
-
           <span>{order.pago ? "SIM" : "NÃO"}</span>
         </div>
 
@@ -153,7 +144,32 @@ export function Receipt({ order }: Props) {
             <div className="combo-divider" />
           </div>
         ))}
+        <div className="line">
+          <strong>Frete:</strong>
 
+          <span>
+            {order.cidade === "Retirada"
+              ? "Grátis"
+              : order.cidade === "Cariús"
+                ? "R$ 3,00"
+                : "R$ 5,00"}
+          </span>
+        </div>
+        {order.troco && (
+          <div className="line">
+            <strong>Troco:</strong>
+
+            <span>{order.troco}</span>
+          </div>
+        )}
+
+        {order.pagamento === "cartao" && (
+          <div className="line">
+            <strong>Taxa cartão:</strong>
+
+            <span>R$ 1,00</span>
+          </div>
+        )}
         <div className="divider" />
 
         <div className="total">
