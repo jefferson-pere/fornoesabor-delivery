@@ -117,7 +117,7 @@ export function Receipt({ order }: Props) {
 
             {item.refriExtra && (
               <div className="line">
-                <strong>Extra:</strong>
+                <strong>Refri extra:</strong>
 
                 <span>
                   {item.refriExtra.nome} ({item.refriExtra.tipo})
@@ -144,9 +144,40 @@ export function Receipt({ order }: Props) {
             <div className="combo-divider" />
           </div>
         ))}
+
+        <div className="line">
+          <strong>Preço do Combo:</strong>
+          <span>
+            {order.itens
+              .reduce((acc, item) => acc + item.combo.preco, 0)
+              .toFixed(2)}
+          </span>
+        </div>
+
+        {order.itens.some((item) => item.refriExtra) && (
+          <div className="line">
+            <strong>Preço do Refri:</strong>
+            <span>
+              {order.itens
+                .reduce((acc, item) => acc + (item.refriExtra?.preco || 0), 0)
+                .toFixed(2)}
+            </span>
+          </div>
+        )}
+
+        {order.itens.some((item) => item.maioneseQtd) && (
+          <div className="line">
+            <strong>Preço da Maionese:</strong>
+            <span>
+              {order.itens
+                .reduce((acc, item) => acc + item.maioneseQtd * 0.99, 0)
+                .toFixed(2)}
+            </span>
+          </div>
+        )}
+
         <div className="line">
           <strong>Frete:</strong>
-
           <span>
             {order.cidade === "Retirada"
               ? "Grátis"
