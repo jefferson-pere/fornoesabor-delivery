@@ -33,7 +33,7 @@ export function OrderModal({ order, onClose }: Props) {
 
   async function handleSave() {
     try {
-      await updateOrder(safeOrder.id, currentOrder);
+      await updateOrder(currentOrder.id, currentOrder);
 
       alert("Pedido atualizado");
 
@@ -41,12 +41,12 @@ export function OrderModal({ order, onClose }: Props) {
     } catch (error) {
       console.error(error);
 
-      alert("Erro ao atualizar pedido");
+      alert("Erro ao atualizar");
     }
   }
 
   async function handleDelete() {
-    const password = prompt("Digite a senha para apagar");
+    const password = prompt("Digite a senha");
 
     if (password !== import.meta.env.VITE_DELETE_PASSWORD) {
       alert("Senha inválida");
@@ -54,20 +54,20 @@ export function OrderModal({ order, onClose }: Props) {
       return;
     }
 
-    const confirmDelete = confirm("Deseja apagar pedido?");
+    const confirmDelete = confirm("Deseja apagar?");
 
     if (!confirmDelete) {
       return;
     }
 
     try {
-      await deleteOrder(safeOrder.id);
+      await deleteOrder(currentOrder.id);
 
       onClose();
     } catch (error) {
       console.error(error);
 
-      alert("Erro ao apagar pedido");
+      alert("Erro ao apagar");
     }
   }
 
@@ -82,184 +82,179 @@ export function OrderModal({ order, onClose }: Props) {
       <div className="overlay no-print">
         <div className="modal">
           <div className="topo">
-            <div>
-              <h2>{safeOrder.codigo}</h2>
+            <div className="codigo">
+              <h2>{currentOrder.codigo}</h2>
 
               <small>
-                {new Date(safeOrder.createdAt).toLocaleString("pt-BR")}
+                {new Date(currentOrder.createdAt).toLocaleString("pt-BR")}
               </small>
+
+              <div className="badges">
+                <div className={`badge ${currentOrder.status.toLowerCase()}`}>
+                  {currentOrder.status}
+                </div>
+
+                <div
+                  className={`badge ${currentOrder.pago ? "pago" : "nao-pago"}`}
+                >
+                  {currentOrder.pago ? "Pago" : "Não Pago"}
+                </div>
+
+                <div className="badge novo">{currentOrder.pagamento}</div>
+              </div>
             </div>
 
-            <button onClick={onClose}>✕</button>
+            <button className="close" onClick={onClose}>
+              ✕
+            </button>
           </div>
 
-          <div className="content">
-            <label>Cliente</label>
+          <div className="grid">
+            <div className="card">
+              <h3>Cliente</h3>
 
-            <input
-              disabled={!editing}
-              value={currentOrder.nomeCliente}
-              onChange={(e) =>
-                setForm({
-                  ...currentOrder,
+              <div className="linha">
+                <span>Nome</span>
 
-                  nomeCliente: e.target.value,
-                })
-              }
-            />
+                <span className="valor">{currentOrder.nomeCliente}</span>
+              </div>
 
-            <label>Telefone</label>
+              <div className="linha">
+                <span>Telefone</span>
 
-            <input
-              disabled={!editing}
-              value={currentOrder.telefone || ""}
-              onChange={(e) =>
-                setForm({
-                  ...currentOrder,
+                <span className="valor">{currentOrder.telefone}</span>
+              </div>
 
-                  telefone: e.target.value,
-                })
-              }
-            />
+              <div className="linha">
+                <span>Cidade</span>
 
-            <label>Cidade</label>
+                <span className="valor">{currentOrder.cidade}</span>
+              </div>
 
-            <input
-              disabled={!editing}
-              value={currentOrder.cidade}
-              onChange={(e) =>
-                setForm({
-                  ...currentOrder,
+              {currentOrder.cidade !== "Retirada" && (
+                <>
+                  <div className="linha">
+                    <span>Rua</span>
 
-                  cidade: e.target.value,
-                })
-              }
-            />
+                    <span className="valor">{currentOrder.endereco?.rua}</span>
+                  </div>
 
-            {currentOrder.cidade !== "Retirada" && (
-              <>
-                <label>Rua</label>
+                  <div className="linha">
+                    <span>Número</span>
 
-                <input
-                  disabled={!editing}
-                  value={currentOrder.endereco?.rua || ""}
-                />
+                    <span className="valor">
+                      {currentOrder.endereco?.numero}
+                    </span>
+                  </div>
 
-                <label>Número</label>
+                  <div className="linha">
+                    <span>Referência</span>
 
-                <input
-                  disabled={!editing}
-                  value={currentOrder.endereco?.numero || ""}
-                />
-
-                <label>Referência</label>
-
-                <input
-                  disabled={!editing}
-                  value={currentOrder.endereco?.referencia || ""}
-                />
-              </>
-            )}
-
-            <label>Pagamento</label>
-
-            <select
-              disabled={!editing}
-              value={currentOrder.pagamento}
-              onChange={(e) =>
-                setForm({
-                  ...currentOrder,
-
-                  pagamento: e.target.value,
-                })
-              }
-            >
-              <option value="pix">PIX</option>
-
-              <option value="dinheiro">Dinheiro</option>
-
-              <option value="cartao">Cartão</option>
-            </select>
-
-            {currentOrder.troco && (
-              <>
-                <label>Troco</label>
-
-                <input disabled value={currentOrder.troco} />
-              </>
-            )}
-
-            {/* <label>Observação admin</label>
-
-            <textarea
-              disabled={!editing}
-              value={currentOrder.observacao || ""}
-              onChange={(e) =>
-                setForm({
-                  ...currentOrder,
-
-                  observacao: e.target.value,
-                })
-              }
-            /> */}
-            {/* 
-            <div className="pago">
-              <label>Pago</label>
-
-              <input
-                type="checkbox"
-                disabled={!editing}
-                checked={currentOrder.pago}
-                onChange={(e) =>
-                  setForm({
-                    ...currentOrder,
-
-                    pago: e.target.checked,
-                  })
-                }
-              />
-            </div> */}
-
-            <div className="total">
-              <strong>Total:</strong>
-
-              <span>R$ {currentOrder.total.toFixed(2)}</span>
+                    <span className="valor">
+                      {currentOrder.endereco?.referencia}
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
 
-            <hr />
+            <div className="card">
+              <h3>Financeiro</h3>
 
-            {currentOrder.itens.map((item, i) => (
-              <div key={i} className="item">
-                <strong>{item.combo.nome}</strong>
+              <div className="linha">
+                <span>Pagamento</span>
 
-                {Object.entries(item.sabores).map(([sabor, qtd]) => (
-                  <div key={sabor}>
-                    {qtd}x {sabor}
-                  </div>
-                ))}
-
-                {item.refri && <div>🥤 {item.refri}</div>}
-
-                {item.refriExtra && (
-                  <div>
-                    🥤 Extra: {item.refriExtra.nome} ({item.refriExtra.tipo})
-                  </div>
-                )}
-
-                {item.maioneseQtd > 0 && <div>🧄 {item.maioneseQtd}x</div>}
-
-                {item.observacaoItem && <div>📝 {item.observacaoItem}</div>}
+                <span className="valor">{currentOrder.pagamento}</span>
               </div>
-            ))}
+
+              {currentOrder.troco && (
+                <div className="linha">
+                  <span>Troco</span>
+
+                  <span className="valor">{currentOrder.troco}</span>
+                </div>
+              )}
+
+              <div className="linha">
+                <span>Total</span>
+
+                <span className="valor">
+                  R$ {currentOrder.total.toFixed(2)}
+                </span>
+              </div>
+            </div>
+
+            <div className="card">
+              <h3>Pedido</h3>
+
+              {currentOrder.itens.map((item, i) => (
+                <div key={i} className="item">
+                  <div className="item-topo">
+                    <div className="combo">{item.combo.nome}</div>
+                  </div>
+
+                  <div className="sabores">
+                    {Object.entries(item.sabores).map(([sabor, qtd]) => (
+                      <div key={sabor}>
+                        {qtd}x {sabor}
+                      </div>
+                    ))}
+                  </div>
+
+                  {item.refri && <div className="extra">🥤 {item.refri}</div>}
+
+                  {item.refriExtra && (
+                    <div className="extra">
+                      🥤 Extra: {item.refriExtra.nome}
+                    </div>
+                  )}
+
+                  {item.maioneseQtd > 0 && (
+                    <div className="extra">🧄 {item.maioneseQtd}x</div>
+                  )}
+
+                  {item.observacaoItem && (
+                    <div className="observacao">📝 {item.observacaoItem}</div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {currentOrder.observacao && (
+              <div className="card">
+                <h3>Observação</h3>
+
+                <p>{currentOrder.observacao}</p>
+              </div>
+            )}
           </div>
 
           <div className="acoes">
-            <button onClick={handlePrint}>🖨️ Imprimir</button>
+            <button className="print" onClick={handlePrint}>
+              🖨️ Imprimir
+            </button>
+
+            {currentOrder.telefone && (
+              <a
+                href={`https://wa.me/55${currentOrder.telefone.replace(/\D/g, "")}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  flex: 1,
+                }}
+              >
+                <button className="whats">WhatsApp</button>
+              </a>
+            )}
 
             {!editing ? (
-              <button onClick={() => setEditing(true)}>✏️ Editar</button>
+              <button className="edit" onClick={() => setEditing(true)}>
+                ✏️ Editar
+              </button>
             ) : (
-              <button onClick={handleSave}>💾 Salvar</button>
+              <button className="save" onClick={handleSave}>
+                💾 Salvar
+              </button>
             )}
 
             <button className="danger" onClick={handleDelete}>
