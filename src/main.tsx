@@ -10,10 +10,11 @@ import { Revisao } from "./pages/revisao";
 import { Home } from "./pages/home";
 import { Confirmacao } from "./pages/confirmacao";
 import { Pagamento } from "./pages/pagamento";
-import { Painel } from "./pages/painel";
 import { PedidoProvider } from "./context/PedidoProvider";
 import { StoreGuard } from "./utils/StoreGuard";
 import { Historico } from "./pages/historico";
+import { Painel } from "./pages/painel";
+import CreateOrder from "./pages/painel/create-order";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -36,6 +37,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/pagamento" element={<Pagamento />} />
             </Route>
             <Route path="/painel" element={<Painel />} />
+            <Route path="/painel/criarpedido" element={<CreateOrder />} />
             <Route path="/historico" element={<Historico />} />
           </Routes>
         </BrowserRouter>
