@@ -1,6 +1,6 @@
 import { startTransition, useEffect, useMemo, useState } from "react";
 
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Container } from "./style";
 import type { OrderStatus, Pedido } from "../../../types/order";
 import {
@@ -19,9 +19,18 @@ import type {
 } from "../../../types/pedido";
 
 export default function CreateOrder() {
+  const navigate = useNavigate();
   const location = useLocation();
 
-  const order = location.state as Pedido | undefined;
+  const state = location.state as
+    | {
+        order: Pedido;
+
+        fromModal?: boolean;
+      }
+    | undefined;
+
+  const order = state?.order;
 
   const [status, setStatus] = useState<OrderStatus>("NOVO");
   const [loading, setLoading] = useState(false);
@@ -61,6 +70,8 @@ export default function CreateOrder() {
   const [refriExtra, setRefriExtra] = useState<RefriExtraType | null>(null);
 
   const [observacaoItem, setObservacaoItem] = useState("");
+
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (!order) return;
@@ -124,7 +135,7 @@ export default function CreateOrder() {
       return (
         acc +
         item.combo.preco +
-        item.maioneseQtd * 1 +
+        item.maioneseQtd * 0.99 +
         (item.refriExtra?.preco || 0)
       );
     }, 0);
@@ -143,17 +154,20 @@ export default function CreateOrder() {
 
     if (!combo) return;
 
+    const totalAtual = Object.values(sabores).reduce(
+      (acc, qtd) => acc + qtd,
+      0,
+    );
+
+    if (totalAtual > combo.unidades) {
+      setSabores({});
+    }
+
+    if (combo.refri === "none") {
+      setRefri("");
+    }
+
     setComboSelecionado(combo);
-
-    setSabores({});
-
-    setRefri("");
-
-    setMaioneseQtd(0);
-
-    setRefriExtra(null);
-
-    setObservacaoItem("");
   }
 
   function alterarSabor(sabor: string, quantidade: number) {
@@ -208,7 +222,15 @@ export default function CreateOrder() {
       refriExtra,
     };
 
-    setItens((prev) => [...prev, novoItem]);
+    if (editingIndex !== null) {
+      setItens((prev) =>
+        prev.map((item, index) => (index === editingIndex ? novoItem : item)),
+      );
+    } else {
+      setItens((prev) => [...prev, novoItem]);
+    }
+
+    setEditingIndex(null);
 
     setComboSelecionado(null);
 
@@ -227,6 +249,28 @@ export default function CreateOrder() {
     setItens((prev) => prev.filter((_, i) => i !== index));
   }
 
+  function editarItem(index: number) {
+    const item = itens[index];
+
+    setEditingIndex(index);
+
+    const comboAtual =
+      combosDisponiveis.find((combo) => combo.id === item.combo.id) || null;
+
+    setComboSelecionado(comboAtual);
+
+    setSabores({
+      ...item.sabores,
+    });
+
+    setRefri(item.refri || "");
+
+    setMaioneseQtd(item.maioneseQtd);
+
+    setRefriExtra(item.refriExtra || null);
+
+    setObservacaoItem(item.observacaoItem || "");
+  }
   async function criarPedido() {
     try {
       if (!nomeCliente.trim()) {
@@ -265,6 +309,22 @@ export default function CreateOrder() {
         return;
       }
 
+      const itensLimpos = itens.map((item) => ({
+        ...item,
+
+        sabores: Object.fromEntries(
+          Object.entries(item.sabores).filter(([, qtd]) => qtd > 0),
+        ),
+
+        maioneseQtd: item.maioneseQtd > 0 ? item.maioneseQtd : undefined,
+
+        refriExtra: item.refriExtra || undefined,
+
+        observacaoItem: item.observacaoItem?.trim()
+          ? item.observacaoItem
+          : undefined,
+      }));
+
       const pedido = {
         status,
         nomeCliente: `${nomeCliente} ${sobrenome}`.trim(),
@@ -282,7 +342,7 @@ export default function CreateOrder() {
               }
             : null,
 
-        itens,
+        itens: itensLimpos,
 
         pagamento,
 
@@ -311,12 +371,25 @@ export default function CreateOrder() {
       if (!res.ok) {
         const error = await res.json();
 
-        alert(error.error || "Erro ao criar pedido");
+        alert(error.error || "Erro ao salvar pedido");
 
         return;
       }
 
-      alert("Pedido criado");
+      const pedidoAtualizado = await res.json();
+
+      console.log("ATUALIZADO:", pedidoAtualizado);
+
+      alert(order ? "Pedido atualizado" : "Pedido criado");
+      if (state?.fromModal && order) {
+        navigate("/painel", {
+          state: {
+            reopenOrder: order.id,
+          },
+        });
+
+        return;
+      }
 
       setNomeCliente("");
 
@@ -442,13 +515,17 @@ export default function CreateOrder() {
           </div>
 
           <select
-            value={comboSelecionado?.id || ""}
-            onChange={(e) => selecionarCombo(Number(e.target.value))}
+            value={comboSelecionado ? String(comboSelecionado.id) : ""}
+            onChange={(e) => {
+              const comboId = Number(e.target.value);
+
+              selecionarCombo(comboId);
+            }}
           >
             <option value="">Selecione um combo</option>
 
             {combosDisponiveis.map((combo) => (
-              <option key={combo.id} value={combo.id}>
+              <option key={combo.id} value={String(combo.id)}>
                 {combo.nome}
               </option>
             ))}
@@ -508,13 +585,13 @@ export default function CreateOrder() {
                     <>
                       <span>1 inclusa + extras</span>
 
-                      <strong>+ R$ {(maioneseQtd * 1).toFixed(2)}</strong>
+                      <strong>+ R$ {maioneseQtd * 0.99}</strong>
                     </>
                   ) : (
                     <>
                       <span>Maionese</span>
 
-                      <strong>R$ {(maioneseQtd * 1).toFixed(2)}</strong>
+                      <strong>R$ {maioneseQtd * 0.99}</strong>
                     </>
                   )}
                 </div>
@@ -589,7 +666,9 @@ export default function CreateOrder() {
                 onChange={(e) => setObservacaoItem(e.target.value)}
               />
 
-              <button onClick={adicionarItem}>Adicionar item</button>
+              <button type="button" onClick={adicionarItem}>
+                {editingIndex !== null ? "Salvar edição" : "Adicionar item"}
+              </button>
             </>
           )}
         </div>
@@ -611,7 +690,23 @@ export default function CreateOrder() {
                     <small>{item.combo.unidades} unidades</small>
                   </div>
 
-                  <button onClick={() => removerItem(index)}>X</button>
+                  <div className="item-actions">
+                    <button
+                      type="button"
+                      className="edit-btn"
+                      onClick={() => editarItem(index)}
+                    >
+                      ✏️
+                    </button>
+
+                    <button
+                      type="button"
+                      className="remove-btn"
+                      onClick={() => removerItem(index)}
+                    >
+                      X
+                    </button>
+                  </div>
                 </div>
 
                 <div className="sabores-selected">
@@ -636,7 +731,7 @@ export default function CreateOrder() {
                   {item.maioneseQtd > 0 && (
                     <small>
                       Maionese:
-                      <strong>R$ {(item.maioneseQtd * 1).toFixed(2)}</strong>
+                      <strong>R$ {(item.maioneseQtd * 0.99).toFixed(2)}</strong>
                     </small>
                   )}
 
@@ -653,7 +748,7 @@ export default function CreateOrder() {
                       R${" "}
                       {(
                         item.combo.preco +
-                        item.maioneseQtd * 1 +
+                        item.maioneseQtd * 0.99 +
                         (item.refriExtra?.preco || 0)
                       ).toFixed(2)}
                     </strong>
@@ -730,7 +825,13 @@ export default function CreateOrder() {
           </div>
 
           <button className="finish" onClick={criarPedido} disabled={loading}>
-            {loading ? "Criando..." : "Criar pedido"}
+            {loading
+              ? order
+                ? "Atualizando..."
+                : "Criando..."
+              : order
+                ? "Atualizar pedido"
+                : "Criar pedido"}
           </button>
         </div>
       </div>

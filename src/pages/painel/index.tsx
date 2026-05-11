@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 
 import {
   getOrders,
@@ -19,8 +19,10 @@ import { StoreStatus } from "../../components/StoreStatus";
 import { OrderModal } from "../../components/OrderModal";
 
 import { Container } from "./style";
+import { useLocation } from "react-router-dom";
 
 export function Painel() {
+  const location = useLocation();
   const [orders, setOrders] = useState<Pedido[]>([]);
 
   const [selectedOrder, setSelectedOrder] = useState<Pedido | null>(null);
@@ -85,6 +87,25 @@ export function Painel() {
       socket.off("pedido-removido");
     };
   }, []);
+  useEffect(() => {
+    const reopenId = (
+      location.state as {
+        reopenOrder?: number;
+      }
+    )?.reopenOrder;
+
+    if (!reopenId) return;
+
+    const pedido = orders.find((o) => o.id === reopenId);
+
+    if (!pedido) return;
+
+    startTransition(() => {
+      setSelectedOrder(pedido);
+
+      window.history.replaceState({}, document.title);
+    });
+  }, [orders, location.state]);
 
   // 🔥 mover status
   async function moveOrder(id: number, status: OrderStatus) {

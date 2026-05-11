@@ -212,7 +212,9 @@ export function OrderModal({ order, onClose }: Props) {
                   )}
 
                   {item.maioneseQtd > 0 && (
-                    <div className="extra">🧄 {item.maioneseQtd}x</div>
+                    <div className="extra">
+                      🧄{item.maioneseQtd}x Maionese extra
+                    </div>
                   )}
 
                   {item.observacaoItem && (
@@ -254,7 +256,11 @@ export function OrderModal({ order, onClose }: Props) {
                 className="edit"
                 onClick={() =>
                   navigate("/painel/criarpedido", {
-                    state: currentOrder,
+                    state: {
+                      order: currentOrder,
+
+                      fromModal: true,
+                    },
                   })
                 }
               >
