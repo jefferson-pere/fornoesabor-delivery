@@ -38,6 +38,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             </Route>
             <Route path="/painel" element={<Painel />} />
             <Route path="/painel/criarpedido" element={<CreateOrder />} />
+            <Route path="/painel/criarpedido/:id" element={<CreateOrder />} />
             <Route path="/historico" element={<Historico />} />
           </Routes>
         </BrowserRouter>

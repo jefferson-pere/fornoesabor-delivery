@@ -7,6 +7,7 @@ import type { Pedido } from "../../types/order";
 import { deleteOrder, updateOrder } from "../../services/orders";
 
 import { Container } from "./style";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   order: Pedido | null;
@@ -15,6 +16,7 @@ type Props = {
 };
 
 export function OrderModal({ order, onClose }: Props) {
+  const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
 
   const [form, setForm] = useState<Pedido | null>(null);
@@ -248,7 +250,14 @@ export function OrderModal({ order, onClose }: Props) {
             )}
 
             {!editing ? (
-              <button className="edit" onClick={() => setEditing(true)}>
+              <button
+                className="edit"
+                onClick={() =>
+                  navigate("/painel/criarpedido", {
+                    state: currentOrder,
+                  })
+                }
+              >
                 ✏️ Editar
               </button>
             ) : (

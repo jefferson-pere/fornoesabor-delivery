@@ -1,6 +1,8 @@
-import { useMemo, useState } from "react";
-import { Container } from "./style";
+import { startTransition, useEffect, useMemo, useState } from "react";
 
+import { useLocation } from "react-router-dom";
+import { Container } from "./style";
+import type { OrderStatus, Pedido } from "../../../types/order";
 import {
   cidades,
   combosDisponiveis,
@@ -17,6 +19,11 @@ import type {
 } from "../../../types/pedido";
 
 export default function CreateOrder() {
+  const location = useLocation();
+
+  const order = location.state as Pedido | undefined;
+
+  const [status, setStatus] = useState<OrderStatus>("NOVO");
   const [loading, setLoading] = useState(false);
 
   const [nomeCliente, setNomeCliente] = useState("");
@@ -54,6 +61,59 @@ export default function CreateOrder() {
   const [refriExtra, setRefriExtra] = useState<RefriExtraType | null>(null);
 
   const [observacaoItem, setObservacaoItem] = useState("");
+
+  useEffect(() => {
+    if (!order) return;
+
+    startTransition(() => {
+      const [nome, ...resto] = order.nomeCliente.split(" ");
+
+      setNomeCliente(nome || "");
+
+      setSobrenome(resto.join(" "));
+
+      setTelefone(order.telefone || "");
+
+      setCidade(order.cidade);
+
+      setPagamento(order.pagamento as FormaPagamentoType);
+      setStatus(order.status);
+
+      setTroco(order.troco || "");
+
+      setObservacao(order.observacao || "");
+
+      if (order.endereco) {
+        setRua(order.endereco.rua);
+
+        setNumero(order.endereco.numero);
+
+        setReferencia(order.endereco.referencia || "");
+      }
+
+      const itensConvertidos: ItemPedido[] = order.itens.map((item) => {
+        const comboEncontrado = combosDisponiveis.find(
+          (combo) => combo.nome === item.combo.nome,
+        );
+
+        return {
+          combo: comboEncontrado || combosDisponiveis[0],
+
+          sabores: item.sabores,
+
+          refri: item.refri,
+
+          maioneseQtd: item.maioneseQtd,
+
+          observacaoItem: item.observacaoItem,
+
+          refriExtra: item.refriExtra || null,
+        };
+      });
+
+      setItens(itensConvertidos);
+    });
+  }, [order]);
 
   const totalSabores = useMemo(() => {
     return Object.values(sabores).reduce((acc, item) => acc + item, 0);
@@ -206,6 +266,7 @@ export default function CreateOrder() {
       }
 
       const pedido = {
+        status,
         nomeCliente: `${nomeCliente} ${sobrenome}`.trim(),
 
         telefone: telefone.replace(/\D/g, ""),
@@ -232,17 +293,20 @@ export default function CreateOrder() {
 
       setLoading(true);
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/orders`, {
-        method: "POST",
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/orders${order ? `/${order.id}` : ""}`,
+        {
+          method: order ? "PUT" : "POST",
 
-        headers: {
-          "Content-Type": "application/json",
+          headers: {
+            "Content-Type": "application/json",
 
-          "x-api-key": import.meta.env.VITE_API_KEY,
+            "x-api-key": import.meta.env.VITE_API_KEY,
+          },
+
+          body: JSON.stringify(pedido),
         },
-
-        body: JSON.stringify(pedido),
-      });
+      );
 
       if (!res.ok) {
         const error = await res.json();
