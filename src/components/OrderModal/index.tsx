@@ -118,19 +118,19 @@ export function OrderModal({ order, onClose }: Props) {
               <h3>Cliente</h3>
 
               <div className="linha">
-                <span>Nome</span>
+                <span>Nome: </span>
 
                 <span className="valor">{currentOrder.nomeCliente}</span>
               </div>
 
               <div className="linha">
-                <span>Telefone</span>
+                <span>Telefone: </span>
 
                 <span className="valor">{currentOrder.telefone}</span>
               </div>
 
               <div className="linha">
-                <span>Cidade</span>
+                <span>Cidade: </span>
 
                 <span className="valor">{currentOrder.cidade}</span>
               </div>
@@ -138,13 +138,13 @@ export function OrderModal({ order, onClose }: Props) {
               {currentOrder.cidade !== "Retirada" && (
                 <>
                   <div className="linha">
-                    <span>Rua</span>
+                    <span>Rua: </span>
 
                     <span className="valor">{currentOrder.endereco?.rua}</span>
                   </div>
 
                   <div className="linha">
-                    <span>Número</span>
+                    <span>Número: </span>
 
                     <span className="valor">
                       {currentOrder.endereco?.numero}
@@ -152,7 +152,7 @@ export function OrderModal({ order, onClose }: Props) {
                   </div>
 
                   <div className="linha">
-                    <span>Referência</span>
+                    <span>Referência: </span>
 
                     <span className="valor">
                       {currentOrder.endereco?.referencia}
@@ -165,21 +165,21 @@ export function OrderModal({ order, onClose }: Props) {
                 <h3>Financeiro</h3>
 
                 <div className="linha">
-                  <span>Pagamento</span>
+                  <span>Pagamento: </span>
 
                   <span className="valor">{currentOrder.pagamento}</span>
                 </div>
 
                 {currentOrder.troco && (
                   <div className="linha">
-                    <span>Troco</span>
+                    <span>Troco: </span>
 
                     <span className="valor">{currentOrder.troco}</span>
                   </div>
                 )}
 
                 <div className="linha">
-                  <span>Total</span>
+                  <span>Total: </span>
 
                   <span className="valor">
                     R$ {currentOrder.total.toFixed(2)}
