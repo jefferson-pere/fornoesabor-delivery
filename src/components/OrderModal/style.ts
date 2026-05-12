@@ -204,7 +204,6 @@ export const Container = styled.div`
   .linha {
     display: flex;
 
-
     align-items: center;
 
     gap: 10px;
@@ -267,8 +266,6 @@ export const Container = styled.div`
   }
 
   .item:hover {
-    transform: translateY(-2px);
-
     border-color: #9ca3af;
   }
 

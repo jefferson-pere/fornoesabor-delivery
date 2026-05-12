@@ -247,7 +247,7 @@ export default function CreateOrder() {
       const pedido = {
         status,
         nomeCliente: `${nomeCliente} ${sobrenome}`.trim(),
-        telefone: telefone.replace(/\D/g, ""),
+        telefone: telefone,
         cidade,
         endereco:
           cidade !== "Retirada"

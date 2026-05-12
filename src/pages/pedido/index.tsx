@@ -256,14 +256,24 @@ export function Pedido() {
                     refriExtra ? `${refriExtra.nome}-${refriExtra.tipo}` : ""
                   }
                   onChange={(e) => {
-                    if (!e.target.value) {
+                    const value = e.target.value;
+
+                    if (value === "") {
                       setRefriExtra(null);
                       return;
                     }
-                    const [nome, tipo] = e.target.value.split("-");
+
+                    const lastIndex = value.lastIndexOf("-");
+
+                    const nome = value.substring(0, lastIndex);
+
+                    const tipo = value.substring(lastIndex + 1) as
+                      | "lata"
+                      | "1l";
+
                     setRefriExtra({
                       nome,
-                      tipo: tipo as "lata" | "1l",
+                      tipo,
                       preco: tipo === "lata" ? 3 : 8,
                     });
                   }}

@@ -97,6 +97,6 @@ export const saboresLista: string[] = [
 ];
 
 export const saboresRefri: Record<"lata" | "1l", string[]> = {
-  lata: ["Coca cola", "Coca cola - Zero", "Fanta laranja"],
+  lata: ["Coca cola", "Coca cola Zero", "Fanta laranja"],
   "1l": ["Guaraná", "Pepsi", "Sukita laranja"],
 };
