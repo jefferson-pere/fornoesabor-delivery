@@ -15,6 +15,7 @@ import { StoreGuard } from "./utils/StoreGuard";
 import { Historico } from "./pages/historico";
 import { Painel } from "./pages/painel";
 import CreateOrder from "./pages/painel/create-order";
+import SorteioPage from "./pages/sorteio";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -32,14 +33,15 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             >
               <Route path="/" element={<Home />} />
               <Route path="/pedido" element={<Pedido />} />
-              <Route path="/revisao" element={<Revisao />} />
-              <Route path="/confirmacao" element={<Confirmacao />} />
               <Route path="/pagamento" element={<Pagamento />} />
+              <Route path="/confirmacao" element={<Confirmacao />} />
+              <Route path="/revisao" element={<Revisao />} />
             </Route>
             <Route path="/painel" element={<Painel />} />
             <Route path="/painel/criarpedido" element={<CreateOrder />} />
             <Route path="/painel/criarpedido/:id" element={<CreateOrder />} />
             <Route path="/historico" element={<Historico />} />
+            <Route path="/sorteio" element={<SorteioPage />} />
           </Routes>
         </BrowserRouter>
       </PedidoProvider>
