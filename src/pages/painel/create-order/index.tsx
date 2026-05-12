@@ -1,5 +1,4 @@
 import { startTransition, useEffect, useMemo, useState } from "react";
-
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container } from "./style";
 import type { OrderStatus, Pedido } from "../../../types/order";
@@ -11,7 +10,6 @@ import {
   type ComboType,
   type RefriType,
 } from "../../../data/menu";
-
 import type {
   FormaPagamentoType,
   ItemPedido,
@@ -21,56 +19,36 @@ import type {
 export default function CreateOrder() {
   const navigate = useNavigate();
   const location = useLocation();
-
   const state = location.state as
     | {
         order: Pedido;
-
         fromModal?: boolean;
       }
     | undefined;
 
   const order = state?.order;
-
   const [status, setStatus] = useState<OrderStatus>("NOVO");
   const [loading, setLoading] = useState(false);
-
   const [nomeCliente, setNomeCliente] = useState("");
-
   const [sobrenome, setSobrenome] = useState("");
-
   const [telefone, setTelefone] = useState("");
-
   const [cidade, setCidade] = useState("");
-
   const [rua, setRua] = useState("");
-
   const [numero, setNumero] = useState("");
-
   const [referencia, setReferencia] = useState("");
-
   const [pagamento, setPagamento] = useState<FormaPagamentoType | "">("");
-
   const [troco, setTroco] = useState("");
-
   const [observacao, setObservacao] = useState("");
-
   const [itens, setItens] = useState<ItemPedido[]>([]);
-
   const [comboSelecionado, setComboSelecionado] = useState<ComboType | null>(
     null,
   );
 
   const [sabores, setSabores] = useState<Record<string, number>>({});
-
   const [refri, setRefri] = useState("");
-
   const [maioneseQtd, setMaioneseQtd] = useState(0);
-
   const [refriExtra, setRefriExtra] = useState<RefriExtraType | null>(null);
-
   const [observacaoItem, setObservacaoItem] = useState("");
-
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -78,27 +56,18 @@ export default function CreateOrder() {
 
     startTransition(() => {
       const [nome, ...resto] = order.nomeCliente.split(" ");
-
       setNomeCliente(nome || "");
-
       setSobrenome(resto.join(" "));
-
       setTelefone(order.telefone || "");
-
       setCidade(order.cidade);
-
       setPagamento(order.pagamento as FormaPagamentoType);
       setStatus(order.status);
-
       setTroco(order.troco || "");
-
       setObservacao(order.observacao || "");
 
       if (order.endereco) {
         setRua(order.endereco.rua);
-
         setNumero(order.endereco.numero);
-
         setReferencia(order.endereco.referencia || "");
       }
 
@@ -109,15 +78,10 @@ export default function CreateOrder() {
 
         return {
           combo: comboEncontrado || combosDisponiveis[0],
-
           sabores: item.sabores,
-
           refri: item.refri,
-
           maioneseQtd: item.maioneseQtd || 0,
-
           observacaoItem: item.observacaoItem,
-
           refriExtra: item.refriExtra || null,
         };
       });
@@ -158,31 +122,25 @@ export default function CreateOrder() {
       (acc, qtd) => acc + qtd,
       0,
     );
-
     if (totalAtual > combo.unidades) {
       setSabores({});
     }
-
     if (combo.refri === "none") {
       setRefri("");
     }
-
     setComboSelecionado(combo);
   }
 
   function alterarSabor(sabor: string, quantidade: number) {
     if (!comboSelecionado) return;
-
     const totalAtual = Object.entries(sabores).reduce((acc, [key, value]) => {
       if (key === sabor) return acc;
-
       return acc + value;
     }, 0);
 
     if (totalAtual + quantidade > comboSelecionado.unidades) {
       return;
     }
-
     setSabores((prev) => ({
       ...prev,
       [sabor]: quantidade,
@@ -192,33 +150,23 @@ export default function CreateOrder() {
   function adicionarItem() {
     if (!comboSelecionado) {
       alert("Selecione um combo");
-
       return;
     }
-
     if (totalSabores !== comboSelecionado.unidades) {
       alert(`O combo precisa ter ${comboSelecionado.unidades} esfihas`);
-
       return;
     }
-
     if (comboSelecionado.refri !== "none" && !refri) {
       alert("Selecione o refri");
-
       return;
     }
 
     const novoItem: ItemPedido = {
       combo: comboSelecionado,
-
       sabores,
-
       refri,
-
       maioneseQtd,
-
       observacaoItem,
-
       refriExtra,
     };
 
@@ -229,19 +177,12 @@ export default function CreateOrder() {
     } else {
       setItens((prev) => [...prev, novoItem]);
     }
-
     setEditingIndex(null);
-
     setComboSelecionado(null);
-
     setSabores({});
-
     setRefri("");
-
     setMaioneseQtd(0);
-
     setRefriExtra(null);
-
     setObservacaoItem("");
   }
 
@@ -251,75 +192,53 @@ export default function CreateOrder() {
 
   function editarItem(index: number) {
     const item = itens[index];
-
     setEditingIndex(index);
-
     const comboAtual =
       combosDisponiveis.find((combo) => combo.id === item.combo.id) || null;
-
     setComboSelecionado(comboAtual);
-
     setSabores({
       ...item.sabores,
     });
-
     setRefri(item.refri || "");
-
     setMaioneseQtd(item.maioneseQtd);
-
     setRefriExtra(item.refriExtra || null);
-
     setObservacaoItem(item.observacaoItem || "");
   }
   async function criarPedido() {
     try {
       if (!nomeCliente.trim()) {
         alert("Digite o nome");
-
         return;
       }
-
       if (!cidade) {
         alert("Selecione a cidade");
-
         return;
       }
-
       if (cidade !== "Retirada" && (!rua || !numero)) {
         alert("Preencha o endereço completo");
-
         return;
       }
-
       if (itens.length === 0) {
         alert("Adicione pelo menos um item");
-
         return;
       }
-
       if (!pagamento) {
         alert("Selecione a forma de pagamento");
-
         return;
       }
 
       if (pagamento === "dinheiro" && !troco) {
         alert("Informe o troco");
-
         return;
       }
 
       const itensLimpos = itens.map((item) => ({
         ...item,
-
         sabores: Object.fromEntries(
           Object.entries(item.sabores).filter(([, qtd]) => qtd > 0),
         ),
-
         maioneseQtd: item.maioneseQtd > 0 ? item.maioneseQtd : undefined,
-
         refriExtra: item.refriExtra || undefined,
-
         observacaoItem: item.observacaoItem?.trim()
           ? item.observacaoItem
           : undefined,
@@ -328,11 +247,8 @@ export default function CreateOrder() {
       const pedido = {
         status,
         nomeCliente: `${nomeCliente} ${sobrenome}`.trim(),
-
         telefone: telefone.replace(/\D/g, ""),
-
         cidade,
-
         endereco:
           cidade !== "Retirada"
             ? {
@@ -341,13 +257,9 @@ export default function CreateOrder() {
                 referencia,
               }
             : null,
-
         itens: itensLimpos,
-
         pagamento,
-
         troco,
-
         observacao,
       };
 
@@ -357,29 +269,19 @@ export default function CreateOrder() {
         `${import.meta.env.VITE_API_URL}/orders${order ? `/${order.id}` : ""}`,
         {
           method: order ? "PUT" : "POST",
-
           headers: {
             "Content-Type": "application/json",
-
             "x-api-key": import.meta.env.VITE_API_KEY,
           },
-
           body: JSON.stringify(pedido),
         },
       );
 
       if (!res.ok) {
         const error = await res.json();
-
         alert(error.error || "Erro ao salvar pedido");
-
         return;
       }
-
-      const pedidoAtualizado = await res.json();
-
-      console.log("ATUALIZADO:", pedidoAtualizado);
-
       alert(order ? "Pedido atualizado" : "Pedido criado");
       if (order) {
         navigate("/painel", {
@@ -390,31 +292,18 @@ export default function CreateOrder() {
 
         return;
       }
-
       navigate("/painel");
-
       setNomeCliente("");
-
       setSobrenome("");
-
       setTelefone("");
-
       setCidade("");
-
       setRua("");
-
       setNumero("");
-
       setReferencia("");
-
       setPagamento("");
-
       setTroco("");
-
       setObservacao("");
-
       setItens([]);
-
       setComboSelecionado(null);
     } catch (err) {
       console.error(err);

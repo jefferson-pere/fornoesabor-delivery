@@ -1,13 +1,8 @@
 import { useState } from "react";
-
 import { Receipt } from "../Receipt";
-
 import type { Pedido } from "../../types/order";
-
 import { deleteOrder, updateOrder } from "../../services/orders";
-
 import { Container } from "./style";
-
 import { useNavigate } from "react-router-dom";
 
 type Props = {
@@ -18,48 +13,34 @@ type Props = {
 
 export function OrderModal({ order, onClose }: Props) {
   const navigate = useNavigate();
-
   const [editing, setEditing] = useState(false);
-
   const [form, setForm] = useState<Pedido | null>(null);
-
   if (!order) {
     return null;
   }
-
   const safeOrder = order;
-
   if (form?.id !== safeOrder.id) {
     setForm(safeOrder);
   }
-
   const currentOrder = form ?? safeOrder;
-
   async function handleSave() {
     try {
       await updateOrder(currentOrder.id, currentOrder);
-
       alert("Pedido atualizado");
-
       setEditing(false);
     } catch (error) {
       console.error(error);
-
       alert("Erro ao atualizar");
     }
   }
 
   async function handleDelete() {
     const password = prompt("Digite a senha");
-
     if (password !== import.meta.env.VITE_DELETE_PASSWORD) {
       alert("Senha inválida");
-
       return;
     }
-
     const confirmDelete = confirm("Deseja apagar?");
-
     if (!confirmDelete) {
       return;
     }

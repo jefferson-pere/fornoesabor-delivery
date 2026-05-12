@@ -1,22 +1,14 @@
 import type { Pedido, OrderStatus } from "../../types/order";
-
 import { OrderCard } from "../OrderCard";
-
 import { Container } from "./style";
 
 type Props = {
   title: string;
-
   orders: Pedido[];
-
   collapsed?: boolean;
-
   onToggleCollapse?: () => void;
-
   onMove: (id: number, status: OrderStatus) => void;
-
   onTogglePayment: (id: number, pago: boolean) => void;
-
   onDetails: (order: Pedido) => void;
 };
 

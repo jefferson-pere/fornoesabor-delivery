@@ -1,5 +1,4 @@
 import type { Pedido } from "../../types/order";
-
 import { Container } from "./style";
 
 type Props = {

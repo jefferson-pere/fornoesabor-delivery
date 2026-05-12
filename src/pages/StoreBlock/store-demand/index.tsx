@@ -18,8 +18,6 @@ export function StoreDemand() {
           <span>ALTA DEMANDA</span>
         </div>
 
-        
-
         <p className="descricao">
           Devido à alta demanda, os pedidos estão levando um pouco mais de tempo
           para serem preparados. Agradecemos sua paciência e garantimos que cada

@@ -39,7 +39,92 @@ export const Container = styled.div`
 
   gap: 12px;
 }
+//
+.login-screen{
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
 
+.login-card{
+width:100%;
+max-width:420px;
+background:#fff;
+border-radius:28px;
+padding:40px 30px;
+box-shadow:0 20px 60px rgba(0,0,0,.25);
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:18px;
+}
+
+.login-card .icon{
+width:80px;
+height:80px;
+border-radius:50%;
+background:#f3f4f6;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:36px;
+}
+
+.login-card h2{
+font-size:30px;
+font-weight:800;
+color:#111827;
+margin:0;
+}
+
+.login-card p{
+font-size:15px;
+color:#6b7280;
+margin:0;
+text-align:center;
+}
+
+.input-group{
+width:100%;
+}
+
+.input-group input{
+width:100%;
+height:55px;
+border:none;
+outline:none;
+border-radius:16px;
+background:#f3f4f6;
+padding:0 18px;
+font-size:16px;
+transition:.2s;
+}
+
+.input-group input:focus{
+background:#fff;
+box-shadow:0 0 0 3px rgba(249,115,22,.2);
+border:1px solid #fb923c;
+}
+
+.login-btn{
+width:100%;
+height:55px;
+border:none;
+border-radius:16px;
+background:linear-gradient(135deg,#f97316,#ea580c);
+color:#fff;
+font-size:16px;
+font-weight:700;
+cursor:pointer;
+transition:.2s;
+}
+
+.login-btn:hover{
+transform:translateY(-2px);
+opacity:.95;
+}
+//
 .new-order {
   height: 42px;
 

@@ -9,15 +9,11 @@ export function StoreClosed() {
         <div className="hero">
           <img src="/banner.png" />
         </div>
-        
-
         <h1>
           ESTAMOS <br />
           FECHADOS
         </h1>
-
         <div className="linha" />
-
         <p className="descricao">
           A Forno e Sabor agradece
           pela sua preferência.
@@ -25,13 +21,11 @@ export function StoreClosed() {
           com nossas deliciosas esfihas
           artesanais feitas com carinho.
         </p>
-
         <div className="horario-box">
           <div className="horario-title">
             <LuClock3 size={18} />
             <span>HORÁRIO DE FUNCIONAMENTO</span>
           </div>
-
           <div className="horario-item">
             <strong>QUINTA A SEGUNDA</strong>
 
@@ -40,7 +34,6 @@ export function StoreClosed() {
               <span>23:00</span>
             </div>
           </div>
-
           <div className="horario-item">
             <strong>TERÇA E QUARTA</strong>
 

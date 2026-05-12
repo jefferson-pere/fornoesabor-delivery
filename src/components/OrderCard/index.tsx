@@ -1,14 +1,10 @@
 import type { Pedido, OrderStatus } from "../../types/order";
-
 import { Container } from "./style";
 
 type Props = {
   order: Pedido;
-
   onMove: (id: number, status: OrderStatus) => void;
-
   onTogglePayment: (id: number, pago: boolean) => void;
-
   onDetails: (order: Pedido) => void;
 };
 
