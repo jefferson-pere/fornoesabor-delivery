@@ -114,7 +114,7 @@ export default function CreateOrder() {
 
           refri: item.refri,
 
-          maioneseQtd: item.maioneseQtd,
+          maioneseQtd: item.maioneseQtd || 0,
 
           observacaoItem: item.observacaoItem,
 
@@ -135,7 +135,7 @@ export default function CreateOrder() {
       return (
         acc +
         item.combo.preco +
-        item.maioneseQtd * 0.99 +
+        (item.maioneseQtd || 0) * 0.99 +
         (item.refriExtra?.preco || 0)
       );
     }, 0);
@@ -733,7 +733,9 @@ export default function CreateOrder() {
                   {item.maioneseQtd > 0 && (
                     <small>
                       Maionese:
-                      <strong>R$ {(item.maioneseQtd * 0.99).toFixed(2)}</strong>
+                      <strong>
+                        R$ {((item.maioneseQtd || 0) * 0.99).toFixed(2)}
+                      </strong>
                     </small>
                   )}
 
@@ -750,7 +752,7 @@ export default function CreateOrder() {
                       R${" "}
                       {(
                         item.combo.preco +
-                        item.maioneseQtd * 0.99 +
+                        (item.maioneseQtd || 0) * 0.99 +
                         (item.refriExtra?.preco || 0)
                       ).toFixed(2)}
                     </strong>
