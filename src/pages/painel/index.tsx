@@ -1,4 +1,4 @@
-import { startTransition, useEffect, useState } from "react";
+import { startTransition, useEffect, useRef, useState } from "react";
 
 import {
   getOrders,
@@ -19,13 +19,15 @@ import { StoreStatus } from "../../components/StoreStatus";
 import { OrderModal } from "../../components/OrderModal";
 
 import { Container } from "./style";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function Painel() {
+  const navigate = useNavigate();
   const location = useLocation();
   const [orders, setOrders] = useState<Pedido[]>([]);
 
   const [selectedOrder, setSelectedOrder] = useState<Pedido | null>(null);
+  const reopened = useRef(false);
 
   const [hideFinished, setHideFinished] = useState(true);
   const [authorized, setAuthorized] = useState(() => {
@@ -88,6 +90,8 @@ export function Painel() {
     };
   }, []);
   useEffect(() => {
+    if (reopened.current) return;
+
     const reopenId = (
       location.state as {
         reopenOrder?: number;
@@ -99,6 +103,8 @@ export function Painel() {
     const pedido = orders.find((o) => o.id === reopenId);
 
     if (!pedido) return;
+
+    reopened.current = true;
 
     startTransition(() => {
       setSelectedOrder(pedido);
@@ -172,9 +178,15 @@ export function Painel() {
 
           <p>Painel de controle</p>
         </div>
-        <div>
-          {/* STATUS LOJA */}
+        <div className="top-actions">
           <StoreStatus />
+
+          <button
+            className="new-order"
+            onClick={() => navigate("/painel/criarpedido")}
+          >
+            + Novo pedido
+          </button>
         </div>
 
         <button

@@ -78,14 +78,25 @@ export function OrderCard({
       </div>
 
       <div className="acoes">
-        <button className="detalhes" onClick={() => onDetails(order)}>
+        <button
+          className="detalhes"
+          onClick={(e) => {
+            e.stopPropagation();
+
+            onDetails(order);
+          }}
+        >
           Detalhes
         </button>
 
         {nextStatus() && (
           <button
             className="avancar"
-            onClick={() => onMove(order.id, nextStatus()!)}
+            onClick={(e) => {
+              e.stopPropagation();
+
+              onMove(order.id, nextStatus()!);
+            }}
           >
             Avançar
           </button>

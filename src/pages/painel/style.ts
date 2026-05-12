@@ -32,7 +32,37 @@ export const Container = styled.div`
       font-size: 15px;
     }
   }
+.top-actions {
+  display: flex;
 
+  align-items: center;
+
+  gap: 12px;
+}
+
+.new-order {
+  height: 42px;
+
+  padding: 0 18px;
+
+  border: 0;
+
+  border-radius: 12px;
+
+  background: #2563eb;
+
+  color: white;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.new-order:hover {
+  background: #1d4ed8;
+}
   .grid {
     display: grid;
 

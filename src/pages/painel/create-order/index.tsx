@@ -381,7 +381,7 @@ export default function CreateOrder() {
       console.log("ATUALIZADO:", pedidoAtualizado);
 
       alert(order ? "Pedido atualizado" : "Pedido criado");
-      if (state?.fromModal && order) {
+      if (order) {
         navigate("/painel", {
           state: {
             reopenOrder: order.id,
@@ -390,6 +390,8 @@ export default function CreateOrder() {
 
         return;
       }
+
+      navigate("/painel");
 
       setNomeCliente("");
 
