@@ -6,7 +6,7 @@ export const Container = styled.div`
 
     inset: 0;
 
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.7);
 
     display: flex;
 
@@ -17,24 +17,28 @@ export const Container = styled.div`
     padding: 20px;
 
     z-index: 9999;
+
+    backdrop-filter: blur(4px);
   }
 
   .modal {
     width: 100%;
 
-    max-width: 1100px;
+    max-width: 1300px;
 
     max-height: 94vh;
 
     overflow-y: auto;
 
-    background: #fff;
+    background: #f9fafb;
 
-    border-radius: 26px;
+    border-radius: 28px;
 
     padding: 24px;
 
     box-sizing: border-box;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
   }
 
   .topo {
@@ -54,23 +58,29 @@ export const Container = styled.div`
 
     flex-direction: column;
 
-    gap: 6px;
+    gap: 8px;
 
     h2 {
       margin: 0;
 
       font-size: 32px;
+
+      color: #111827;
+
+      font-weight: 900;
     }
 
     small {
-      color: #666;
+      color: #6b7280;
+
+      font-size: 13px;
     }
   }
 
   .badges {
     display: flex;
 
-    gap: 10px;
+    gap: 8px;
 
     flex-wrap: wrap;
 
@@ -82,9 +92,9 @@ export const Container = styled.div`
 
     border-radius: 999px;
 
-    font-size: 12px;
+    font-size: 11px;
 
-    font-weight: bold;
+    font-weight: 800;
   }
 
   .novo {
@@ -132,63 +142,134 @@ export const Container = styled.div`
 
     border-radius: 12px;
 
-    background: #f3f4f6;
+    background: #e5e7eb;
 
     cursor: pointer;
 
-    font-size: 20px;
+    font-size: 18px;
+
+    transition: 0.2s;
+  }
+
+  .close:hover {
+    background: #d1d5db;
   }
 
   .grid {
     display: grid;
 
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: 300px 1fr;
 
-    gap: 18px;
+    gap: 16px;
+
+    align-items: start;
   }
 
   .card {
-    background: #f9fafb;
+    background: #f3f4f6;
+
+    border: 1px solid #d1d5db;
 
     border-radius: 20px;
 
-    padding: 18px;
+    padding: 16px;
+
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
   }
 
   .card h3 {
     margin-top: 0;
 
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 
-    font-size: 18px;
+    font-size: 17px;
+
+    color: #111827;
+
+    font-weight: 800;
+  }
+
+  .cliente-card {
+    height: fit-content;
+  }
+
+  .financeiro {
+    margin-top: 18px;
+
+    padding-top: 16px;
+
+    border-top: 1px solid #d1d5db;
   }
 
   .linha {
     display: flex;
 
-    justify-content: space-between;
 
-    gap: 12px;
+    align-items: center;
 
-    margin-bottom: 10px;
+    gap: 10px;
 
-    font-size: 15px;
+    margin-bottom: 4px;
+
+    padding: 5px 10px;
+
+    background: #ffffff;
+
+    border-radius: 12px;
+
+    border: 1px solid #e5e7eb;
+
+    font-size: 13px;
+  }
+
+  .linha span:first-child {
+    color: #6b7280;
+
+    font-weight: 700;
+
+    font-size: 12px;
   }
 
   .valor {
-    font-weight: bold;
+    font-weight: 800;
+
+    color: #111827;
+
+    text-align: right;
+
+    font-size: 13px;
+  }
+
+  .card-pedido {
+    min-height: 100%;
+  }
+
+  .pedidos-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 14px;
   }
 
   .item {
-    background: #fff;
+    background: #ffffff;
 
-    border: 1px solid #eee;
+    border: 1px solid #d1d5db;
 
-    border-radius: 14px;
+    border-radius: 18px;
 
-    padding: 14px;
+    padding: 16px;
 
-    margin-bottom: 12px;
+    transition: 0.2s;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .item:hover {
+    transform: translateY(-2px);
+
+    border-color: #9ca3af;
   }
 
   .item-topo {
@@ -198,13 +279,15 @@ export const Container = styled.div`
 
     align-items: center;
 
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
 
   .combo {
-    font-weight: bold;
+    font-weight: 800;
 
     font-size: 15px;
+
+    color: #111827;
   }
 
   .sabores {
@@ -212,23 +295,47 @@ export const Container = styled.div`
 
     flex-direction: column;
 
-    gap: 4px;
+    gap: 6px;
 
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+
+    font-size: 13px;
+
+    color: #374151;
   }
 
   .extra {
-    font-size: 14px;
+    font-size: 13px;
 
-    margin-top: 4px;
+    margin-top: 6px;
+
+    color: #111827;
+
+    background: #f3f4f6;
+
+    padding: 8px 10px;
+
+    border-radius: 10px;
   }
 
   .observacao {
-    font-size: 14px;
+    font-size: 13px;
 
-    margin-top: 8px;
+    margin-top: 10px;
 
-    color: #444;
+    color: #374151;
+
+    background: #f9fafb;
+
+    padding: 10px;
+
+    border-radius: 10px;
+
+    border-left: 4px solid #f59e0b;
+  }
+
+  .observacao-card {
+    grid-column: span 2;
   }
 
   .acoes {
@@ -236,7 +343,7 @@ export const Container = styled.div`
 
     bottom: 0;
 
-    background: #fff;
+    background: #f9fafb;
 
     display: flex;
 
@@ -244,7 +351,7 @@ export const Container = styled.div`
 
     padding-top: 18px;
 
-    margin-top: 20px;
+    margin-top: 22px;
   }
 
   .acoes button {
@@ -256,11 +363,19 @@ export const Container = styled.div`
 
     border-radius: 14px;
 
-    font-weight: bold;
+    font-weight: 800;
 
     cursor: pointer;
 
-    font-size: 15px;
+    font-size: 14px;
+
+    transition: 0.2s;
+  }
+
+  .acoes button:hover {
+    transform: translateY(-1px);
+
+    opacity: 0.95;
   }
 
   .print {
@@ -289,9 +404,24 @@ export const Container = styled.div`
 
   .whats {
     width: 100%;
+
     background: #22c55e;
 
     color: #fff;
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .pedidos-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .observacao-card {
+      grid-column: span 1;
+    }
   }
 
   @media (max-width: 700px) {
@@ -299,8 +429,8 @@ export const Container = styled.div`
       padding: 16px;
     }
 
-    .grid {
-      grid-template-columns: 1fr;
+    .topo {
+      flex-direction: column;
     }
 
     .acoes {
@@ -321,6 +451,8 @@ export const Container = styled.div`
       border-radius: 0;
 
       max-width: 100%;
+
+      background: #fff;
     }
   }
 `;

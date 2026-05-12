@@ -7,6 +7,7 @@ import type { Pedido } from "../../types/order";
 import { deleteOrder, updateOrder } from "../../services/orders";
 
 import { Container } from "./style";
+
 import { useNavigate } from "react-router-dom";
 
 type Props = {
@@ -17,6 +18,7 @@ type Props = {
 
 export function OrderModal({ order, onClose }: Props) {
   const navigate = useNavigate();
+
   const [editing, setEditing] = useState(false);
 
   const [form, setForm] = useState<Pedido | null>(null);
@@ -112,7 +114,7 @@ export function OrderModal({ order, onClose }: Props) {
           </div>
 
           <div className="grid">
-            <div className="card">
+            <div className="card cliente-card">
               <h3>Cliente</h3>
 
               <div className="linha">
@@ -158,74 +160,76 @@ export function OrderModal({ order, onClose }: Props) {
                   </div>
                 </>
               )}
-            </div>
 
-            <div className="card">
-              <h3>Financeiro</h3>
+              <div className="financeiro">
+                <h3>Financeiro</h3>
 
-              <div className="linha">
-                <span>Pagamento</span>
-
-                <span className="valor">{currentOrder.pagamento}</span>
-              </div>
-
-              {currentOrder.troco && (
                 <div className="linha">
-                  <span>Troco</span>
+                  <span>Pagamento</span>
 
-                  <span className="valor">{currentOrder.troco}</span>
+                  <span className="valor">{currentOrder.pagamento}</span>
                 </div>
-              )}
 
-              <div className="linha">
-                <span>Total</span>
+                {currentOrder.troco && (
+                  <div className="linha">
+                    <span>Troco</span>
 
-                <span className="valor">
-                  R$ {currentOrder.total.toFixed(2)}
-                </span>
+                    <span className="valor">{currentOrder.troco}</span>
+                  </div>
+                )}
+
+                <div className="linha">
+                  <span>Total</span>
+
+                  <span className="valor">
+                    R$ {currentOrder.total.toFixed(2)}
+                  </span>
+                </div>
               </div>
             </div>
 
-            <div className="card">
+            <div className="card card-pedido">
               <h3>Pedido</h3>
 
-              {currentOrder.itens.map((item, i) => (
-                <div key={i} className="item">
-                  <div className="item-topo">
-                    <div className="combo">{item.combo.nome}</div>
-                  </div>
+              <div className="pedidos-grid">
+                {currentOrder.itens.map((item, i) => (
+                  <div key={i} className="item">
+                    <div className="item-topo">
+                      <div className="combo">{item.combo.nome}</div>
+                    </div>
 
-                  <div className="sabores">
-                    {Object.entries(item.sabores).map(([sabor, qtd]) => (
-                      <div key={sabor}>
-                        {qtd}x {sabor}
+                    <div className="sabores">
+                      {Object.entries(item.sabores).map(([sabor, qtd]) => (
+                        <div key={sabor}>
+                          {qtd}x {sabor}
+                        </div>
+                      ))}
+                    </div>
+
+                    {item.refri && <div className="extra">🥤 {item.refri}</div>}
+
+                    {item.refriExtra && (
+                      <div className="extra">
+                        🥤 Extra: {item.refriExtra.nome}
                       </div>
-                    ))}
+                    )}
+
+                    {item.maioneseQtd > 0 && (
+                      <div className="extra">
+                        🧄{item.maioneseQtd}x Maionese extra
+                      </div>
+                    )}
+
+                    {item.observacaoItem && (
+                      <div className="observacao">📝 {item.observacaoItem}</div>
+                    )}
                   </div>
-
-                  {item.refri && <div className="extra">🥤 {item.refri}</div>}
-
-                  {item.refriExtra && (
-                    <div className="extra">
-                      🥤 Extra: {item.refriExtra.nome}
-                    </div>
-                  )}
-
-                  {item.maioneseQtd > 0 && (
-                    <div className="extra">
-                      🧄{item.maioneseQtd}x Maionese extra
-                    </div>
-                  )}
-
-                  {item.observacaoItem && (
-                    <div className="observacao">📝 {item.observacaoItem}</div>
-                  )}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             {currentOrder.observacao && (
-              <div className="card">
+              <div className="card observacao-card">
                 <h3>Observação</h3>
 
                 <p>{currentOrder.observacao}</p>
@@ -240,7 +244,10 @@ export function OrderModal({ order, onClose }: Props) {
 
             {currentOrder.telefone && (
               <a
-                href={`https://wa.me/55${currentOrder.telefone.replace(/\D/g, "")}`}
+                href={`https://wa.me/55${currentOrder.telefone.replace(
+                  /\D/g,
+                  "",
+                )}`}
                 target="_blank"
                 rel="noreferrer"
                 style={{
