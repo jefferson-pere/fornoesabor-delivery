@@ -15,9 +15,7 @@ export function Pagamento() {
     itens,
     cidade,
   } = usePedido();
-
   const navigate = useNavigate();
-
   const [errorPagamento, setErrorPagamento] = useState(false);
   const [errorTroco, setErrorTroco] = useState(false);
   const [copiado, setCopiado] = useState(false);
@@ -25,76 +23,53 @@ export function Pagamento() {
   useEffect(() => {
     if (step < 3) navigate("/");
   }, [step, navigate]);
-
-  // 💰 TOTAL
   const subtotal = itens.reduce((acc, item) => acc + item.combo.preco, 0);
-
   const adicional = itens.reduce(
     (acc, item) => acc + item.maioneseQtd * 0.99,
     0,
   );
-
   const adicionalRefri = itens.reduce(
     (acc, item) => acc + (item.refriExtra?.preco || 0),
     0,
   );
-
   const frete = cidade === "Cariús" ? 3 : cidade === "Jucás" ? 5 : 0;
-
   const taxaCartao = pagamento === "cartao" ? 1 : 0;
-
   const total = subtotal + adicional + adicionalRefri + frete + taxaCartao;
-
-  // PIX
   const chavePix = "8896445671";
-
   const copiarPix = async () => {
     await navigator.clipboard.writeText(chavePix);
     setCopiado(true);
     setTimeout(() => setCopiado(false), 2000);
   };
-
   const continuar = () => {
     const erroPag = !pagamento;
-
     const erroTroco = pagamento === "dinheiro" && !troco;
-
     let trocoMenor = false;
-
     if (pagamento === "dinheiro" && troco) {
       const valorTroco = Number(
         troco.replace("R$", "").replace(/\./g, "").replace(",", "."),
       );
-
       trocoMenor = valorTroco < total;
     }
-
     setErrorPagamento(erroPag);
-
     setErrorTroco(erroTroco || trocoMenor);
-
     if (erroPag || erroTroco || trocoMenor) {
       return;
     }
-
     setStep(4);
-
     navigate("/revisao");
   };
 
   return (
     <Container>
       <div className="content">
-        {/* HERO */}
         <div className="hero">
           <img src="/banner.png" />
           <div className="hero-overlay">
             <div className="hero-title">Forma de pagamento</div>
           </div>
         </div>
-
         <div className="form">
-          {/* TOTAL */}
           <div className="total-box">
             <span>
               Total do pedido
@@ -110,17 +85,12 @@ export function Pagamento() {
                 </div>
               )}
             </span>
-
             <strong>R$ {total.toFixed(2)}</strong>
           </div>
-
           <span className="label">Forma de pagamento</span>
-
           {errorPagamento && (
             <p className="error-text">Selecione uma forma de pagamento</p>
           )}
-
-          {/* PIX */}
           <div
             className={`input-box option ${
               pagamento === "pix" ? "active" : ""
@@ -133,27 +103,20 @@ export function Pagamento() {
             <MdPix className="input-icon" />
             <span>Pix</span>
           </div>
-
-          {/* PIX BOX */}
           {pagamento === "pix" && (
             <div className="pix-box fade-slide">
               <span className="label">Chave PIX</span>
-
               <div className="pix-content">
                 <span className="pix-key">{chavePix}</span>
-
                 <button className="pix-copy" onClick={copiarPix}>
                   {copiado ? "Copiado!" : "Copiar"}
                 </button>
               </div>
-
               <p className="pix-info">
                 Enviar comprovante para <strong>(88) 99644-5671</strong>
               </p>
             </div>
           )}
-
-          {/* CARTÃO */}
           <div
             className={`input-box option ${
               pagamento === "cartao" ? "active" : ""
@@ -172,8 +135,6 @@ export function Pagamento() {
               </p>
             </div>
           </div>
-
-          {/* DINHEIRO */}
           <div
             className={`input-box option ${
               pagamento === "dinheiro" ? "active" : ""
@@ -191,34 +152,25 @@ export function Pagamento() {
               </p>
             </div>
           </div>
-
-          {/* TROCO */}
           {pagamento === "dinheiro" && (
             <div className="fade-slide">
               <span className="label">Troco</span>
-
               <div className={`input-box ${errorTroco ? "error" : ""}`}>
                 <input
                   placeholder="R$ 0,00"
                   value={troco}
                   onChange={(e) => {
                     let valor = e.target.value.replace(/\D/g, "");
-
                     valor = (Number(valor) / 100).toFixed(2);
-
                     valor = valor.replace(".", ",");
-
                     setTroco(`R$ ${valor}`);
-
                     setErrorTroco(false);
                   }}
                 />
               </div>
-
               {errorTroco && (
                 <p className="error-text">Valor insuficiente para o pedido</p>
               )}
-
               {troco &&
                 (() => {
                   const valorTroco = Number(
@@ -227,9 +179,7 @@ export function Pagamento() {
                       .replace(/\./g, "")
                       .replace(",", "."),
                   );
-
                   const restante = valorTroco - total;
-
                   return (
                     <div
                       style={{
@@ -246,8 +196,6 @@ export function Pagamento() {
                 })()}
             </div>
           )}
-
-          {/* FOOTER */}
           <div className="footer">
             <div style={{ display: "flex", gap: 10 }}>
               <button
@@ -256,7 +204,6 @@ export function Pagamento() {
               >
                 Voltar
               </button>
-
               <button className="button" onClick={continuar}>
                 Revisar e confirmar
               </button>

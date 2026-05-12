@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container } from "./style";
 import { usePedido } from "../../hook/usePedido";
-
 export function Revisao() {
   const {
     step,
@@ -16,71 +15,51 @@ export function Revisao() {
     troco,
     observacao,
   } = usePedido();
-
   const navigate = useNavigate();
-
   useEffect(() => {
     if (step < 3) navigate("/");
   }, [step, navigate]);
-
   const subtotal = itens.reduce((acc, item) => acc + item.combo.preco, 0);
-
   const adicional = itens.reduce(
     (acc, item) => acc + item.maioneseQtd * 0.99,
     0,
   );
-
   const adicionalRefri = itens.reduce(
     (acc, item) => acc + (item.refriExtra?.preco || 0),
     0,
   );
-
   const frete = cidade === "Cariús" ? 3 : cidade === "Jucás" ? 5 : 0;
-
   const taxaCartao = pagamento === "cartao" ? 1 : 0;
-
   const total = subtotal + adicional + adicionalRefri + frete + taxaCartao;
-
   return (
     <Container>
       <div className="content">
-        {/* HERO */}
         <div className="hero">
           <img src="/banner.png" />
           <div className="hero-overlay">
             <div className="hero-title">Revisar Pedido</div>
           </div>
         </div>
-
         <div className="form">
-          {/* CLIENTE */}
           <div className="card">
             <span className="label">Cliente</span>
             <strong>{nome}</strong>
             <span className="sub">{telefone}</span>
           </div>
-
-          {/* ENTREGA */}
           <div className="card">
             <span className="label">Entrega</span>
             <strong>{cidade}</strong>
-
             {cidade !== "Retirada" && (
               <span className="sub">
                 {endereco.rua}, {endereco.numero} - {endereco.referencia}
               </span>
             )}
           </div>
-
-          {/* ITENS */}
           <div className="card">
             <span className="label">Pedido</span>
-
             {itens.map((item, index) => (
               <div key={index} className="item">
                 <strong>{item.combo.nome}</strong>
-
-                {/* SABORES */}
                 {Object.entries(item.sabores).map(([s, q]) =>
                   q > 0 ? (
                     <div key={s} className="sub">
@@ -88,62 +67,46 @@ export function Revisao() {
                     </div>
                   ) : null,
                 )}
-
-                {/* REFRI */}
                 {item.refri && <div className="sub">🥤 {item.refri}</div>}
-
                 {item.refriExtra && (
                   <div className="sub">
                     🥤 Extra: {item.refriExtra.nome} ({item.refriExtra.tipo}) —
                     R$ {item.refriExtra.preco.toFixed(2)}
                   </div>
                 )}
-
-                {/* MAIONESE */}
                 {item.maioneseQtd > 0 && (
                   <div className="sub">🧄 {item.maioneseQtd}x maionese</div>
                 )}
-
-                {/* OBS ITEM */}
                 {item.observacaoItem && (
                   <div className="sub">📝 {item.observacaoItem}</div>
                 )}
               </div>
             ))}
           </div>
-
-          {/* PAGAMENTO */}
           <div className="card">
             <span className="label">Pagamento</span>
             <strong>{pagamento}</strong>
-
             {pagamento === "dinheiro" && troco && (
               <span className="sub">Troco para R$ {troco}</span>
             )}
           </div>
-
-          {/* OBSERVAÇÃO */}
           {observacao && (
             <div className="card">
               <span className="label">Observação</span>
               <span className="sub">{observacao}</span>
             </div>
           )}
-
-          {/* TOTAL */}
           <div className="total-card">
             <div className="row">
               <span>Subtotal</span>
               <strong>R$ {subtotal.toFixed(2)}</strong>
             </div>
-
             {adicional > 0 && (
               <div className="row extra">
                 <span>Adicionais</span>
                 <strong>+ R$ {adicional.toFixed(2)}</strong>
               </div>
             )}
-
             {adicionalRefri > 0 && (
               <div className="row extra">
                 <span>Refrigerantes</span>
@@ -153,32 +116,25 @@ export function Revisao() {
             {taxaCartao > 0 && (
               <div className="row extra">
                 <span>Taxa cartão</span>
-
                 <strong>+ R$ 1,00</strong>
               </div>
             )}
-
             <div className="row">
               <span>Frete</span>
               <strong>
                 {frete === 0 ? "Grátis" : `R$ ${frete.toFixed(2)}`}
               </strong>
             </div>
-
             <div className="divider" />
-
             <div className="row total">
               <span>Total</span>
               <strong>R$ {total.toFixed(2)}</strong>
             </div>
           </div>
-
-          {/* FOOTER */}
           <div className="footer">
             <button className="button cancel" onClick={() => navigate(-1)}>
               Voltar
             </button>
-
             <button
               className="button"
               onClick={async () => {
@@ -193,34 +149,40 @@ export function Revisao() {
                     troco,
                     observacao,
                   };
-
                   const res = await fetch(
                     `${import.meta.env.VITE_API_URL}/orders`,
                     {
                       method: "POST",
-
                       headers: {
                         "Content-Type": "application/json",
                         "x-api-key": import.meta.env.VITE_API_KEY,
                       },
-
                       body: JSON.stringify(pedido),
                     },
                   );
-
                   if (!res.ok) {
-                    const error = await res.json();
-                    alert(error.error || "Erro ao enviar pedido");
+                    navigate("/confirmacao", {
+                      state: {
+                        erro: true,
+                        mensagem: "Erro ao enviar pedido para o servidor",
+                      },
+                    });
                     return;
                   }
-
-                  console.log("PEDIDO ENVIADO:", pedido);
-
                   setStep(4);
-                  navigate("/confirmacao");
+                  navigate("/confirmacao", {
+                    state: {
+                      erro: false,
+                    },
+                  });
                 } catch (err) {
                   console.error(err);
-                  alert("Erro de conexão com servidor");
+                  navigate("/confirmacao", {
+                    state: {
+                      erro: true,
+                      mensagem: "Erro de conexão com servidor",
+                    },
+                  });
                 }
               }}
             >

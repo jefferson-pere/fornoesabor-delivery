@@ -15,7 +15,12 @@ export const Container = styled.div`
     background: #fff;
     min-height: 100vh;
   }
-
+.icon-error{
+  fill: #d90000;
+  svg{
+    fill: #d90000;
+  }
+}
   /* HERO */
   .hero {
     position: relative;
