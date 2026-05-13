@@ -220,7 +220,7 @@ export function OrderModal({ order, onClose }: Props) {
 
           <div className="acoes">
             <button className="print" onClick={handlePrint}>
-              🖨️ Imprimir
+              Imprimir
             </button>
 
             {currentOrder.telefone && (
@@ -238,6 +238,35 @@ export function OrderModal({ order, onClose }: Props) {
                 <button className="whats">WhatsApp</button>
               </a>
             )}
+            <button
+              className="confirm"
+              onClick={() => {
+                if (!currentOrder.telefone) {
+                  alert("Cliente sem telefone");
+                  return;
+                }
+
+                const telefone = currentOrder.telefone.replace(/\D/g, "");
+
+                const mensagem = `Olá, *${currentOrder.nomeCliente}*! 😊
+Seu pedido Nº *${currentOrder.codigo}* foi confirmado! ✅
+📦 Tipo: ${
+                  currentOrder.cidade === "Retirada"
+                    ? "📍 Retirada no local"
+                    : "🛵 Entrega"
+                }
+💰 Total: R$ ${currentOrder.total.toFixed(2)}
+⏱️ Tempo estimado: 40 a 50 minutos.
+Obrigado pela preferência 🙌`;
+                window.location.replace(
+                  `whatsapp://send?phone=55${telefone}&text=${encodeURIComponent(
+                    mensagem,
+                  )}`,
+                );
+              }}
+            >
+              Confirmar pedido
+            </button>
 
             {!editing ? (
               <button
@@ -252,16 +281,16 @@ export function OrderModal({ order, onClose }: Props) {
                   })
                 }
               >
-                ✏️ Editar
+                Editar
               </button>
             ) : (
               <button className="save" onClick={handleSave}>
-                💾 Salvar
+                Salvar
               </button>
             )}
 
             <button className="danger" onClick={handleDelete}>
-              🗑️ Apagar
+              Apagar
             </button>
           </div>
         </div>

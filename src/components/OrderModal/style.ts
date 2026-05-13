@@ -142,12 +142,13 @@ export const Container = styled.div`
 
     border-radius: 12px;
 
-    background: #e5e7eb;
+    background: #faa5a5;
 
     cursor: pointer;
 
     font-size: 18px;
 
+    color: #fff;
     transition: 0.2s;
   }
 
@@ -158,13 +159,17 @@ export const Container = styled.div`
   .grid {
     display: grid;
 
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: minmax(360px, 420px) minmax(0, 1fr);
 
     gap: 16px;
 
     align-items: start;
   }
+  .cliente-card {
+    width: 100%;
 
+    min-width: 360px;
+  }
   .card {
     background: #f3f4f6;
 
@@ -242,16 +247,57 @@ export const Container = styled.div`
   .card-pedido {
     min-height: 100%;
   }
+  .confirm {
+    flex: 1;
 
+    border: none;
+
+    border-radius: 12px;
+
+    padding: 14px 18px;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+    background: #25d3659a;
+
+    color: #fff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+  }
+
+  .confirm:hover {
+    transform: translateY(-2px);
+
+    opacity: 0.92;
+  }
+
+  .confirm:active {
+    transform: scale(0.98);
+  }
   .pedidos-grid {
     display: grid;
 
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(320px, 1fr));
 
     gap: 14px;
+
+    width: 100%;
   }
 
   .item {
+    width: 100%;
     background: #ffffff;
 
     border: 1px solid #d1d5db;

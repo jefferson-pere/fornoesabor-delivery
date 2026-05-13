@@ -7,17 +7,26 @@ import { BiSolidError } from "react-icons/bi";
 export function Confirmacao() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { resetPedido } = usePedido();
   const erro = location.state?.erro;
   const mensagem = location.state?.mensagem;
+  const { resetPedido, nome } = usePedido();
 
   useEffect(() => {
-    resetPedido();
     if (!erro) {
-      window.location.href =
-        "https://wa.me/5588996445671?text=Olá,%20acabei%20de%20fazer%20um%20pedido%20😊";
+      const timer = setTimeout(() => {
+        window.location.replace(
+          `whatsapp://send?phone=5588996445671&text=${encodeURIComponent(
+            `Olá, sou ${nome} e acabei de fazer um pedido 😊`,
+          )}`,
+        );
+
+        resetPedido();
+      }, 2000);
+
+      return () => clearTimeout(timer);
     }
-  }, [resetPedido, erro]);
+  }, [resetPedido, erro, nome]);
+
   return (
     <Container>
       <div className="content">
@@ -62,9 +71,10 @@ export function Confirmacao() {
             <button
               className="button whatsapp"
               onClick={() =>
-                window.open(
-                  "https://wa.me/5588996445671?text=Olá,%20acabei%20de%20fazer%20um%20pedido!",
-                  "_blank",
+                window.location.replace(
+                  `whatsapp://send?phone=5588996445671&text=${encodeURIComponent(
+                    "Olá, acabei de fazer um pedido!",
+                  )}`,
                 )
               }
             >
