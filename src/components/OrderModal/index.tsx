@@ -7,22 +7,19 @@ import { useNavigate } from "react-router-dom";
 
 type Props = {
   order: Pedido | null;
-
   onClose: () => void;
 };
 
 export function OrderModal({ order, onClose }: Props) {
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState<Pedido | null>(null);
+
   if (!order) {
     return null;
   }
-  const safeOrder = order;
-  if (form?.id !== safeOrder.id) {
-    setForm(safeOrder);
-  }
-  const currentOrder = form ?? safeOrder;
+
+  const currentOrder = order;
+
   async function handleSave() {
     try {
       await updateOrder(currentOrder.id, currentOrder);
@@ -238,6 +235,7 @@ export function OrderModal({ order, onClose }: Props) {
                 <button className="whats">WhatsApp</button>
               </a>
             )}
+
             <button
               className="confirm"
               onClick={() => {
@@ -248,7 +246,7 @@ export function OrderModal({ order, onClose }: Props) {
 
                 const telefone = currentOrder.telefone.replace(/\D/g, "");
 
-                const mensagem = `Olá, *${currentOrder.nomeCliente}*! 😊
+                const mensagemConfirmado = `Olá, *${currentOrder.nomeCliente}*! 😊
 Seu pedido Nº *${currentOrder.codigo}* foi confirmado! ✅
 📦 Tipo: ${
                   currentOrder.cidade === "Retirada"
@@ -257,7 +255,24 @@ Seu pedido Nº *${currentOrder.codigo}* foi confirmado! ✅
                 }
 💰 Total: R$ ${currentOrder.total.toFixed(2)}
 ⏱️ Tempo estimado: 40 a 50 minutos.
+Obrigado! 🙌`;
+
+                const mensagemEntrega =
+                  currentOrder.cidade === "Retirada"
+                    ? `*${currentOrder.nomeCliente}*,
+Seu pedido já está pronto para retirada! 📍
+Estamos aguardando você. 🙌
+Muito obrigado! 😊`
+                    : `*${currentOrder.nomeCliente}*,
+Seu pedido saiu para entrega! 🛵
+Em breve chegará até você. 😊
 Obrigado pela preferência 🙌`;
+
+                const mensagem =
+                  currentOrder.status === "ENTREGA"
+                    ? mensagemEntrega
+                    : mensagemConfirmado;
+
                 window.location.replace(
                   `whatsapp://send?phone=55${telefone}&text=${encodeURIComponent(
                     mensagem,
@@ -265,7 +280,11 @@ Obrigado pela preferência 🙌`;
                 );
               }}
             >
-              Confirmar pedido
+              {currentOrder.status === "ENTREGA"
+                ? currentOrder.cidade === "Retirada"
+                  ? "Pedido pronto"
+                  : "Saiu para entrega"
+                : "Confirmar pedido"}
             </button>
 
             {!editing ? (
