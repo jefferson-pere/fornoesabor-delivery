@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
   min-height: 100vh;
   background: #f5f5f5;
   display: flex;
@@ -69,6 +71,19 @@ export const Container = styled.div`
     background: transparent;
     font-size: 16px;
     padding: 10px;
+    min-width: 0;
+  }
+
+  .form > div > input,
+  .form > input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #fdb4b4;
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 16px;
+    outline: none;
+    background: #f7f7f7;
   }
 
   .margem {
