@@ -21,7 +21,7 @@ export function PedidoProvider({ children }: { children: ReactNode }) {
     return saved ? JSON.parse(saved) : { rua: "", numero: "", referencia: "" };
   });
   const [itens, setItens] = useState<ItemPedido[]>([]);
-  const [pagamento, setPagamento] = useState<FormaPagamentoType>("pix");
+  const [pagamento, setPagamento] = useState<FormaPagamentoType>("");
   const [troco, setTroco] = useState("");
   const [observacao, setObservacao] = useState("");
   useEffect(() => {
@@ -43,7 +43,7 @@ export function PedidoProvider({ children }: { children: ReactNode }) {
     setCidade("");
     setEndereco({ rua: "", numero: "", referencia: "" });
     setItens([]);
-    setPagamento("pix");
+    setPagamento("");
     setTroco("");
     setObservacao("");
     localStorage.removeItem("pedido_nome");

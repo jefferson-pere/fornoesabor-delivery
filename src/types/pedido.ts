@@ -12,7 +12,7 @@ export type EnderecoType = {
 /* =========================
    PAGAMENTO
 ========================= */
-export type FormaPagamentoType = "pix" | "cartao" | "dinheiro";
+export type FormaPagamentoType = "pix" | "cartao" | "dinheiro" | "";
 
 /* =========================
    REFRI EXTRA
