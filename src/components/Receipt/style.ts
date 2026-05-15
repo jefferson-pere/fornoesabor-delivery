@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const Container = styled.div`
   * {
     box-sizing: border-box;
+    font-weight: 900 !important;
   }
 
   display: none;
@@ -58,11 +59,11 @@ export const Container = styled.div`
 
     font-family: monospace;
 
-    font-size: 12px;
+    font-size: 18px;
 
-    font-weight: bold;
+    font-weight: 900;
 
-    line-height: 1.2;
+    line-height: 1.4;
 
     color: #000;
 
@@ -74,7 +75,7 @@ export const Container = styled.div`
   h1 {
     text-align: center;
 
-    font-size: 18px;
+    font-size: 36px;
 
     margin: 0;
 
@@ -86,15 +87,17 @@ export const Container = styled.div`
 
     margin-top: 2px;
 
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 
-    font-size: 13px;
+    font-size: 18px;
+
+    font-weight: 900;
   }
 
   .divider {
-    border-top: 1px dashed #000;
+    border-top: 2px dashed #000;
 
-    margin: 5px 0;
+    margin: 4px 0;
   }
 
   .line,
@@ -110,58 +113,67 @@ export const Container = styled.div`
   }
 
   .line {
-    margin-bottom: 1px;
+    margin-bottom: 0px;
 
-    font-size: 12px;
+    font-size: 18px;
+
+    font-weight: 900;
   }
 
   .lineEnd {
     display: flex;
     align-items: flex-start;
     gap: 4px;
-    margin-bottom: 2px;
-    font-size: 12px;
+    margin-bottom: 1px;
+    font-size: 18px;
+    font-weight: 900;
   }
 
   .itemCupom {
-    margin-top: 4px;
+    margin-top: 2px;
   }
 
   h2 {
-    font-size: 13px;
+    font-size: 20px;
 
-    margin: 0 0 3px;
+    margin: 0 0 2px;
 
     font-weight: 900;
   }
 
   .flavor {
-    font-size: 12px;
+    font-size: 18px;
 
-    margin-bottom: 1px;
+    margin-bottom: 0px;
+
+    font-weight: 900;
   }
 
   .obs {
-    margin-top: 2px;
+    margin-top: 1px;
+
+    font-size: 17px;
+
+    font-weight: 900;
   }
 
   .combo-divider {
-    border-top: 1px dashed #000;
+    border-top: 2px dashed #000;
 
-    margin: 5px 0;
+    margin: 3px 0;
   }
 
   .total {
-    margin-top: 8px;
+    margin-top: 6px;
 
-    font-size: 18px;
+    font-size: 19px;
 
     font-weight: 900;
   }
 
   .footer {
-    margin-top: 10px;
-    font-size: 18px;
+    margin-top: 8px;
+    font-size: 19px;
     font-weight: 900;
     display: flex;
     flex-direction: column;
