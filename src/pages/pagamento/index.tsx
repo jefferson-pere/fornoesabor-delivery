@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container } from "./style";
 import { usePedido } from "../../hook/usePedido";
+import type { FormaPagamentoType } from "../../types/pedido";
 import { MdPix, MdCreditCard, MdAttachMoney, MdCheckCircle, MdContentCopy } from "react-icons/md";
 import { StepProgress } from "../../components/StepProgress";
 
@@ -40,7 +41,7 @@ export function Pagamento() {
     setTimeout(() => setCopiado(false), 2000);
   };
 
-  const selecionar = (metodo: string) => {
+  const selecionar = (metodo: FormaPagamentoType) => {
     setPagamento(metodo);
     setErrorPagamento(false);
     if (metodo !== "dinheiro") setTroco("");
