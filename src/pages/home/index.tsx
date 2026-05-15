@@ -2,8 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Container } from "./style";
 import { usePedido } from "../../hook/usePedido";
 import { useEffect, useState } from "react";
-import { MdPerson, MdPhone, MdLocalShipping } from "react-icons/md";
-import { MdKeyboardArrowDown } from "react-icons/md";
+import { MdPhone, MdLocationOn, MdKeyboardArrowDown } from "react-icons/md";
 import { getStoreStatus } from "../../services/store";
 import { StoreBlock } from "../StoreBlock";
 import { StepProgress } from "../../components/StepProgress";
@@ -30,11 +29,8 @@ export function Home() {
         : (localStorage.getItem("cliente_tipoEntrega") as "entrega" | "retirada" | null) || null,
   );
   const [loadingStore, setLoadingStore] = useState(true);
-  const [store, setStore] = useState({
-    aberto: true,
-    altaDemanda: false,
-    mensagem: "",
-  });
+  const [store, setStore] = useState({ aberto: true, altaDemanda: false, mensagem: "" });
+
   const [nomeLocal, setNomeLocal] = useState(() => {
     if (nome) return nome.split(" ")[0] || "";
     return localStorage.getItem("cliente_nome") || "";
@@ -68,6 +64,7 @@ export function Home() {
     referencia: false,
     tipoEntrega: false,
   });
+
   useEffect(() => {
     async function loadStore() {
       try {
@@ -81,16 +78,14 @@ export function Home() {
     }
     loadStore();
   }, []);
+
   const formatarTelefone = (value: string) => {
     const nums = value.replace(/\D/g, "").slice(0, 11);
-    if (nums.length <= 2) {
-      return `(${nums}`;
-    }
-    if (nums.length <= 6) {
-      return `(${nums.slice(0, 2)}) ${nums.slice(2)}`;
-    }
+    if (nums.length <= 2) return `(${nums}`;
+    if (nums.length <= 6) return `(${nums.slice(0, 2)}) ${nums.slice(2)}`;
     return `(${nums.slice(0, 2)}) ${nums.slice(2, 7)}-${nums.slice(7)}`;
   };
+
   const handleContinuar = () => {
     const newErrors = {
       nome: !nomeLocal.trim(),
@@ -103,9 +98,8 @@ export function Home() {
       referencia: tipoEntrega === "entrega" && !referencia.trim(),
     };
     setErrors(newErrors);
-    if (Object.values(newErrors).some(Boolean)) {
-      return;
-    }
+    if (Object.values(newErrors).some(Boolean)) return;
+
     setLoading(true);
     setTimeout(() => {
       const nomeCompleto = `${nomeLocal.trim()} ${sobrenomeLocal.trim()}`;
@@ -126,11 +120,7 @@ export function Home() {
         localStorage.removeItem("cliente_referencia");
       } else {
         setCidade(cidadeLocal);
-        setEndereco({
-          rua: rua.trim(),
-          numero: numero.trim(),
-          referencia: referencia.trim(),
-        });
+        setEndereco({ rua: rua.trim(), numero: numero.trim(), referencia: referencia.trim() });
         localStorage.setItem("cliente_cidade", cidadeLocal);
         localStorage.setItem("cliente_rua", rua.trim());
         localStorage.setItem("cliente_numero", numero.trim());
@@ -140,158 +130,193 @@ export function Home() {
       navigate("/pedido");
     }, 700);
   };
-  if (loadingStore) {
-    return null;
-  }
-  if (!store.aberto) {
-    return <StoreBlock tipo="fechado" />;
-  }
-  if (store.altaDemanda) {
-    return <StoreBlock tipo="demanda" />;
-  }
+
+  if (loadingStore) return null;
+  if (!store.aberto) return <StoreBlock tipo="fechado" />;
+  if (store.altaDemanda) return <StoreBlock tipo="demanda" />;
+
   return (
     <Container>
       <div className="content">
-        <StepProgress current={1} />
+
+        {/* HERO */}
         <div className="hero">
           <img
             src="/banner.png"
             onError={(e) => (e.currentTarget.style.display = "none")}
           />
           <div className="hero-overlay">
-            <div className="hero-title">Seja bem-vindo(a)</div>
-            <p>Agilize seu pedido e aproveite nosso cardápio</p>
+            <div className="hero-badge">🔥 Pedido online</div>
+            <div className="hero-title">Forno e Sabor</div>
+            <p className="hero-sub">Esfihas artesanais fresquinhas pra você</p>
           </div>
         </div>
+
+        <StepProgress current={1} />
+
+        {/* FORM */}
         <div className="form">
-          <div>
-            <div className="label">Nome</div>
-            <div className={`input-box ${errors.nome ? "error" : ""}`}>
-              <MdPerson className="input-icon" />
-              <input
-                placeholder="Nome"
-                value={nomeLocal}
-                onChange={(e) => setNomeLocal(e.target.value)}
-              />
+
+          {/* NOME */}
+          <div className="field-group">
+            <div className="name-row">
+              <div className="field">
+                <label className="label">Nome</label>
+                <div className={`input-box${errors.nome ? " error" : ""}`}>
+                  <input
+                    placeholder="João"
+                    value={nomeLocal}
+                    onChange={(e) => {
+                      setNomeLocal(e.target.value);
+                      setErrors((er) => ({ ...er, nome: false }));
+                    }}
+                  />
+                </div>
+                {errors.nome && <p className="error-text">Obrigatório</p>}
+              </div>
+              <div className="field">
+                <label className="label">Sobrenome</label>
+                <div className={`input-box${errors.sobrenome ? " error" : ""}`}>
+                  <input
+                    placeholder="Silva"
+                    value={sobrenomeLocal}
+                    onChange={(e) => {
+                      setSobrenomeLocal(e.target.value);
+                      setErrors((er) => ({ ...er, sobrenome: false }));
+                    }}
+                  />
+                </div>
+                {errors.sobrenome && <p className="error-text">Obrigatório</p>}
+              </div>
             </div>
-            {errors.nome && <p className="error-text">Campo obrigatório</p>}
           </div>
-          <div>
-            <div className="label">Sobrenome</div>
-            <div className={`input-box ${errors.sobrenome ? "error" : ""}`}>
-              <MdPerson className="input-icon" />
-              <input
-                placeholder="Sobrenome"
-                value={sobrenomeLocal}
-                onChange={(e) => setSobrenomeLocal(e.target.value)}
-              />
-            </div>
-            {errors.sobrenome && (
-              <p className="error-text">Campo obrigatório</p>
-            )}
-          </div>
-          <div>
-            <div className="label">Telefone</div>
-            <div className={`input-box ${errors.telefone ? "error" : ""}`}>
+
+          {/* TELEFONE */}
+          <div className="field">
+            <label className="label">Telefone</label>
+            <div className={`input-box${errors.telefone ? " error" : ""}`}>
               <MdPhone className="input-icon" />
               <input
                 type="tel"
                 inputMode="numeric"
                 placeholder="(00) 00000-0000"
                 value={telefoneLocal}
-                onChange={(e) =>
-                  setTelefoneLocal(formatarTelefone(e.target.value))
-                }
+                onChange={(e) => {
+                  setTelefoneLocal(formatarTelefone(e.target.value));
+                  setErrors((er) => ({ ...er, telefone: false }));
+                }}
               />
             </div>
             {errors.telefone && <p className="error-text">Telefone inválido</p>}
           </div>
-          <div className="label">Tipo de entrega:</div>
-          <div
-            className={`delivery-options ${errors.tipoEntrega ? "error" : ""}`}
-          >
-            <div
-              className={`delivery-btn ${
-                tipoEntrega === "entrega" ? "active" : ""
-              }`}
-              onClick={() => setTipoEntrega("entrega")}
-            >
-              🛵 Entrega
+
+          {/* TIPO DE ENTREGA */}
+          <div className="field">
+            <label className="label">Tipo de entrega</label>
+            <div className={`delivery-options${errors.tipoEntrega ? " error" : ""}`}>
+              <div
+                className={`delivery-btn${tipoEntrega === "entrega" ? " active" : ""}`}
+                onClick={() => {
+                  setTipoEntrega("entrega");
+                  setErrors((er) => ({ ...er, tipoEntrega: false }));
+                }}
+              >
+                <span className="delivery-icon">🛵</span>
+                <span className="delivery-label">Entrega</span>
+                <span className="delivery-sub">Cariús · Jucás</span>
+              </div>
+              <div
+                className={`delivery-btn${tipoEntrega === "retirada" ? " active" : ""}`}
+                onClick={() => {
+                  setTipoEntrega("retirada");
+                  setErrors((er) => ({ ...er, tipoEntrega: false }));
+                }}
+              >
+                <span className="delivery-icon">📍</span>
+                <span className="delivery-label">Retirada</span>
+                <span className="delivery-sub">No local · Grátis</span>
+              </div>
             </div>
-            <div
-              className={`delivery-btn ${
-                tipoEntrega === "retirada" ? "active" : ""
-              }`}
-              onClick={() => setTipoEntrega("retirada")}
-            >
-              📍 Retirada no local
-            </div>
+            {errors.tipoEntrega && <p className="error-text">Selecione uma opção</p>}
           </div>
-          {errors.tipoEntrega && (
-            <p className="error-text">Selecione uma opção</p>
-          )}
+
+          {/* ENDEREÇO */}
           {tipoEntrega === "entrega" && (
-            <div className="fade-slide">
-              <div>
-                <div className={`input-box ${errors.cidade ? "error" : ""}`}>
-                  <MdLocalShipping className="input-icon" />
+            <div className="fade-slide address-block">
+              <div className="field">
+                <label className="label">Cidade</label>
+                <div className={`input-box${errors.cidade ? " error" : ""}`}>
+                  <MdLocationOn className="input-icon" />
                   <select
                     value={cidadeLocal}
-                    onChange={(e) => setCidadeLocal(e.target.value)}
+                    onChange={(e) => {
+                      setCidadeLocal(e.target.value);
+                      setErrors((er) => ({ ...er, cidade: false }));
+                    }}
                   >
-                    <option value="">Selecione a cidade</option>
-                    <option value="Cariús">Cariús - 3,00 R$</option>
-                    <option value="Jucás">Jucás - 5,00 R$</option>
+                    <option value="">Selecione</option>
+                    <option value="Cariús">Cariús — frete R$ 3,00</option>
+                    <option value="Jucás">Jucás — frete R$ 5,00</option>
                   </select>
                   <MdKeyboardArrowDown className="select-arrow" />
                 </div>
-                {errors.cidade && (
-                  <p className="error-text">Campo obrigatório</p>
-                )}
+                {errors.cidade && <p className="error-text">Obrigatório</p>}
               </div>
-              <div>
-                <div className={`input-box ${errors.rua ? "error" : ""}`}>
-                  <input
-                    placeholder="Rua"
-                    value={rua}
-                    onChange={(e) => setRua(e.target.value)}
-                  />
+
+              <div className="rua-numero-row">
+                <div className="field rua-field">
+                  <label className="label">Rua</label>
+                  <div className={`input-box${errors.rua ? " error" : ""}`}>
+                    <input
+                      placeholder="Nome da rua"
+                      value={rua}
+                      onChange={(e) => {
+                        setRua(e.target.value);
+                        setErrors((er) => ({ ...er, rua: false }));
+                      }}
+                    />
+                  </div>
+                  {errors.rua && <p className="error-text">Obrigatório</p>}
                 </div>
-                {errors.rua && <p className="error-text">Campo obrigatório</p>}
-              </div>
-              <div>
-                <div className={`input-box ${errors.numero ? "error" : ""}`}>
-                  <input
-                    type="number"
-                    placeholder="Número"
-                    value={numero}
-                    onChange={(e) => setNumero(e.target.value)}
-                  />
+                <div className="field numero-field">
+                  <label className="label">Nº</label>
+                  <div className={`input-box${errors.numero ? " error" : ""}`}>
+                    <input
+                      type="number"
+                      placeholder="0"
+                      value={numero}
+                      onChange={(e) => {
+                        setNumero(e.target.value);
+                        setErrors((er) => ({ ...er, numero: false }));
+                      }}
+                    />
+                  </div>
+                  {errors.numero && <p className="error-text">Obrig.</p>}
                 </div>
-                {errors.numero && (
-                  <p className="error-text">Campo obrigatório</p>
-                )}
               </div>
-              <div>
-                <div
-                  className={`input-box ${errors.referencia ? "error" : ""}`}
-                >
+
+              <div className="field">
+                <label className="label">Referência</label>
+                <div className={`input-box${errors.referencia ? " error" : ""}`}>
                   <input
-                    placeholder="Referência"
+                    placeholder="Ex: próximo ao mercado"
                     value={referencia}
-                    onChange={(e) => setReferencia(e.target.value)}
+                    onChange={(e) => {
+                      setReferencia(e.target.value);
+                      setErrors((er) => ({ ...er, referencia: false }));
+                    }}
                   />
                 </div>
-                {errors.referencia && (
-                  <p className="error-text">Campo obrigatório</p>
-                )}
+                {errors.referencia && <p className="error-text">Obrigatório</p>}
               </div>
             </div>
           )}
+
           <div className="footer">
             <button
-              className={`button ${loading ? "loading" : ""}`}
+              className={`button${loading ? " loading" : ""}`}
               onClick={handleContinuar}
+              disabled={loading}
             >
               {loading ? <div className="spinner" /> : "Fazer pedido →"}
             </button>
