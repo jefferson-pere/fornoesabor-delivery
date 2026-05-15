@@ -164,7 +164,7 @@ export function Home() {
                 <label className="label">Nome</label>
                 <div className={`input-box${errors.nome ? " error" : ""}`}>
                   <input
-                    placeholder="João"
+                    placeholder="nome"
                     value={nomeLocal}
                     onChange={(e) => {
                       setNomeLocal(e.target.value);
@@ -178,7 +178,7 @@ export function Home() {
                 <label className="label">Sobrenome</label>
                 <div className={`input-box${errors.sobrenome ? " error" : ""}`}>
                   <input
-                    placeholder="Silva"
+                    placeholder="sobrenome"
                     value={sobrenomeLocal}
                     onChange={(e) => {
                       setSobrenomeLocal(e.target.value);
