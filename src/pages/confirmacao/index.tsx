@@ -4,12 +4,14 @@ import { Container } from "./style";
 import { MdCheckCircle } from "react-icons/md";
 import { usePedido } from "../../hook/usePedido";
 import { BiSolidError } from "react-icons/bi";
+
 export function Confirmacao() {
   const navigate = useNavigate();
   const location = useLocation();
   const erro = location.state?.erro;
   const mensagem = location.state?.mensagem;
-  const { resetPedido, nome } = usePedido();
+  const { resetPedido, nome, cidade } = usePedido();
+  const tempoEstimado = cidade === "Retirada" ? "20–30 min" : "40–60 min";
 
   useEffect(() => {
     if (!erro) {
@@ -66,6 +68,11 @@ export function Confirmacao() {
                 ? "Não foi possível concluir o envio"
                 : "Obrigado pela preferência 🙌"}
             </span>
+            {!erro && (
+              <div style={{ marginTop: 10, fontSize: 14, color: "#555" }}>
+                ⏱ Tempo estimado: <strong>{tempoEstimado}</strong>
+              </div>
+            )}
           </div>
           {!erro && (
             <button

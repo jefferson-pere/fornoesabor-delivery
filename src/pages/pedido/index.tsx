@@ -9,6 +9,7 @@ import {
 } from "../../data/menu";
 import { usePedido } from "../../hook/usePedido";
 import { MdDelete, MdEdit } from "react-icons/md";
+import { StepProgress } from "../../components/StepProgress";
 export function Pedido() {
   const { step, setStep, itens, setItens, cidade } = usePedido();
   const navigate = useNavigate();
@@ -113,6 +114,7 @@ export function Pedido() {
   return (
     <Container>
       <div className="content">
+        <StepProgress current={2} />
         <div className="hero">
           <img src="/banner.png" />
           <div className="hero-overlay">

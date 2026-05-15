@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Container } from "./style";
 import { usePedido } from "../../hook/usePedido";
 import { MdPix, MdCreditCard, MdAttachMoney } from "react-icons/md";
+import { StepProgress } from "../../components/StepProgress";
 
 export function Pagamento() {
   const {
@@ -63,6 +64,7 @@ export function Pagamento() {
   return (
     <Container>
       <div className="content">
+        <StepProgress current={3} />
         <div className="hero">
           <img src="/banner.png" />
           <div className="hero-overlay">
@@ -131,7 +133,7 @@ export function Pagamento() {
               <span>Cartão</span>
               <p className="option-desc">
                 Pagar com entregador na hora da entrega
-                <br /> Acescimo de R$ 1,00
+                <br /> Acréscimo de R$ 1,00
               </p>
             </div>
           </div>

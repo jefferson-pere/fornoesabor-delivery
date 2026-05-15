@@ -1,7 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container } from "./style";
 import { usePedido } from "../../hook/usePedido";
+import { StepProgress } from "../../components/StepProgress";
+
+const formatarPagamento = (p: string) => {
+  if (p === "pix") return "PIX";
+  if (p === "cartao") return "Cartão";
+  if (p === "dinheiro") return "Dinheiro";
+  return p;
+};
 export function Revisao() {
   const {
     step,
@@ -16,6 +24,8 @@ export function Revisao() {
     observacao,
   } = usePedido();
   const navigate = useNavigate();
+  const [loadingConfirm, setLoadingConfirm] = useState(false);
+
   useEffect(() => {
     if (step < 3) navigate("/");
   }, [step, navigate]);
@@ -34,25 +44,51 @@ export function Revisao() {
   return (
     <Container>
       <div className="content">
-        <div className="hero">
-          <img src="/banner.png" />
-          <div className="hero-overlay">
-            <div className="hero-title">Revisar Pedido</div>
-          </div>
+        <StepProgress current={4} />
+        <div className="page-header">
+          <span className="page-title">Revisar Pedido</span>
         </div>
         <div className="form">
-          <div className="card">
-            <span className="label">Cliente</span>
-            <strong>{nome}</strong>
-            <span className="sub">{telefone}</span>
-          </div>
-          <div className="card">
-            <span className="label">Entrega</span>
-            <strong>{cidade}</strong>
-            {cidade !== "Retirada" && (
-              <span className="sub">
-                {endereco.rua}, {endereco.numero} - {endereco.referencia}
-              </span>
+          <div className="summary-card">
+            <div className="summary-row">
+              <span className="summary-label">Cliente</span>
+              <div className="summary-value">
+                <strong>{nome}</strong>
+                <span>{telefone}</span>
+              </div>
+            </div>
+            <div className="summary-divider" />
+            <div className="summary-row">
+              <span className="summary-label">Entrega</span>
+              <div className="summary-value">
+                <strong>{cidade}</strong>
+                {cidade !== "Retirada" && (
+                  <span>
+                    {endereco.rua}, {endereco.numero} — {endereco.referencia}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="summary-divider" />
+            <div className="summary-row">
+              <span className="summary-label">Pagamento</span>
+              <div className="summary-value">
+                <strong>{formatarPagamento(pagamento)}</strong>
+                {pagamento === "dinheiro" && troco && (
+                  <span>Troco para {troco}</span>
+                )}
+              </div>
+            </div>
+            {observacao && (
+              <>
+                <div className="summary-divider" />
+                <div className="summary-row">
+                  <span className="summary-label">Obs.</span>
+                  <div className="summary-value">
+                    <span>{observacao}</span>
+                  </div>
+                </div>
+              </>
             )}
           </div>
           <div className="card">
@@ -83,19 +119,6 @@ export function Revisao() {
               </div>
             ))}
           </div>
-          <div className="card">
-            <span className="label">Pagamento</span>
-            <strong>{pagamento}</strong>
-            {pagamento === "dinheiro" && troco && (
-              <span className="sub">Troco para R$ {troco}</span>
-            )}
-          </div>
-          {observacao && (
-            <div className="card">
-              <span className="label">Observação</span>
-              <span className="sub">{observacao}</span>
-            </div>
-          )}
           <div className="total-card">
             <div className="row">
               <span>Subtotal</span>
@@ -131,64 +154,59 @@ export function Revisao() {
               <strong>R$ {total.toFixed(2)}</strong>
             </div>
           </div>
-          <div className="footer">
-            <button className="button cancel" onClick={() => navigate(-1)}>
-              Voltar
-            </button>
-            <button
-              className="button"
-              onClick={async () => {
-                try {
-                  const pedido = {
-                    nomeCliente: nome,
-                    telefone,
-                    cidade,
-                    endereco: cidade !== "Retirada" ? endereco : null,
-                    itens,
-                    pagamento,
-                    troco,
-                    observacao,
-                  };
-                  const res = await fetch(
-                    `${import.meta.env.VITE_API_URL}/orders`,
-                    {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                        "x-api-key": import.meta.env.VITE_API_KEY,
-                      },
-                      body: JSON.stringify(pedido),
+        </div>
+        <div className="footer">
+          <button className="button cancel" onClick={() => navigate(-1)}>
+            Voltar
+          </button>
+          <button
+            className={`button${loadingConfirm ? " loading" : ""}`}
+            disabled={loadingConfirm}
+            onClick={async () => {
+              if (loadingConfirm) return;
+              setLoadingConfirm(true);
+              try {
+                const pedido = {
+                  nomeCliente: nome,
+                  telefone,
+                  cidade,
+                  endereco: cidade !== "Retirada" ? endereco : null,
+                  itens,
+                  pagamento,
+                  troco,
+                  observacao,
+                };
+                const res = await fetch(
+                  `${import.meta.env.VITE_API_URL}/orders`,
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "x-api-key": import.meta.env.VITE_API_KEY,
                     },
-                  );
-                  if (!res.ok) {
-                    navigate("/confirmacao", {
-                      state: {
-                        erro: true,
-                        mensagem: "Erro ao enviar pedido para o servidor",
-                      },
-                    });
-                    return;
-                  }
-                  setStep(4);
+                    body: JSON.stringify(pedido),
+                  },
+                );
+                if (!res.ok) {
                   navigate("/confirmacao", {
-                    state: {
-                      erro: false,
-                    },
+                    state: { erro: true, mensagem: "Erro ao enviar pedido para o servidor" },
                   });
-                } catch (err) {
-                  console.error(err);
-                  navigate("/confirmacao", {
-                    state: {
-                      erro: true,
-                      mensagem: "Erro de conexão com servidor",
-                    },
-                  });
+                  return;
                 }
-              }}
-            >
-              Confirmar Pedido
-            </button>
-          </div>
+                setStep(4);
+                navigate("/confirmacao", { state: { erro: false } });
+              } catch (err) {
+                console.error(err);
+                navigate("/confirmacao", {
+                  state: { erro: true, mensagem: "Erro de conexão com servidor" },
+                });
+              } finally {
+                setLoadingConfirm(false);
+              }
+            }}
+          >
+            {loadingConfirm ? <div className="spinner" /> : "Confirmar Pedido"}
+          </button>
         </div>
       </div>
     </Container>

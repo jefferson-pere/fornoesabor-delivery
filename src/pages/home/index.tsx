@@ -6,6 +6,7 @@ import { MdPerson, MdPhone, MdLocalShipping } from "react-icons/md";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { getStoreStatus } from "../../services/store";
 import { StoreBlock } from "../StoreBlock";
+import { StepProgress } from "../../components/StepProgress";
 
 export function Home() {
   const {
@@ -22,7 +23,11 @@ export function Home() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [tipoEntrega, setTipoEntrega] = useState<"entrega" | "retirada" | null>(
-    cidade === "Retirada" ? "retirada" : cidade ? "entrega" : null,
+    cidade === "Retirada"
+      ? "retirada"
+      : cidade
+        ? "entrega"
+        : (localStorage.getItem("cliente_tipoEntrega") as "entrega" | "retirada" | null) || null,
   );
   const [loadingStore, setLoadingStore] = useState(true);
   const [store, setStore] = useState({
@@ -31,20 +36,28 @@ export function Home() {
     mensagem: "",
   });
   const [nomeLocal, setNomeLocal] = useState(() => {
-    const partes = nome.split(" ");
-    return partes[0] || "";
+    if (nome) return nome.split(" ")[0] || "";
+    return localStorage.getItem("cliente_nome") || "";
   });
   const [sobrenomeLocal, setSobrenomeLocal] = useState(() => {
-    const partes = nome.split(" ");
-    return partes.slice(1).join(" ") || "";
+    if (nome) return nome.split(" ").slice(1).join(" ") || "";
+    return localStorage.getItem("cliente_sobrenome") || "";
   });
-  const [telefoneLocal, setTelefoneLocal] = useState(telefone);
-  const [cidadeLocal, setCidadeLocal] = useState(
-    cidade === "Retirada" ? "" : cidade,
+  const [telefoneLocal, setTelefoneLocal] = useState(
+    () => telefone || localStorage.getItem("cliente_telefone") || "",
   );
-  const [rua, setRua] = useState(endereco.rua);
-  const [numero, setNumero] = useState(endereco.numero);
-  const [referencia, setReferencia] = useState(endereco.referencia);
+  const [cidadeLocal, setCidadeLocal] = useState(
+    cidade === "Retirada" ? "" : cidade || localStorage.getItem("cliente_cidade") || "",
+  );
+  const [rua, setRua] = useState(
+    () => endereco.rua || localStorage.getItem("cliente_rua") || "",
+  );
+  const [numero, setNumero] = useState(
+    () => endereco.numero || localStorage.getItem("cliente_numero") || "",
+  );
+  const [referencia, setReferencia] = useState(
+    () => endereco.referencia || localStorage.getItem("cliente_referencia") || "",
+  );
   const [errors, setErrors] = useState({
     nome: false,
     sobrenome: false,
@@ -98,13 +111,19 @@ export function Home() {
       const nomeCompleto = `${nomeLocal.trim()} ${sobrenomeLocal.trim()}`;
       setNome(nomeCompleto);
       setTelefone(telefoneLocal);
+
+      localStorage.setItem("cliente_nome", nomeLocal.trim());
+      localStorage.setItem("cliente_sobrenome", sobrenomeLocal.trim());
+      localStorage.setItem("cliente_telefone", telefoneLocal);
+      localStorage.setItem("cliente_tipoEntrega", tipoEntrega || "");
+
       if (tipoEntrega === "retirada") {
         setCidade("Retirada");
-        setEndereco({
-          rua: "",
-          numero: "",
-          referencia: "",
-        });
+        setEndereco({ rua: "", numero: "", referencia: "" });
+        localStorage.removeItem("cliente_cidade");
+        localStorage.removeItem("cliente_rua");
+        localStorage.removeItem("cliente_numero");
+        localStorage.removeItem("cliente_referencia");
       } else {
         setCidade(cidadeLocal);
         setEndereco({
@@ -112,6 +131,10 @@ export function Home() {
           numero: numero.trim(),
           referencia: referencia.trim(),
         });
+        localStorage.setItem("cliente_cidade", cidadeLocal);
+        localStorage.setItem("cliente_rua", rua.trim());
+        localStorage.setItem("cliente_numero", numero.trim());
+        localStorage.setItem("cliente_referencia", referencia.trim());
       }
       setStep(2);
       navigate("/pedido");
@@ -129,6 +152,7 @@ export function Home() {
   return (
     <Container>
       <div className="content">
+        <StepProgress current={1} />
         <div className="hero">
           <img
             src="/banner.png"
@@ -171,6 +195,8 @@ export function Home() {
             <div className={`input-box ${errors.telefone ? "error" : ""}`}>
               <MdPhone className="input-icon" />
               <input
+                type="tel"
+                inputMode="numeric"
                 placeholder="(00) 00000-0000"
                 value={telefoneLocal}
                 onChange={(e) =>
