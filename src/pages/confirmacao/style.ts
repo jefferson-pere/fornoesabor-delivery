@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Container = styled.div`
+export const Container = styled.div<{ erro?: boolean }>`
   width: 100%;
   min-height: 100vh;
   background: #f5f5f5;
@@ -15,17 +15,13 @@ export const Container = styled.div`
     background: #fff;
     min-height: 100vh;
   }
-.icon-error{
-  fill: #d90000;
-  svg{
-    fill: #d90000;
-  }
-}
+
   /* HERO */
   .hero {
     position: relative;
     height: 220px;
     overflow: hidden;
+    flex-shrink: 0;
   }
 
   .hero img {
@@ -37,174 +33,218 @@ export const Container = styled.div`
 
   .hero-overlay {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    padding: 16px;
-    width: 100%;
-    color: #fff;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-    z-index: 2;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px 18px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.65) 100%);
   }
 
   .hero-title {
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
   }
 
   /* CARD */
   .card {
-    background: #fff;
-    margin: 16px;
-    border-radius: 18px;
-    padding: 24px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px 28px;
     text-align: center;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-    border: 1px solid #eee;
     animation: fadeUp 0.4s ease;
   }
 
-  .icon {
-    font-size: 64px;
-    color: #22c55e;
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ÍCONE */
+  .icon-wrap {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+
+  .icon-wrap.success { background: #f0fdf4; }
+  .icon-wrap.error   { background: #fff5f5; }
+
+  .icon-x {
+    font-size: 30px;
+    font-weight: 900;
+    color: #d90000;
+  }
+
+  /* CHECKMARK SVG ANIMADO */
+  .check-svg {
+    width: 56px;
+    height: 56px;
+  }
+
+  .check-circle {
+    fill: none;
+    stroke: #22c55e;
+    stroke-width: 3;
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    animation: drawCircle 0.6s ease forwards;
+  }
+
+  .check-mark {
+    fill: none;
+    stroke: #22c55e;
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: drawCheck 0.4s ease 0.5s forwards;
+  }
+
+  @keyframes drawCircle {
+    to { stroke-dashoffset: 0; }
+  }
+
+  @keyframes drawCheck {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* TEXTOS */
+  h1 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #111;
+    margin: 0 0 8px;
+    line-height: 1.3;
+  }
+
+  .desc {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin: 0 0 24px;
+  }
+
+  /* COUNTDOWN */
+  .countdown-bar {
+    width: 100%;
+    height: 4px;
+    background: #e5e7eb;
+    border-radius: 99px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .countdown-fill {
+    height: 100%;
+    width: 100%;
+    background: #22c55e;
+    border-radius: 99px;
+    animation: shrink linear forwards;
+  }
+
+  @keyframes shrink {
+    from { width: 100%; }
+    to   { width: 0%; }
+  }
+
+  .countdown-text {
+    font-size: 13px;
+    color: #999;
+    margin: 0 0 20px;
+  }
+
+  /* BOTÕES */
+  .btn-whatsapp {
+    width: 100%;
+    height: 52px;
+    border-radius: 14px;
+    border: none;
+    background: #22c55e;
+    color: #fff;
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.2s, transform 0.1s;
     margin-bottom: 10px;
   }
 
-  h1 {
-    font-size: 22px;
-    margin-bottom: 8px;
-    color: #222;
-  }
+  .btn-whatsapp:hover  { opacity: 0.9; }
+  .btn-whatsapp:active { transform: scale(0.97); }
 
-  p {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 16px;
-    line-height: 1.5;
-  }
-
-  .info {
-    font-size: 13px;
-    color: #444;
-    margin-bottom: 20px;
-  }
-
-  .button {
+  .btn-primary {
     width: 100%;
     height: 52px;
-    border-radius: 30px;
+    border-radius: 14px;
     border: none;
     background: #d90000;
     color: #fff;
-    font-weight: bold;
+    font-weight: 800;
     font-size: 16px;
     cursor: pointer;
-    transition: 0.2s;
-    margin-top: 10px;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-bottom: 10px;
   }
 
-  .button:hover {
-    opacity: 0.9;
+  .btn-primary:hover  { opacity: 0.9; }
+  .btn-primary:active { transform: scale(0.97); }
+
+  .btn-ghost {
+    width: 100%;
+    height: 44px;
+    border-radius: 12px;
+    border: 1.5px solid #e5e7eb;
+    background: transparent;
+    color: #999;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
   }
 
-  .button:active {
-    transform: scale(0.97);
-  }
-
-  .whatsapp {
-    background: #22c55e;
-  }
-
-  /* ANIMAÇÃO */
-  @keyframes fadeUp {
-    from {
-      opacity: 0;
-      transform: translateY(15px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+  .btn-ghost:hover { background: #f5f5f5; }
 
   /* DESKTOP */
   @media (min-width: 1024px) {
     .content {
-      width: 100%;
       max-width: 100%;
-      height: 100vh;
-
       display: grid;
-      grid-template-columns: 1fr 520px;
-
-      overflow: hidden;
-      background: #fff;
+      grid-template-columns: 1fr 480px;
     }
 
-    /* IMAGEM FIXA */
     .hero {
       height: 100vh;
       position: sticky;
       top: 0;
-      overflow: hidden;
     }
 
-    .hero img {
-      width: 100%;
-      height: 100vh;
-      object-fit: cover;
-    }
+    .hero img { height: 100vh; }
 
-    .hero-overlay {
-      padding: 40px;
-    }
+    .hero-overlay { padding: 40px; }
+    .hero-title   { font-size: 38px; }
 
-    .hero-title {
-      font-size: 42px;
-    }
-
-    /* LADO DIREITO */
     .card {
-      margin: 0;
-      height: 100vh;
-
-      overflow-y: auto;
-
-      border-radius: 0;
-      border: none;
-      box-shadow: none;
-
-      display: flex;
-      flex-direction: column;
+      padding: 0 48px;
       justify-content: center;
-
-      padding: 40px;
     }
 
-    .icon {
-      font-size: 90px;
-      margin-bottom: 20px;
-    }
+    h1       { font-size: 28px; }
+    .desc    { font-size: 15px; }
 
-    h1 {
-      font-size: 36px;
-      margin-bottom: 16px;
-    }
-
-    p {
-      font-size: 18px;
-      line-height: 1.7;
-      margin-bottom: 24px;
-    }
-
-    .info {
-      font-size: 15px;
-      margin-bottom: 30px;
-    }
-
-    .button {
-      height: 58px;
-      font-size: 18px;
-    }
+    .btn-whatsapp,
+    .btn-primary { height: 56px; font-size: 17px; }
   }
 `;
