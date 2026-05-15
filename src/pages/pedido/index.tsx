@@ -255,6 +255,21 @@ export function Pedido() {
                 </section>
               )}
 
+              {/* OBSERVAÇÃO */}
+              <section className="section">
+                <div className="section-label">
+                  Observação
+                  <span className="optional-tag">opcional</span>
+                </div>
+                <textarea
+                  className="obs-input"
+                  placeholder="Alguma observação?"
+                  value={observacaoItem}
+                  onChange={(e) => setObservacaoItem(e.target.value)}
+                  rows={2}
+                />
+              </section>
+
               {/* MAIONESE */}
               <section className="section">
                 <div className="maionese-row">
@@ -306,21 +321,6 @@ export function Pedido() {
                     <option key={`${r}-1l`} value={`${r}-1l`}>{r} 1L — R$ 8,00</option>
                   ))}
                 </select>
-              </section>
-
-              {/* OBSERVAÇÃO */}
-              <section className="section">
-                <div className="section-label">
-                  Observação
-                  <span className="optional-tag">opcional</span>
-                </div>
-                <textarea
-                  className="obs-input"
-                  placeholder="Alguma observação?"
-                  value={observacaoItem}
-                  onChange={(e) => setObservacaoItem(e.target.value)}
-                  rows={2}
-                />
               </section>
 
               {/* AÇÕES DO COMBO */}
