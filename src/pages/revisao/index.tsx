@@ -44,6 +44,15 @@ export function Revisao() {
   return (
     <Container>
       <div className="content">
+        <div className="desktop-side">
+          <img src="/banner.png" alt="" onError={(e) => (e.currentTarget.style.display = "none")} />
+          <div className="side-overlay">
+            <div className="side-badge">🔥 Pedido online</div>
+            <div className="side-title">Forno e Sabor</div>
+            <p className="side-sub">Quase lá! Confirme seu pedido</p>
+          </div>
+        </div>
+
         <StepProgress current={4} />
         <div className="page-header">
           <span className="page-title">Revisar Pedido</span>

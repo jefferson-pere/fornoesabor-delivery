@@ -9,7 +9,7 @@ export const Container = styled.div<{ erro?: boolean }>`
 
   .content {
     width: 100%;
-    max-width: 420px;
+    max-width: 480px;
     display: flex;
     flex-direction: column;
     background: #fff;
@@ -54,7 +54,7 @@ export const Container = styled.div<{ erro?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 32px 24px 28px;
+    padding: 32px 24px max(28px, env(safe-area-inset-bottom, 28px));
     text-align: center;
     animation: fadeUp 0.4s ease;
   }
@@ -221,6 +221,9 @@ export const Container = styled.div<{ erro?: boolean }>`
   @media (min-width: 1024px) {
     .content {
       max-width: 100%;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
       display: grid;
       grid-template-columns: 1fr 480px;
     }
@@ -239,6 +242,7 @@ export const Container = styled.div<{ erro?: boolean }>`
     .card {
       padding: 0 48px;
       justify-content: center;
+      overflow-y: auto;
     }
 
     h1       { font-size: 28px; }
@@ -246,5 +250,11 @@ export const Container = styled.div<{ erro?: boolean }>`
 
     .btn-whatsapp,
     .btn-primary { height: 56px; font-size: 17px; }
+  }
+
+  @media (min-width: 1440px) {
+    .content {
+      grid-template-columns: 1fr 540px;
+    }
   }
 `;

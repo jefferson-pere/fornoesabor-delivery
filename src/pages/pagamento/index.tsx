@@ -68,6 +68,15 @@ export function Pagamento() {
   return (
     <Container>
       <div className="content">
+        <div className="desktop-side">
+          <img src="/banner.png" alt="" onError={(e) => (e.currentTarget.style.display = "none")} />
+          <div className="side-overlay">
+            <div className="side-badge">🔥 Pedido online</div>
+            <div className="side-title">Forno e Sabor</div>
+            <p className="side-sub">Como você vai pagar?</p>
+          </div>
+        </div>
+
         <StepProgress current={3} />
 
         <div className="page-header">

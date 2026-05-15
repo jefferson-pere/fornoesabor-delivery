@@ -9,11 +9,16 @@ export const Container = styled.div`
 
   .content {
     width: 100%;
-    max-width: 420px;
+    max-width: 480px;
     display: flex;
     flex-direction: column;
     background: #fff;
     min-height: 100vh;
+  }
+
+  /* PAINEL LATERAL DESKTOP (oculto no mobile) */
+  .desktop-side {
+    display: none;
   }
 
   /* HEADER COMPACTO */
@@ -165,7 +170,7 @@ export const Container = styled.div`
 
   /* FOOTER */
   .footer {
-    padding: 12px 16px 20px;
+    padding: 12px 16px max(20px, env(safe-area-inset-bottom, 20px));
     display: flex;
     gap: 10px;
     background: #fff;
@@ -174,7 +179,7 @@ export const Container = styled.div`
 
   .button {
     flex: 1;
-    height: 50px;
+    height: 52px;
     border-radius: 10px;
     border: none;
     background: #d90000;
@@ -219,37 +224,109 @@ export const Container = styled.div`
     }
   }
 
-  /* DESKTOP */
+  /* ── DESKTOP ── */
   @media (min-width: 1024px) {
     .content {
-      width: 100%;
       max-width: 100%;
+      width: 100%;
       height: 100vh;
+      overflow: hidden;
       display: grid;
       grid-template-columns: 1fr 560px;
+      grid-template-rows: auto auto 1fr auto;
+    }
+
+    /* Painel lateral */
+    .desktop-side {
+      display: block;
+      position: relative;
+      grid-column: 1;
+      grid-row: 1 / -1;
       overflow: hidden;
-      background: #fff;
+    }
+
+    .desktop-side img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .side-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 40px;
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.05) 0%,
+        rgba(0, 0, 0, 0.65) 100%
+      );
+    }
+
+    .side-badge {
+      display: inline-flex;
+      align-self: flex-start;
+      background: #d90000;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .side-title {
+      font-size: 36px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .side-sub {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: 6px;
+    }
+
+    /* Conteúdo na coluna direita */
+    .content > *:not(.desktop-side) {
+      grid-column: 2;
     }
 
     .page-header {
-      display: none;
+      padding: 24px 36px 12px;
     }
 
     .form {
-      height: 100vh;
+      padding: 4px 36px 16px;
       overflow-y: auto;
-      padding: 32px 40px 20px;
-      gap: 14px;
+      min-height: 0;
+      gap: 12px;
     }
 
     .footer {
-      padding: 10px 40px 40px;
+      padding: 12px 36px 36px;
       border-top: 1px solid #f0f0f0;
     }
 
     .button {
       height: 56px;
       font-size: 16px;
+    }
+
+    .row.total {
+      font-size: 16px;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .content {
+      grid-template-columns: 1fr 600px;
     }
   }
 `;

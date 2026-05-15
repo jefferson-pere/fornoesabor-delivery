@@ -11,11 +11,16 @@ export const Container = styled.div`
 
   .content {
     width: 100%;
-    max-width: 420px;
+    max-width: 480px;
     display: flex;
     flex-direction: column;
     background: #fff;
     min-height: 100vh;
+  }
+
+  /* PAINEL LATERAL DESKTOP (oculto no mobile) */
+  .desktop-side {
+    display: none;
   }
 
   /* HEADER */
@@ -319,8 +324,8 @@ export const Container = styled.div`
   }
 
   .qtd-btn {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: 8px;
     border: none;
     font-size: 18px;
@@ -364,6 +369,7 @@ export const Container = styled.div`
   .chips {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
   }
 
   .chips.wrap {
@@ -423,7 +429,7 @@ export const Container = styled.div`
     border: 1.5px solid #eee;
     border-radius: 12px;
     padding: 10px 12px;
-    font-size: 14px;
+    font-size: 16px;
     color: #333;
     background: #fafafa;
     outline: none;
@@ -445,7 +451,7 @@ export const Container = styled.div`
     border: 1.5px solid #eee;
     border-radius: 12px;
     padding: 10px 12px;
-    font-size: 14px;
+    font-size: 16px;
     color: #333;
     background: #fafafa;
     resize: none;
@@ -569,8 +575,8 @@ export const Container = styled.div`
   }
 
   .icon-btn {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: 8px;
     border: 1px solid #eee;
     background: #fff;
@@ -592,7 +598,7 @@ export const Container = styled.div`
   /* FOOTER FIXO */
   .footer {
     border-top: 1px solid #f0f0f0;
-    padding: 12px 16px 24px;
+    padding: 12px 16px max(24px, env(safe-area-inset-bottom, 24px));
     background: #fff;
     display: flex;
     flex-direction: column;
@@ -635,7 +641,7 @@ export const Container = styled.div`
 
   .btn-continue {
     flex: 1;
-    height: 50px;
+    height: 52px;
     border-radius: 10px;
     border: none;
     background: #d90000;
@@ -656,18 +662,92 @@ export const Container = styled.div`
     cursor: not-allowed;
   }
 
-  /* DESKTOP */
+  /* ── DESKTOP ── */
   @media (min-width: 1024px) {
     .content {
-      max-width: 560px;
+      max-width: 100%;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 600px;
+      grid-template-rows: auto auto 1fr auto;
+    }
+
+    /* Painel lateral */
+    .desktop-side {
+      display: block;
+      position: relative;
+      grid-column: 1;
+      grid-row: 1 / -1;
+      overflow: hidden;
+    }
+
+    .desktop-side img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .side-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 40px;
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.05) 0%,
+        rgba(0, 0, 0, 0.65) 100%
+      );
+    }
+
+    .side-badge {
+      display: inline-flex;
+      align-self: flex-start;
+      background: #d90000;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .side-title {
+      font-size: 36px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .side-sub {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: 6px;
+    }
+
+    /* Conteúdo na coluna direita */
+    .content > *:not(.desktop-side) {
+      grid-column: 2;
+    }
+
+    .page-header {
+      padding: 20px 28px 12px;
     }
 
     .form {
-      padding: 16px 24px;
+      padding: 4px 28px 8px;
+      overflow-y: auto;
+      min-height: 0;
     }
 
     .footer {
-      padding: 14px 24px 32px;
+      padding: 12px 28px 28px;
     }
 
     .combo-grid {
@@ -682,6 +762,17 @@ export const Container = styled.div`
     .btn-continue {
       height: 52px;
       font-size: 16px;
+    }
+
+    .select-input,
+    .obs-input {
+      font-size: 14px;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .content {
+      grid-template-columns: 1fr 640px;
     }
   }
 `;

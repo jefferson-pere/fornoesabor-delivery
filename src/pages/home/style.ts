@@ -153,7 +153,7 @@ export const Container = styled.div`
     border: none;
     outline: none;
     background: transparent;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 500;
     color: #222;
     min-width: 0;
@@ -251,7 +251,7 @@ export const Container = styled.div`
 
   /* FOOTER */
   .footer {
-    padding: 4px 0 8px;
+    padding: 4px 16px max(8px, env(safe-area-inset-bottom, 8px));
     margin-top: auto;
   }
 
@@ -296,8 +296,10 @@ export const Container = styled.div`
     .content {
       max-width: 100%;
       width: 100%;
+      height: 100vh;
+      overflow: hidden;
       display: grid;
-      grid-template-columns: 1fr 500px;
+      grid-template-columns: 1fr 520px;
       grid-template-rows: auto 1fr;
     }
 
@@ -326,18 +328,35 @@ export const Container = styled.div`
     }
 
     .form {
-      padding: 20px 36px 32px;
+      padding: 20px 36px 12px;
       overflow-y: auto;
+      min-height: 0;
       gap: 14px;
+    }
+
+    .footer {
+      padding: 8px 36px 32px;
+      margin-top: 0;
     }
 
     .input-box {
       min-height: 52px;
     }
 
+    .input-box input,
+    .input-box select {
+      font-size: 15px;
+    }
+
     .button {
       height: 58px;
       font-size: 18px;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .content {
+      grid-template-columns: 1fr 560px;
     }
   }
 `;
