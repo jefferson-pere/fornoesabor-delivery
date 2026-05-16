@@ -10,7 +10,26 @@ export const Container = styled.div`
   min-width: 320px;
 
   width: 100%;
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
+    button {
+      background: transparent;
+      border: none;
+      font-size: 13px;
+      background: #ddd;
+      padding: 2px 6px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+
+      &:hover {
+        background: #ccc;
+      }
+    }
+  }
   .header {
     display: flex;
     justify-content: space-between;

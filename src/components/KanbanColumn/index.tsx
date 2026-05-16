@@ -27,13 +27,12 @@ export function KanbanColumn({
         <h2>{title}</h2>
 
         <div className="right">
-          <span>{orders.length}</span>
-
           {onToggleCollapse && (
             <button onClick={onToggleCollapse}>
               {collapsed ? "Mostrar" : "Ocultar"}
             </button>
           )}
+          <span>{orders.length}</span>
         </div>
       </div>
 
