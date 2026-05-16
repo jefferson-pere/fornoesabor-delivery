@@ -19,8 +19,6 @@ export async function getStoreStatus(): Promise<StoreStatusType> {
 export async function updateStoreStatus(
   data: StoreStatusType,
 ): Promise<StoreStatusType> {
-  console.log("📤 ENVIANDO:", data);
-
   const res = await fetch(`${API_URL}/store`, {
     method: "PATCH",
 
