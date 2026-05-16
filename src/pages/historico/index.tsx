@@ -46,7 +46,7 @@ export function Historico() {
   const filtered = useMemo(() => {
     return orders
       .filter((order) => {
-        const created = order.createdAt?.split(" ")[0] || "";
+        const created = order.createdAt?.split("T")[0] || "";
 
         const matchDate = !date || created === date;
 

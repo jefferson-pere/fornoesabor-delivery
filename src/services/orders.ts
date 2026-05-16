@@ -5,7 +5,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 export async function getOrders(all?: boolean) {
-  const res = await fetch(`${API_URL}/orders${all ? "?all=true" : ""}`);
+  const res = await fetch(`${API_URL}/orders${all ? "?all=true" : ""}`, {
+    headers: { "x-api-key": API_KEY },
+  });
 
   if (!res.ok) {
     throw new Error("Erro ao buscar pedidos");
@@ -45,7 +47,7 @@ export async function updatePayment(id: number, pago: boolean) {
 }
 export async function updateOrder(id: number, data: Partial<Pedido>) {
   const res = await fetch(`${API_URL}/orders/${id}`, {
-    method: "PATCH",
+    method: "PUT",
 
     headers: {
       "Content-Type": "application/json",
