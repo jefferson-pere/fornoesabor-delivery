@@ -91,4 +91,37 @@ export const GlobalStyles = createGlobalStyle`
   button:active {
     transform: scale(0.98);
   }
+
+  @page {
+    margin: 0;
+    size: auto;
+  }
+
+  @media print {
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: auto;
+      overflow: hidden;
+    }
+
+    body * {
+      visibility: hidden;
+    }
+
+    .receipt-print,
+    .receipt-print * {
+      visibility: visible;
+    }
+
+    .receipt-print {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+      page-break-after: avoid;
+    }
+  }
 `;

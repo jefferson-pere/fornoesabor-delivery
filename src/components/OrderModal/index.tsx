@@ -118,21 +118,9 @@ export function OrderModal({ order, onClose }: Props) {
                   <div className="linha">
                     <span>Rua: </span>
 
-                    <span className="valor">{currentOrder.endereco?.rua}</span>
-                  </div>
-
-                  <div className="linha">
-                    <span>Número: </span>
-
                     <span className="valor">
-                      {currentOrder.endereco?.numero}
-                    </span>
-                  </div>
-
-                  <div className="linha">
-                    <span>Referência: </span>
-
-                    <span className="valor">
+                      {currentOrder.endereco?.rua},{" "}
+                      {currentOrder.endereco?.numero} -{" "}
                       {currentOrder.endereco?.referencia}
                     </span>
                   </div>
@@ -142,27 +130,114 @@ export function OrderModal({ order, onClose }: Props) {
               <div className="financeiro">
                 <h3>Financeiro</h3>
 
-                <div className="linha">
-                  <span>Pagamento: </span>
+                {(() => {
+                  const totalCombos = currentOrder.itens.reduce(
+                    (acc, item) => acc + item.combo.preco,
+                    0,
+                  );
+                  const totalRefri = currentOrder.itens.reduce(
+                    (acc, item) => acc + (item.refriExtra?.preco || 0),
+                    0,
+                  );
+                  const totalMaionese = currentOrder.itens.reduce(
+                    (acc, item) => acc + item.maioneseQtd * 0.99,
+                    0,
+                  );
+                  const frete =
+                    currentOrder.cidade === "Retirada"
+                      ? 0
+                      : currentOrder.cidade === "Cariús"
+                        ? 3
+                        : 5;
+                  const taxaCartao =
+                    currentOrder.pagamento === "cartao" ? 1 : 0;
 
-                  <span className="valor">{currentOrder.pagamento}</span>
-                </div>
+                  return (
+                    <>
+                      <div className="linha">
+                        <span>Combos</span>
+                        <span className="valor">
+                          R$ {totalCombos.toFixed(2)}
+                        </span>
+                      </div>
 
-                {currentOrder.troco && (
-                  <div className="linha">
-                    <span>Troco: </span>
+                      {totalRefri > 0 && (
+                        <div className="linha">
+                          <span>Refri extra</span>
+                          <span className="valor">
+                            R$ {totalRefri.toFixed(2)}
+                          </span>
+                        </div>
+                      )}
 
-                    <span className="valor">{currentOrder.troco}</span>
-                  </div>
-                )}
+                      {totalMaionese > 0 && (
+                        <div className="linha">
+                          <span>Maionese</span>
+                          <span className="valor">
+                            R$ {totalMaionese.toFixed(2)}
+                          </span>
+                        </div>
+                      )}
 
-                <div className="linha">
-                  <span>Total: </span>
+                      <div className="linha">
+                        <span>Frete</span>
+                        <span className="valor">
+                          {frete === 0 ? "GRÁTIS" : `R$ ${frete.toFixed(2)}`}
+                        </span>
+                      </div>
 
-                  <span className="valor">
-                    R$ {currentOrder.total.toFixed(2)}
-                  </span>
-                </div>
+                      {taxaCartao > 0 && (
+                        <div className="linha">
+                          <span>Taxa cartão</span>
+                          <span className="valor">
+                            R$ {taxaCartao.toFixed(2)}
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="linha">
+                        <span>Pagamento</span>
+                        <span className="valor">{currentOrder.pagamento}</span>
+                      </div>
+
+                      {currentOrder.troco &&
+                        currentOrder.pagamento === "dinheiro" &&
+                        (() => {
+                          const valorInformado = Number(
+                            currentOrder
+                              .troco!.replace("R$", "")
+                              .replace(/\./g, "")
+                              .replace(",", ".")
+                              .trim(),
+                          );
+                          const troco = valorInformado - currentOrder.total;
+                          return (
+                            <>
+                              <div className="linha">
+                                <span>Valor informado</span>
+                                <span className="valor">
+                                  R$ {valorInformado.toFixed(2)}
+                                </span>
+                              </div>
+                              <div className="linha">
+                                <span>Troco</span>
+                                <span className="valor">
+                                  R$ {troco.toFixed(2)}
+                                </span>
+                              </div>
+                            </>
+                          );
+                        })()}
+
+                      <div className="linha total-linha">
+                        <span>Total</span>
+                        <span className="valor">
+                          R$ {currentOrder.total.toFixed(2)}
+                        </span>
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
@@ -177,7 +252,7 @@ export function OrderModal({ order, onClose }: Props) {
                     </div>
 
                     <div className="sabores">
-                      {Object.entries(item.sabores).map(([sabor, qtd]) => (
+                      {Object.entries(item.sabores).filter(([, qtd]) => qtd > 0).map(([sabor, qtd]) => (
                         <div key={sabor}>
                           {qtd}x {sabor}
                         </div>

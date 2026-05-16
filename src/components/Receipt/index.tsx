@@ -74,23 +74,21 @@ export function Receipt({ order }: Props) {
         {order.itens.map((item, index) => (
           <div key={index} className="itemCupom">
             <div className="line">
-              <strong>
-                Combo {index + 1} - {item.combo.nome}
-              </strong>
+              <div className="container-combo">
+                <strong>** Combo {index + 1} **</strong>
+                <strong>{item.combo.nome}</strong>
+              </div>
             </div>
 
-            {item.refri && <div className="obs">* Refri: {item.refri}</div>}
+            {item.refri && <div className="obs">** Refri: {item.refri}</div>}
 
             {item.refriExtra && (
-              <div className="obs">
-                * Refri Extra: {item.refriExtra.nome} R${" "}
-                {item.refriExtra.preco.toFixed(2)}
-              </div>
+              <div className="obs">** Refri Extra: {item.refriExtra.nome}</div>
             )}
 
             {item.maioneseQtd > 0 && (
               <div className="obs">
-                * Maionese caseira ({item.maioneseQtd}x)
+                ** Maionese caseira ({item.maioneseQtd}x)
               </div>
             )}
 
@@ -98,7 +96,7 @@ export function Receipt({ order }: Props) {
               <strong>Sabores:</strong>
             </div>
 
-            {Object.entries(item.sabores).map(([sabor, qtd]) => (
+            {Object.entries(item.sabores).filter(([, qtd]) => qtd > 0).map(([sabor, qtd]) => (
               <div key={sabor} className="flavor">
                 <span>{sabor}</span>
                 <span>{qtd}x</span>
@@ -141,6 +139,13 @@ export function Receipt({ order }: Props) {
           <strong>{frete === 0 ? "GRÁTIS" : `R$ ${frete.toFixed(2)}`}</strong>
         </div>
 
+        {order.pagamento === "cartao" && (
+          <div className="line">
+            <strong>Taxa cartão</strong>
+            <strong>R$ 1,00</strong>
+          </div>
+        )}
+
         <div className="line">
           <strong>Pagamento</strong>
           <strong>{order.pagamento.toUpperCase()}</strong>
@@ -151,12 +156,31 @@ export function Receipt({ order }: Props) {
           <strong>{order.pago ? "PAGO" : "NÃO PAGO"}</strong>
         </div>
 
-        {order.troco && (
-          <div className="line">
-            <strong>Troco</strong>
-            <strong>{order.troco}</strong>
-          </div>
-        )}
+        {order.troco &&
+          order.pagamento === "dinheiro" &&
+          (() => {
+            const valorInformado = Number(
+              order.troco
+                .replace("R$", "")
+                .replace(/\./g, "")
+                .replace(",", ".")
+                .trim(),
+            );
+            const troco = valorInformado - order.total;
+            return (
+              <>
+                <div className="line">
+                  <strong>Valor informado</strong>
+                  <strong>R$ {valorInformado.toFixed(2)}</strong>
+                </div>
+                <div className="divider" />
+                <div className="line totall">
+                  <strong>Troco</strong>
+                  <strong>R$ {troco.toFixed(2)}</strong>
+                </div>
+              </>
+            );
+          })()}
 
         {order.observacao && (
           <>

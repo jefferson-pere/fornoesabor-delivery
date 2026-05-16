@@ -11,12 +11,7 @@ export const Container = styled.div`
   @media print {
     display: block;
 
-    position: fixed;
-    inset: 0;
-
     background: #fff;
-
-    z-index: 999999;
 
     margin: 0;
     padding: 0;
@@ -45,6 +40,11 @@ export const Container = styled.div`
       padding: 0;
     }
   }
+  .container-combo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
   .receipt-print {
     margin: 0;
@@ -59,7 +59,7 @@ export const Container = styled.div`
 
     font-family: monospace;
 
-    font-size: 18px;
+    font-size: 12px;
 
     font-weight: 900;
 
@@ -75,7 +75,7 @@ export const Container = styled.div`
   h1 {
     text-align: center;
 
-    font-size: 36px;
+    font-size: 22px;
 
     margin: 0;
 
@@ -89,7 +89,7 @@ export const Container = styled.div`
 
     margin-bottom: 4px;
 
-    font-size: 18px;
+    font-size: 12px;
 
     font-weight: 900;
   }
@@ -115,7 +115,7 @@ export const Container = styled.div`
   .line {
     margin-bottom: 0px;
 
-    font-size: 18px;
+    font-size: 12px;
 
     font-weight: 900;
   }
@@ -125,7 +125,7 @@ export const Container = styled.div`
     align-items: flex-start;
     gap: 4px;
     margin-bottom: 1px;
-    font-size: 18px;
+    font-size: 12px;
     font-weight: 900;
   }
 
@@ -134,7 +134,7 @@ export const Container = styled.div`
   }
 
   h2 {
-    font-size: 20px;
+    font-size: 13px;
 
     margin: 0 0 2px;
 
@@ -142,7 +142,7 @@ export const Container = styled.div`
   }
 
   .flavor {
-    font-size: 18px;
+    font-size: 12px;
 
     margin-bottom: 0px;
 
@@ -150,9 +150,9 @@ export const Container = styled.div`
   }
 
   .obs {
-    margin-top: 1px;
+    margin-top: 2px;
 
-    font-size: 17px;
+    font-size: 11px;
 
     font-weight: 900;
   }
@@ -166,14 +166,19 @@ export const Container = styled.div`
   .total {
     margin-top: 6px;
 
-    font-size: 19px;
+    font-size: 16px;
+
+    font-weight: 900;
+  }
+  .totall {
+    font-size: 16px;
 
     font-weight: 900;
   }
 
   .footer {
-    margin-top: 8px;
-    font-size: 19px;
+    margin: 10px 0;
+    font-size: 16px;
     font-weight: 900;
     display: flex;
     flex-direction: column;

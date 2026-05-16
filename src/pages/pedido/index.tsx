@@ -102,7 +102,7 @@ export function Pedido() {
       ...prev,
       {
         combo: combo!,
-        sabores,
+        sabores: Object.fromEntries(Object.entries(sabores).filter(([, qtd]) => qtd > 0)),
         refri,
         refriExtra,
         maioneseQtd,

@@ -234,6 +234,17 @@ export const Container = styled.div`
     font-size: 12px;
   }
 
+  .total-linha {
+    border-color: #111827 !important;
+    background: #f0fdf4 !important;
+
+    span {
+      color: #166534 !important;
+      font-weight: 800 !important;
+      font-size: 13px !important;
+    }
+  }
+
   .valor {
     font-weight: 800;
 
