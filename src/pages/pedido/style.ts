@@ -56,7 +56,7 @@ export const Container = styled.div`
   }
 
   .section-label {
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 700;
     color: #888;
     text-transform: uppercase;
@@ -96,7 +96,9 @@ export const Container = styled.div`
     border-radius: 12px;
     padding: 12px;
     margin: 0 -12px;
-    transition: background 0.2s, border 0.2s;
+    transition:
+      background 0.2s,
+      border 0.2s;
   }
 
   .refri-pending {
@@ -128,9 +130,16 @@ export const Container = styled.div`
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25%       { transform: translateX(-6px); }
-    75%       { transform: translateX(6px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-6px);
+    }
+    75% {
+      transform: translateX(6px);
+    }
   }
 
   .optional-tag {
@@ -143,7 +152,7 @@ export const Container = styled.div`
 
   .price-hint {
     color: #aaa;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 500;
     text-transform: none;
     letter-spacing: 0;
@@ -171,12 +180,15 @@ export const Container = styled.div`
   }
 
   .combo-card {
-    border: 1.5px solid #eee;
+    border: 1.5px solid #b8b8b8;
     border-radius: 14px;
     padding: 12px;
-    background: #fafafa;
+    background: #f7f7f7;
     cursor: pointer;
-    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    transition:
+      border-color 0.15s,
+      background 0.15s,
+      transform 0.1s;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -195,11 +207,11 @@ export const Container = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2px;
+    margin-bottom: 10px;
   }
 
   .combo-badge {
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 800;
     padding: 2px 7px;
     border-radius: 6px;
@@ -215,15 +227,20 @@ export const Container = styled.div`
     background: #e0f2fe;
     color: #0369a1;
   }
-
+  .container-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: 5px;
+  }
   .combo-price {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 800;
     color: #d90000;
   }
 
   .combo-units {
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 600;
     color: #222;
   }
@@ -236,7 +253,7 @@ export const Container = styled.div`
   }
 
   .combo-extras span {
-    font-size: 11px;
+    font-size: 12px;
     color: #666;
   }
 
@@ -385,7 +402,10 @@ export const Container = styled.div`
     font-weight: 500;
     color: #555;
     cursor: pointer;
-    transition: border-color 0.15s, background 0.15s, color 0.15s;
+    transition:
+      border-color 0.15s,
+      background 0.15s,
+      color 0.15s;
     white-space: nowrap;
   }
 
@@ -406,6 +426,10 @@ export const Container = styled.div`
     justify-content: space-between;
     align-items: center;
     gap: 10px;
+    padding: 5px;
+    border: 1px solid #b9b9b9;
+    border-radius: 8px;
+    background: #eeeded;
   }
 
   .maionese-info {
@@ -415,9 +439,9 @@ export const Container = styled.div`
   }
 
   .maionese-title {
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
-    color: #888;
+    color: #6d6d6d;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -496,7 +520,9 @@ export const Container = styled.div`
     font-weight: 700;
     font-size: 15px;
     cursor: pointer;
-    transition: background 0.3s, transform 0.1s;
+    transition:
+      background 0.3s,
+      transform 0.1s;
   }
 
   .btn-add.success {
@@ -586,7 +612,9 @@ export const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.15s, color 0.15s;
+    transition:
+      background 0.15s,
+      color 0.15s;
   }
 
   .icon-btn.danger {
@@ -649,7 +677,9 @@ export const Container = styled.div`
     font-weight: 700;
     font-size: 15px;
     cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
+    transition:
+      opacity 0.2s,
+      transform 0.1s;
   }
 
   .btn-continue:active {

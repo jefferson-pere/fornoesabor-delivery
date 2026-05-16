@@ -33,7 +33,7 @@ export function Pagamento() {
   const taxaCartao = pagamento === "cartao" ? 1 : 0;
   const total = subtotal + adicional + adicionalRefri + frete + taxaCartao;
 
-  const chavePix = "8896445671";
+  const chavePix = "88996445671";
 
   const copiarPix = async () => {
     await navigator.clipboard.writeText(chavePix);
@@ -126,7 +126,7 @@ export function Pagamento() {
                 </button>
               </div>
               <p className="pix-tip">
-                Após o pagamento, envie o comprovante para <strong>(88) 99644-5671</strong>
+                Envie o comprovante para <strong>(88) 99644-5671</strong>
               </p>
             </div>
           )}

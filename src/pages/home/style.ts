@@ -51,7 +51,7 @@ export const Container = styled.div`
     align-self: flex-start;
     background: #d90000;
     color: #fff;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 700;
     padding: 3px 10px;
     border-radius: 99px;
@@ -60,7 +60,7 @@ export const Container = styled.div`
   }
 
   .hero-title {
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 800;
     color: #fff;
     line-height: 1.1;
@@ -68,7 +68,7 @@ export const Container = styled.div`
   }
 
   .hero-sub {
-    font-size: 13px;
+    font-size: 16px;
     color: rgba(255,255,255,0.85);
     margin-top: 4px;
   }

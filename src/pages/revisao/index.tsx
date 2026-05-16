@@ -214,7 +214,7 @@ export function Revisao() {
               }
             }}
           >
-            {loadingConfirm ? <div className="spinner" /> : "Confirmar Pedido"}
+            {loadingConfirm ? <div className="spinner" /> : "Finalizar pedido"}
           </button>
         </div>
       </div>

@@ -172,6 +172,7 @@ export const Container = styled.div`
   .footer {
     padding: 12px 16px max(20px, env(safe-area-inset-bottom, 20px));
     display: flex;
+    margin-bottom: 30px;
     gap: 10px;
     background: #fff;
     border-top: 1px solid #f0f0f0;

@@ -8,6 +8,7 @@ export type ComboType = {
   tipo: "prime" | "classico";
   refri: RefriType;
   maioneseInclusa: boolean;
+  nomeRef: string;
 };
 
 export type CidadeType = {
@@ -24,6 +25,7 @@ export const combosDisponiveis: ComboType[] = [
     tipo: "prime",
     refri: "lata",
     maioneseInclusa: false,
+    nomeRef: "PRIME 1",
   },
 
   {
@@ -34,6 +36,7 @@ export const combosDisponiveis: ComboType[] = [
     tipo: "prime",
     refri: "lata",
     maioneseInclusa: false,
+    nomeRef: "PRIME 2",
   },
 
   {
@@ -44,26 +47,29 @@ export const combosDisponiveis: ComboType[] = [
     tipo: "prime",
     refri: "1l",
     maioneseInclusa: true,
+    nomeRef: "PRIME 3",
   },
 
   {
     id: 4,
     nome: "CLÁSSICO 20 - 20 Mini esfihas",
-    preco: 25.5,
+    preco: 25.99,
     unidades: 20,
     tipo: "classico",
     refri: "none",
     maioneseInclusa: false,
+    nomeRef: "CLÁSSICO 20",
   },
 
   {
     id: 5,
     nome: "CLÁSSICO 30 - 30 Mini esfihas",
-    preco: 36.5,
+    preco: 36.99,
     unidades: 30,
     tipo: "classico",
     refri: "none",
     maioneseInclusa: false,
+    nomeRef: "CLÁSSICO 30",
   },
 ];
 

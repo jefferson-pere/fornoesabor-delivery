@@ -290,6 +290,7 @@ export const Container = styled.div`
   /* FOOTER */
   .footer {
     padding: 12px 16px max(24px, env(safe-area-inset-bottom, 24px));
+    margin-bottom: 25px;
     display: flex;
     gap: 10px;
     border-top: 1px solid #f0f0f0;

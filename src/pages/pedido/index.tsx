@@ -27,7 +27,11 @@ export function Pedido() {
   const [observacaoItem, setObservacaoItem] = useState("");
   const [maxChocolate, setMaxChocolate] = useState(false);
   const [adicionado, setAdicionado] = useState(false);
-  const [errors, setErrors] = useState({ combo: false, sabores: false, refri: false });
+  const [errors, setErrors] = useState({
+    combo: false,
+    sabores: false,
+    refri: false,
+  });
 
   const saboresRef = useRef<HTMLDivElement | null>(null);
   const formRef = useRef<HTMLDivElement | null>(null);
@@ -87,11 +91,24 @@ export function Pedido() {
     };
     setErrors(newErrors);
     if (newErrors.sabores) {
-      saboresRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      saboresRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
     }
     if (Object.values(newErrors).some(Boolean)) return;
 
-    setItens((prev) => [...prev, { combo: combo!, sabores, refri, refriExtra, maioneseQtd, observacaoItem }]);
+    setItens((prev) => [
+      ...prev,
+      {
+        combo: combo!,
+        sabores,
+        refri,
+        refriExtra,
+        maioneseQtd,
+        observacaoItem,
+      },
+    ]);
     setAdicionado(true);
     setTimeout(() => {
       setAdicionado(false);
@@ -99,7 +116,8 @@ export function Pedido() {
     }, 900);
   };
 
-  const removerItem = (index: number) => setItens((prev) => prev.filter((_, i) => i !== index));
+  const removerItem = (index: number) =>
+    setItens((prev) => prev.filter((_, i) => i !== index));
 
   const editarItem = (index: number) => {
     const item = itens[index];
@@ -114,19 +132,25 @@ export function Pedido() {
 
   const subtotal = itens.reduce((acc, item) => acc + item.combo.preco, 0);
   const adicional = itens.reduce(
-    (acc, item) => acc + item.maioneseQtd * 0.99 + (item.refriExtra?.preco || 0),
+    (acc, item) =>
+      acc + item.maioneseQtd * 0.99 + (item.refriExtra?.preco || 0),
     0,
   );
   const frete = cidade === "Cariús" ? 3 : cidade === "Jucás" ? 5 : 0;
   const totalGeral = subtotal + adicional + frete;
 
-  const nomeCombo = (c: ComboType) => c.nome.split(" - ")[0].replace("Combo ", "");
+  const nomeCombo = (c: ComboType) =>
+    c.nome.split(" - ")[0].replace("Combo ", "");
 
   return (
     <Container>
       <div className="content">
         <div className="desktop-side">
-          <img src="/banner.png" alt="" onError={(e) => (e.currentTarget.style.display = "none")} />
+          <img
+            src="/banner.png"
+            alt=""
+            onError={(e) => (e.currentTarget.style.display = "none")}
+          />
           <div className="side-overlay">
             <div className="side-badge">🔥 Pedido online</div>
             <div className="side-title">Forno e Sabor</div>
@@ -141,12 +165,13 @@ export function Pedido() {
         </div>
 
         <div className="form" ref={formRef}>
-
           {/* ── SELEÇÃO DE COMBO ── */}
           {!combo && (
             <section className="section">
               <div className="section-label">
-                {itens.length === 0 ? "Escolha um combo" : "Adicionar outro combo"}
+                {itens.length === 0
+                  ? "Escolha um combo"
+                  : "Adicionar outro combo"}
               </div>
               <div className="combo-grid">
                 {combosDisponiveis.map((c) => (
@@ -157,16 +182,21 @@ export function Pedido() {
                   >
                     <div className="combo-top">
                       <span className={`combo-badge ${c.tipo}`}>
-                        {c.tipo === "prime" ? "PRIME" : "CLÁSSICO"}
+                        {c.nomeRef}
                       </span>
-                      <span className="combo-price">R$ {c.preco.toFixed(2)}</span>
                     </div>
-                    <div className="combo-units">{c.unidades} esfihas</div>
+                    <div className="combo-units">{c.unidades} Esfihas </div>
                     <div className="combo-extras">
                       {c.refri !== "none" && (
-                        <span>🥤 Refri {c.refri === "lata" ? "lata" : "1L"}</span>
+                        <span>
+                          + 🥤 Refri {c.refri === "lata" ? "lata" : "1L"}
+                        </span>
                       )}
-                      {c.maioneseInclusa && <span>🧄 Maionese</span>}
+                      {c.maioneseInclusa && <span> e Maionese</span>}
+                    </div >
+                    <div className="container-price">
+
+                    <span className="combo-price">R$ {c.preco.toFixed(2)}</span>
                     </div>
                   </div>
                 ))}
@@ -180,23 +210,31 @@ export function Pedido() {
               <div className="combo-editing-header">
                 <div>
                   <div className="combo-editing-name">{nomeCombo(combo)}</div>
-                  <div className="combo-editing-price">R$ {combo.preco.toFixed(2)}</div>
+                  <div className="combo-editing-price">
+                    R$ {combo.preco.toFixed(2)}
+                  </div>
                 </div>
-                <button className="btn-trocar" onClick={cancelar}>Trocar</button>
+                <button className="btn-trocar" onClick={cancelar}>
+                  Trocar
+                </button>
               </div>
 
               {/* SABORES */}
               <section className="section" ref={saboresRef}>
                 <div className="section-label">
                   Sabores
-                  <span className={`count-badge${totalSabores === combo.unidades ? " full" : ""}`}>
+                  <span
+                    className={`count-badge${totalSabores === combo.unidades ? " full" : ""}`}
+                  >
                     {totalSabores}/{combo.unidades}
                   </span>
                 </div>
                 <div className="progress-bar">
                   <div
                     className="progress-fill"
-                    style={{ width: `${Math.min((totalSabores / combo.unidades) * 100, 100)}%` }}
+                    style={{
+                      width: `${Math.min((totalSabores / combo.unidades) * 100, 100)}%`,
+                    }}
                   />
                 </div>
                 {errors.sabores && (
@@ -220,7 +258,9 @@ export function Pedido() {
                         >
                           −
                         </button>
-                        <span className={`qtd-value${qty > 0 ? " has" : ""}`}>{qty}</span>
+                        <span className={`qtd-value${qty > 0 ? " has" : ""}`}>
+                          {qty}
+                        </span>
                         <button
                           className="qtd-btn plus"
                           onClick={() => alterarQtd(s, 1)}
@@ -236,16 +276,22 @@ export function Pedido() {
 
               {/* REFRIGERANTE INCLUÍDO */}
               {combo.refri !== "none" && (
-                <section className={`section refri-section${errors.refri ? " refri-error" : ""}${!refri ? " refri-pending" : ""}`}>
+                <section
+                  className={`section refri-section${errors.refri ? " refri-error" : ""}${!refri ? " refri-pending" : ""}`}
+                >
                   <div className="section-label">
                     🥤 Refrigerante incluído
                     {!refri && !errors.refri && (
                       <span className="refri-pending-tag">Selecione</span>
                     )}
-                    {errors.refri && <span className="required-tag">Obrigatório!</span>}
+                    {errors.refri && (
+                      <span className="required-tag">Obrigatório!</span>
+                    )}
                   </div>
                   {!refri && (
-                    <p className="refri-hint">Escolha o refrigerante do seu combo</p>
+                    <p className="refri-hint">
+                      Escolha o refrigerante do seu combo
+                    </p>
                   )}
                   <div className="chips">
                     {saboresRefri[combo.refri].map((r) => (
@@ -285,7 +331,7 @@ export function Pedido() {
                   <div className="maionese-info">
                     <span className="maionese-title">Maionese caseira</span>
                     <span className="price-hint">
-                      R$ 0,99 un.{combo.maioneseInclusa ? " · ✓ inclusa" : ""}
+                      R$ 0,99 unidade.{combo.maioneseInclusa ? " · ✓ inclusa" : ""}
                     </span>
                   </div>
                   <div className="qtd-control">
@@ -296,8 +342,15 @@ export function Pedido() {
                     >
                       −
                     </button>
-                    <span className={`qtd-value${maioneseQtd > 0 ? " has" : ""}`}>{maioneseQtd}</span>
-                    <button className="qtd-btn plus" onClick={() => setMaioneseQtd((v) => v + 1)}>
+                    <span
+                      className={`qtd-value${maioneseQtd > 0 ? " has" : ""}`}
+                    >
+                      {maioneseQtd}
+                    </span>
+                    <button
+                      className="qtd-btn plus"
+                      onClick={() => setMaioneseQtd((v) => v + 1)}
+                    >
                       +
                     </button>
                   </div>
@@ -312,22 +365,37 @@ export function Pedido() {
                 </div>
                 <select
                   className="select-input"
-                  value={refriExtra ? `${refriExtra.nome}-${refriExtra.tipo}` : ""}
+                  value={
+                    refriExtra ? `${refriExtra.nome}-${refriExtra.tipo}` : ""
+                  }
                   onChange={(e) => {
                     const value = e.target.value;
-                    if (!value) { setRefriExtra(null); return; }
+                    if (!value) {
+                      setRefriExtra(null);
+                      return;
+                    }
                     const lastIndex = value.lastIndexOf("-");
                     const nome = value.substring(0, lastIndex);
-                    const tipo = value.substring(lastIndex + 1) as "lata" | "1l";
-                    setRefriExtra({ nome, tipo, preco: tipo === "lata" ? 3 : 8 });
+                    const tipo = value.substring(lastIndex + 1) as
+                      | "lata"
+                      | "1l";
+                    setRefriExtra({
+                      nome,
+                      tipo,
+                      preco: tipo === "lata" ? 3 : 8,
+                    });
                   }}
                 >
                   <option value="">Não quero</option>
                   {saboresRefri.lata.map((r) => (
-                    <option key={`${r}-lata`} value={`${r}-lata`}>{r} Lata — R$ 3,00</option>
+                    <option key={`${r}-lata`} value={`${r}-lata`}>
+                      {r} Lata — R$ 3,00
+                    </option>
                   ))}
                   {saboresRefri["1l"].map((r) => (
-                    <option key={`${r}-1l`} value={`${r}-1l`}>{r} 1L — R$ 8,00</option>
+                    <option key={`${r}-1l`} value={`${r}-1l`}>
+                      {r} 1L — R$ 8,00
+                    </option>
                   ))}
                 </select>
               </section>
@@ -352,37 +420,58 @@ export function Pedido() {
           {itens.length > 0 && !combo && (
             <section className="section items-section">
               <div className="section-label">
-                Seu pedido
-                <span className="count-badge full">{itens.length} {itens.length === 1 ? "combo" : "combos"}</span>
+                Seu pedido:
+                <span className="count-badge full">
+                  {itens.length} {itens.length === 1 ? "combo" : "combos"}
+                </span>
               </div>
               {itens.map((item, index) => (
                 <div key={index} className="item-card">
                   <div className="item-info">
                     <strong>{nomeCombo(item.combo)}</strong>
-                    <span className="item-price">R$ {item.combo.preco.toFixed(2)}</span>
+                    <span className="item-price">
+                      R$ {item.combo.preco.toFixed(2)}
+                    </span>
                     <div className="item-tags">
                       {Object.entries(item.sabores)
                         .filter(([, q]) => q > 0)
                         .map(([s, q]) => (
-                          <span key={s} className="tag">{q}× {s}</span>
+                          <span key={s} className="tag">
+                            {q}× {s}
+                          </span>
                         ))}
-                      {item.refri && <span className="tag">🥤 {item.refri}</span>}
+                      {item.refri && (
+                        <span className="tag">🥤 {item.refri}</span>
+                      )}
                       {item.refriExtra && (
-                        <span className="tag">🥤 Extra {item.refriExtra.nome} ({item.refriExtra.tipo})</span>
+                        <span className="tag">
+                          🥤 Extra {item.refriExtra.nome} (
+                          {item.refriExtra.tipo})
+                        </span>
                       )}
                       {item.maioneseQtd > 0 && (
-                        <span className="tag">🧄 {item.maioneseQtd}× maionese</span>
+                        <span className="tag">
+                          🧄 {item.maioneseQtd}× maionese
+                        </span>
                       )}
                       {item.observacaoItem && (
-                        <span className="tag obs">📝 {item.observacaoItem}</span>
+                        <span className="tag obs">
+                          📝 {item.observacaoItem}
+                        </span>
                       )}
                     </div>
                   </div>
                   <div className="item-btns">
-                    <button className="icon-btn" onClick={() => editarItem(index)}>
+                    <button
+                      className="icon-btn"
+                      onClick={() => editarItem(index)}
+                    >
                       <MdEdit />
                     </button>
-                    <button className="icon-btn danger" onClick={() => removerItem(index)}>
+                    <button
+                      className="icon-btn danger"
+                      onClick={() => removerItem(index)}
+                    >
                       <MdDelete />
                     </button>
                   </div>
@@ -402,9 +491,15 @@ export function Pedido() {
                     ? "Nenhum combo ainda"
                     : `${itens.length} ${itens.length === 1 ? "combo" : "combos"}`}
                 </span>
-                {frete > 0 && <span className="footer-frete">+ R$ {frete.toFixed(2)} frete</span>}
+                {frete > 0 && (
+                  <span className="footer-frete">
+                    + R$ {frete.toFixed(2)} frete
+                  </span>
+                )}
               </div>
-              <strong className="footer-price">R$ {totalGeral.toFixed(2)}</strong>
+              <strong className="footer-price">
+                R$ {totalGeral.toFixed(2)}
+              </strong>
             </div>
             <div className="footer-btns">
               <button className="btn-cancel" onClick={() => navigate("/")}>
