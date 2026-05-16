@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import {
   getStoreStatus,
   updateStoreStatus,
@@ -40,7 +41,7 @@ export function StoreStatus() {
       setStore(updated);
     } catch (err) {
       console.error(err);
-      alert("Erro ao atualizar loja");
+      toast.error("Erro ao atualizar loja");
     } finally {
       setLoading(false);
     }

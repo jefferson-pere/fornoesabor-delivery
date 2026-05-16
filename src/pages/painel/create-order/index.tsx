@@ -1,4 +1,5 @@
 import { startTransition, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container } from "./style";
 import type { OrderStatus, Pedido } from "../../../types/order";
@@ -149,15 +150,15 @@ export default function CreateOrder() {
 
   function adicionarItem() {
     if (!comboSelecionado) {
-      alert("Selecione um combo");
+      toast.warning("Selecione um combo");
       return;
     }
     if (totalSabores !== comboSelecionado.unidades) {
-      alert(`O combo precisa ter ${comboSelecionado.unidades} esfihas`);
+      toast.warning(`O combo precisa ter ${comboSelecionado.unidades} esfihas`);
       return;
     }
     if (comboSelecionado.refri !== "none" && !refri) {
-      alert("Selecione o refri");
+      toast.warning("Selecione o refri");
       return;
     }
 
@@ -207,28 +208,28 @@ export default function CreateOrder() {
   async function criarPedido() {
     try {
       if (!nomeCliente.trim()) {
-        alert("Digite o nome");
+        toast.warning("Digite o nome");
         return;
       }
       if (!cidade) {
-        alert("Selecione a cidade");
+        toast.warning("Selecione a cidade");
         return;
       }
       if (cidade !== "Retirada" && (!rua || !numero)) {
-        alert("Preencha o endereço completo");
+        toast.warning("Preencha o endereço completo");
         return;
       }
       if (itens.length === 0) {
-        alert("Adicione pelo menos um item");
+        toast.warning("Adicione pelo menos um item");
         return;
       }
       if (!pagamento) {
-        alert("Selecione a forma de pagamento");
+        toast.warning("Selecione a forma de pagamento");
         return;
       }
 
       if (pagamento === "dinheiro" && !troco) {
-        alert("Informe o troco");
+        toast.warning("Informe o troco");
         return;
       }
 
@@ -279,10 +280,10 @@ export default function CreateOrder() {
 
       if (!res.ok) {
         const error = await res.json();
-        alert(error.error || "Erro ao salvar pedido");
+        toast.error(error.error || "Erro ao salvar pedido");
         return;
       }
-      alert(order ? "Pedido atualizado" : "Pedido criado");
+      toast.success(order ? "Pedido atualizado" : "Pedido criado");
       if (order) {
         navigate("/painel", {
           state: {
@@ -308,7 +309,7 @@ export default function CreateOrder() {
     } catch (err) {
       console.error(err);
 
-      alert("Erro de conexão com servidor");
+      toast.error("Erro de conexão com servidor");
     } finally {
       setLoading(false);
     }

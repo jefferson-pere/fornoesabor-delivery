@@ -13,7 +13,7 @@ export const Container = styled.div`
   .topo {
     display: flex;
 
-    margin-bottom: 8px;
+    margin-bottom: 5px;
 
     justify-content: space-between;
 

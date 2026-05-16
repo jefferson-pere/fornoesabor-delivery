@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import { Receipt } from "../Receipt";
 import type { Pedido } from "../../types/order";
 import { deleteOrder, updateOrder } from "../../services/orders";
@@ -23,18 +24,18 @@ export function OrderModal({ order, onClose }: Props) {
   async function handleSave() {
     try {
       await updateOrder(currentOrder.id, currentOrder);
-      alert("Pedido atualizado");
+      toast.success("Pedido atualizado");
       setEditing(false);
     } catch (error) {
       console.error(error);
-      alert("Erro ao atualizar");
+      toast.error("Erro ao atualizar");
     }
   }
 
   async function handleDelete() {
     const password = prompt("Digite a senha");
     if (password !== import.meta.env.VITE_DELETE_PASSWORD) {
-      alert("Senha inválida");
+      toast.error("Senha inválida");
       return;
     }
     const confirmDelete = confirm("Deseja apagar?");
@@ -49,7 +50,7 @@ export function OrderModal({ order, onClose }: Props) {
     } catch (error) {
       console.error(error);
 
-      alert("Erro ao apagar");
+      toast.error("Erro ao apagar");
     }
   }
 
@@ -315,7 +316,7 @@ export function OrderModal({ order, onClose }: Props) {
               className="confirm"
               onClick={() => {
                 if (!currentOrder.telefone) {
-                  alert("Cliente sem telefone");
+                  toast.warning("Cliente sem telefone");
                   return;
                 }
 

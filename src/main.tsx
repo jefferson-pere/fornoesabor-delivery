@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { theme } from "./styles/theme";
 import { GlobalStyles } from "./styles/global";
+import { Toaster } from "sonner";
 import { App } from "./app";
 import { Pedido } from "./pages/pedido";
 import { Revisao } from "./pages/revisao";
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <GlobalStyles />
+      <Toaster richColors position="top-right" />
       <PedidoProvider>
         <BrowserRouter>
           <Routes>

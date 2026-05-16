@@ -1,4 +1,5 @@
 import { startTransition, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import alertSound from "../../../sounds/alert.mp3";
 import {
   getOrders,
@@ -169,7 +170,7 @@ export function Painel() {
                       return;
                     }
 
-                    alert("Senha inválida");
+                    toast.error("Senha inválida");
                     setPassword("");
                   }
                 }}
@@ -191,7 +192,7 @@ export function Painel() {
                   return;
                 }
 
-                alert("Senha inválida");
+                toast.error("Senha inválida");
                 setPassword("");
               }}
             >
