@@ -1,4 +1,5 @@
 import { startTransition, useEffect, useRef, useState } from "react";
+import alertSound from "../../../sounds/alert.mp3";
 import {
   getOrders,
   updateOrderStatus,
@@ -19,6 +20,7 @@ export function Painel() {
   const [orders, setOrders] = useState<Pedido[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Pedido | null>(null);
   const reopened = useRef(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [hideFinished, setHideFinished] = useState(true);
   const [authorized, setAuthorized] = useState(() => {
     const saved = localStorage.getItem("painel-auth");
@@ -34,6 +36,30 @@ export function Painel() {
   });
 
   useEffect(() => {
+    if (Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+
+    const audio = new Audio(alertSound);
+    audio.preload = "auto";
+    audioRef.current = audio;
+
+    const desbloquear = () => {
+      audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(() => {});
+      document.removeEventListener("click", desbloquear);
+    };
+    document.addEventListener("click", desbloquear);
+    return () => document.removeEventListener("click", desbloquear);
+  }, []);
+
+  function tocarSom() {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch((e) => console.error("Erro ao tocar som:", e));
+    }
+  }
+
+  useEffect(() => {
     async function init() {
       try {
         const data = await getOrders();
@@ -47,6 +73,15 @@ export function Painel() {
 
     socket.on("novo-pedido", (pedido: Pedido) => {
       setOrders((prev) => [pedido, ...prev]);
+
+      tocarSom();
+
+      if (Notification.permission === "granted") {
+        new Notification("Novo pedido! 🍕", {
+          body: `Pedido Nº ${pedido.codigo} — ${pedido.nomeCliente}`,
+          icon: "/favicon.ico",
+        });
+      }
     });
 
     socket.on("pedido-atualizado", (pedido: Pedido) => {
