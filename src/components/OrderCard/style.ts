@@ -8,15 +8,16 @@ export const Container = styled.div`
   padding: 10px;
 
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid #cacaca;
 
   .topo {
     display: flex;
 
+    margin-bottom: 8px;
+
     justify-content: space-between;
 
     align-items: center;
-
-    margin-bottom: 5px;
 
     strong {
       font-size: 16px;
@@ -28,10 +29,13 @@ export const Container = styled.div`
       font-size: 13px;
     }
   }
+
   .infoendpag {
     display: flex;
-    margin: 2px 25px;
     justify-content: space-between;
+    .pagamento {
+      margin: 2px 25px;
+    }
   }
   .combo {
     color: #444;
@@ -93,6 +97,7 @@ export const Container = styled.div`
     border: none;
 
     border-radius: 12px;
+    border: 1px solid #cacaca;
 
     cursor: pointer;
 
@@ -104,7 +109,7 @@ export const Container = styled.div`
   }
 
   .avancar {
-    background: #111;
+    background: #013a22;
 
     color: #fff;
   }

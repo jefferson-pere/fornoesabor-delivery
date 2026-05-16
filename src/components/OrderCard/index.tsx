@@ -48,19 +48,16 @@ export function OrderCard({
         <span>{order.codigo}</span>
       </div>
 
-      <div className="combo">
+      {/* <div className="combo">
         {order.itens.map((item, i) => (
           <div key={i}>• {item.combo.nome}</div>
         ))}
-      </div>
+      </div> */}
       <div className="infoendpag">
         <div className="cidade">📍 {order.cidade}</div>
 
         <div className="pagamento">💳 {order.pagamento}</div>
       </div>
-      {/* {order.itens.some((i) => i.refriExtra) && (
-        <div className="extra">🥤 Refri extra</div>
-      )} */}
 
       <div className="footer">
         <strong>R$ {order.total.toFixed(2)}</strong>
