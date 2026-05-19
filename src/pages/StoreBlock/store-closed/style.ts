@@ -47,7 +47,7 @@ export const Container = styled.div`
     background: rgba(255,255,255,0.2);
     backdrop-filter: blur(4px);
     color: #fff;
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 700;
     padding: 4px 12px;
     border-radius: 99px;
@@ -107,7 +107,7 @@ export const Container = styled.div`
     align-items: center;
     justify-content: center;
     gap: 7px;
-    font-size: 11px;
+    font-size: 16px;
     font-weight: 700;
     color: #aaa;
     text-transform: uppercase;

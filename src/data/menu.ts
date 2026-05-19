@@ -100,9 +100,10 @@ export const saboresLista: string[] = [
   "Mussarela",
   "Mista",
   "Chocolate com granulado",
+  "Carne moída",
 ];
 
 export const saboresRefri: Record<"lata" | "1l", string[]> = {
-  lata: ["Coca cola", "Coca cola Zero", "Fanta laranja"],
+  lata: ["Coca cola", "Coca cola Zero", "Fanta laranja", "Cajuína"],
   "1l": ["Guaraná", "Pepsi", "Sukita laranja"],
 };
