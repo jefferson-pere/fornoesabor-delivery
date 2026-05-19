@@ -8,6 +8,16 @@ import { OrderModal } from "../../components/OrderModal";
 
 import { Container } from "./style";
 
+function getDataBrasilia(isoStr: string): string {
+  if (!isoStr) return "";
+  const utc = new Date(isoStr);
+  const brasilia = new Date(utc.getTime() - 3 * 60 * 60 * 1000);
+  const y = brasilia.getUTCFullYear();
+  const m = String(brasilia.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(brasilia.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 export function Historico() {
   const [orders, setOrders] = useState<Pedido[]>([]);
 
@@ -46,7 +56,7 @@ export function Historico() {
   const filtered = useMemo(() => {
     return orders
       .filter((order) => {
-        const created = order.createdAt?.split("T")[0] || "";
+        const created = getDataBrasilia(order.createdAt);
 
         const matchDate = !date || created === date;
 
