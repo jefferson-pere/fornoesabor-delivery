@@ -148,6 +148,68 @@ opacity:.95;
 .new-order:hover {
   background: #1d4ed8;
 }
+  .more-menu-wrapper {
+    position: relative;
+  }
+
+  .more-menu-btn {
+    height: 42px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 12px;
+    background: #fff;
+    color: #111;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+    &:hover {
+      background: #111;
+      color: #fff;
+    }
+  }
+
+  .more-menu-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.14);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 180px;
+    z-index: 100;
+    animation: fadeDown 0.15s ease;
+
+    button {
+      height: 42px;
+      padding: 0 16px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: #111;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      text-align: left;
+      transition: 0.15s;
+
+      &:hover {
+        background: #f3f4f6;
+      }
+    }
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
   .grid {
     display: grid;
 

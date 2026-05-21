@@ -1,4 +1,10 @@
-import { startTransition, useEffect, useRef, useState } from "react";
+import {
+  startTransition,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from "react";
 import { toast } from "sonner";
 import alertSound from "../../../sounds/alert.mp3";
 import {
@@ -22,6 +28,23 @@ export function Painel() {
   const [selectedOrder, setSelectedOrder] = useState<Pedido | null>(null);
   const reopened = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const closeMenu = useCallback((e: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+      setMenuOpen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (menuOpen) {
+      document.addEventListener("mousedown", closeMenu);
+    } else {
+      document.removeEventListener("mousedown", closeMenu);
+    }
+    return () => document.removeEventListener("mousedown", closeMenu);
+  }, [menuOpen, closeMenu]);
   const [hideFinished, setHideFinished] = useState(true);
   const [authorized, setAuthorized] = useState(() => {
     const saved = localStorage.getItem("painel-auth");
@@ -46,7 +69,13 @@ export function Painel() {
     audioRef.current = audio;
 
     const desbloquear = () => {
-      audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(() => {});
+      audio
+        .play()
+        .then(() => {
+          audio.pause();
+          audio.currentTime = 0;
+        })
+        .catch(() => {});
       document.removeEventListener("click", desbloquear);
     };
     document.addEventListener("click", desbloquear);
@@ -56,7 +85,9 @@ export function Painel() {
   function tocarSom() {
     if (audioRef.current) {
       audioRef.current.currentTime = 0;
-      audioRef.current.play().catch((e) => console.error("Erro ao tocar som:", e));
+      audioRef.current
+        .play()
+        .catch((e) => console.error("Erro ao tocar som:", e));
     }
   }
 
@@ -221,6 +252,43 @@ export function Painel() {
           >
             + Novo pedido
           </button>
+
+          <div className="more-menu-wrapper" ref={menuRef}>
+            <button
+              className="more-menu-btn"
+              onClick={() => setMenuOpen((v) => !v)}
+            >
+              ☰ Menu {menuOpen ? "▲" : "▼"}
+            </button>
+            {menuOpen && (
+              <div className="more-menu-dropdown">
+                <button
+                  onClick={() => {
+                    navigate("/historico");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Histórico
+                </button>
+                <button
+                  onClick={() => {
+                    navigate("/estatisticas");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Estatísticas
+                </button>
+                <button
+                  onClick={() => {
+                    navigate("/sorteio");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Sorteio
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         <button
