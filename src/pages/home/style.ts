@@ -3,6 +3,65 @@ import styled from "styled-components";
 export const Container = styled.div`
   width: 100%;
   min-height: 100vh;
+
+  .demand-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    padding: 24px;
+  }
+
+  .demand-modal {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px 24px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .demand-icon {
+    font-size: 48px;
+    line-height: 1;
+  }
+
+  .demand-modal h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .demand-modal p {
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .demand-modal button {
+    margin-top: 8px;
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 12px;
+    background: #ea580c;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .demand-modal button:hover {
+    opacity: 0.9;
+  }
   background: #f5f5f5;
   display: flex;
   justify-content: center;

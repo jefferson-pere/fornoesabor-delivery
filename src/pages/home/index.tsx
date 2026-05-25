@@ -30,6 +30,7 @@ export function Home() {
   );
   const [loadingStore, setLoadingStore] = useState(true);
   const [store, setStore] = useState({ aberto: true, altaDemanda: false, mensagem: "" });
+  const [showDemandModal, setShowDemandModal] = useState(false);
 
   const [nomeLocal, setNomeLocal] = useState(() => {
     if (nome) return nome.split(" ")[0] || "";
@@ -70,6 +71,7 @@ export function Home() {
       try {
         const data = await getStoreStatus();
         setStore(data);
+        if (data.altaDemanda) setShowDemandModal(true);
       } catch (err) {
         console.error(err);
       } finally {
@@ -133,10 +135,25 @@ export function Home() {
 
   if (loadingStore) return null;
   if (!store.aberto) return <StoreBlock tipo="fechado" />;
-  if (store.altaDemanda) return <StoreBlock tipo="demanda" />;
 
   return (
     <Container>
+      {showDemandModal && (
+        <div className="demand-overlay">
+          <div className="demand-modal">
+            <div className="demand-icon">🔥</div>
+            <h2>Alta Demanda</h2>
+            <p>
+              Estamos com alta demanda no momento. Os pedidos podem demorar um
+              pouco mais que o normal. Agradecemos sua paciência!
+            </p>
+            <button onClick={() => setShowDemandModal(false)}>
+              OK, entendi
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="content">
 
         {/* HERO */}

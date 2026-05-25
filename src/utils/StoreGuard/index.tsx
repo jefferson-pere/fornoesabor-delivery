@@ -41,9 +41,5 @@ export function StoreGuard({ children }: Props) {
     return <StoreBlock tipo="fechado" />;
   }
 
-  if (store.altaDemanda) {
-    return <StoreBlock tipo="demanda" />;
-  }
-
   return <>{children}</>;
 }
