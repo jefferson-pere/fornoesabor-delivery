@@ -168,7 +168,7 @@ export const Container = styled.div`
   }
 
   .sabor span {
-    font-size: 11px;
+    font-size: 13px;
 
     font-weight: 600;
 
@@ -185,6 +185,30 @@ export const Container = styled.div`
     margin: 0;
 
     background: white;
+  }
+
+  .item-btn-group {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 8px;
+
+    margin-top: 10px;
+  }
+
+  .item-btn-group button {
+    margin-top: 0;
+  }
+
+  .cancel-btn {
+    background: #e2e8f0 !important;
+
+    color: #334155 !important;
+  }
+
+  .cancel-btn:hover {
+    background: #cbd5e1 !important;
   }
 
   .extra-info {
@@ -441,6 +465,18 @@ export const Container = styled.div`
     font-weight: 800;
 
     margin-top: 18px;
+  }
+
+  .cancel-finish {
+    background: #e2e8f0 !important;
+
+    color: #334155 !important;
+
+    margin-top: 8px;
+  }
+
+  .cancel-finish:hover {
+    background: #cbd5e1 !important;
   }
 
   @media (max-width: 1000px) {

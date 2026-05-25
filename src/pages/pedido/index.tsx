@@ -382,14 +382,14 @@ export function Pedido() {
                     setRefriExtra({
                       nome,
                       tipo,
-                      preco: tipo === "lata" ? 3 : 8,
+                      preco: tipo === "lata" ? 5 : 8,
                     });
                   }}
                 >
                   <option value="">Não quero</option>
                   {saboresRefri.lata.map((r) => (
                     <option key={`${r}-lata`} value={`${r}-lata`}>
-                      {r} Lata — R$ 3,00
+                      {r} Lata — R$ 5,00
                     </option>
                   ))}
                   {saboresRefri["1l"].map((r) => (

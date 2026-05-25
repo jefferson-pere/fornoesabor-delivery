@@ -191,6 +191,16 @@ export default function CreateOrder() {
     setItens((prev) => prev.filter((_, i) => i !== index));
   }
 
+  function cancelarItem() {
+    setEditingIndex(null);
+    setComboSelecionado(null);
+    setSabores({});
+    setRefri("");
+    setMaioneseQtd(0);
+    setRefriExtra(null);
+    setObservacaoItem("");
+  }
+
   function editarItem(index: number) {
     const item = itens[index];
     setEditingIndex(index);
@@ -558,9 +568,19 @@ export default function CreateOrder() {
                 onChange={(e) => setObservacaoItem(e.target.value)}
               />
 
-              <button type="button" onClick={adicionarItem}>
-                {editingIndex !== null ? "Salvar edição" : "Adicionar item"}
-              </button>
+              <div className="item-btn-group">
+                <button type="button" onClick={adicionarItem}>
+                  {editingIndex !== null ? "Salvar edição" : "Adicionar item"}
+                </button>
+
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={cancelarItem}
+                >
+                  Cancelar
+                </button>
+              </div>
             </>
           )}
         </div>
@@ -726,6 +746,19 @@ export default function CreateOrder() {
               : order
                 ? "Atualizar pedido"
                 : "Criar pedido"}
+          </button>
+
+          <button
+            className="finish cancel-finish"
+            onClick={() =>
+              navigate(
+                order ? "/painel" : "/painel",
+                order ? { state: { reopenOrder: order.id } } : undefined,
+              )
+            }
+            disabled={loading}
+          >
+            Cancelar
           </button>
         </div>
       </div>
