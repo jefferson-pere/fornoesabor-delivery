@@ -70,6 +70,9 @@ export type PedidoContextType = {
   troco: string;
   setTroco: React.Dispatch<React.SetStateAction<string>>;
 
+  semTroco: boolean;
+  setSemTroco: React.Dispatch<React.SetStateAction<boolean>>;
+
   observacao: string;
   setObservacao: React.Dispatch<React.SetStateAction<string>>;
 

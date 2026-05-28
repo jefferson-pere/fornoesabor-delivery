@@ -31,6 +31,7 @@ export function PedidoProvider({ children }: { children: ReactNode }) {
     return (localStorage.getItem("pedido_pagamento") as FormaPagamentoType) || "";
   });
   const [troco, setTroco] = useState(() => localStorage.getItem("pedido_troco") || "");
+  const [semTroco, setSemTroco] = useState(() => localStorage.getItem("pedido_sem_troco") === "true");
   const [observacao, setObservacao] = useState(() => localStorage.getItem("pedido_observacao") || "");
 
   useEffect(() => { localStorage.setItem("pedido_step", String(step)); }, [step]);
@@ -41,6 +42,7 @@ export function PedidoProvider({ children }: { children: ReactNode }) {
   useEffect(() => { localStorage.setItem("pedido_itens", JSON.stringify(itens)); }, [itens]);
   useEffect(() => { localStorage.setItem("pedido_pagamento", pagamento); }, [pagamento]);
   useEffect(() => { localStorage.setItem("pedido_troco", troco); }, [troco]);
+  useEffect(() => { localStorage.setItem("pedido_sem_troco", String(semTroco)); }, [semTroco]);
   useEffect(() => { localStorage.setItem("pedido_observacao", observacao); }, [observacao]);
 
   const resetPedido = useCallback(() => {
@@ -52,9 +54,10 @@ export function PedidoProvider({ children }: { children: ReactNode }) {
     setItens([]);
     setPagamento("");
     setTroco("");
+    setSemTroco(false);
     setObservacao("");
     ["pedido_step","pedido_nome","pedido_telefone","pedido_cidade","pedido_endereco",
-     "pedido_itens","pedido_pagamento","pedido_troco","pedido_observacao"]
+     "pedido_itens","pedido_pagamento","pedido_troco","pedido_sem_troco","pedido_observacao"]
       .forEach((k) => localStorage.removeItem(k));
   }, []);
   return (
@@ -76,6 +79,8 @@ export function PedidoProvider({ children }: { children: ReactNode }) {
         setPagamento,
         troco,
         setTroco,
+        semTroco,
+        setSemTroco,
         observacao,
         setObservacao,
         resetPedido,

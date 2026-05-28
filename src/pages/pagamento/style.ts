@@ -270,6 +270,82 @@ export const Container = styled.div`
     color: #ef4444;
   }
 
+  .troco-input.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  .troco-ou {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #a78040;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .troco-ou::before,
+  .troco-ou::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #fde68a;
+  }
+
+  .troco-sem-troco {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: #78350f;
+    padding: 10px 12px;
+    background: #fff;
+    border: 1.5px solid #fcd34d;
+    border-radius: 10px;
+    transition: background 0.15s, border-color 0.15s;
+    user-select: none;
+  }
+
+  .troco-sem-troco.active {
+    background: #fef9c3;
+    border-color: #f59e0b;
+  }
+
+  .troco-sem-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    border: 2px solid #d97706;
+    background: #fff;
+    flex-shrink: 0;
+    display: inline-block;
+    transition: background 0.15s;
+    position: relative;
+  }
+
+  .troco-sem-check.checked {
+    background: #f59e0b;
+    border-color: #d97706;
+  }
+
+  .troco-sem-check.checked::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 3px;
+    top: 0px;
+    width: 5px;
+    height: 9px;
+    border: 2px solid #fff;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+  }
+
   /* ANIMAÇÃO */
   .fade-slide {
     animation: fadeSlide 0.25s ease;

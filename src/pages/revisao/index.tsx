@@ -21,6 +21,7 @@ export function Revisao() {
     itens,
     pagamento,
     troco,
+    semTroco,
     observacao,
   } = usePedido();
   const navigate = useNavigate();
@@ -83,7 +84,10 @@ export function Revisao() {
               <span className="summary-label">Pagamento</span>
               <div className="summary-value">
                 <strong>{formatarPagamento(pagamento)}</strong>
-                {pagamento === "dinheiro" && troco && (
+                {pagamento === "dinheiro" && semTroco && (
+                  <span>Não precisa de troco</span>
+                )}
+                {pagamento === "dinheiro" && !semTroco && troco && (
                   <span>Troco para {troco}</span>
                 )}
               </div>
@@ -182,7 +186,7 @@ export function Revisao() {
                   endereco: cidade !== "Retirada" ? endereco : null,
                   itens,
                   pagamento,
-                  troco,
+                  troco: semTroco && !troco ? `R$ ${total.toFixed(2).replace(".", ",")}` : troco,
                   observacao,
                 };
                 const res = await fetch(

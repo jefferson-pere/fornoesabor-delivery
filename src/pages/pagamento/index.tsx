@@ -14,6 +14,8 @@ export function Pagamento() {
     setPagamento,
     troco,
     setTroco,
+    semTroco,
+    setSemTroco,
     itens,
     cidade,
   } = usePedido();
@@ -33,6 +35,13 @@ export function Pagamento() {
   const taxaCartao = pagamento === "cartao" ? 1 : 0;
   const total = subtotal + adicional + adicionalRefri + frete + taxaCartao;
 
+  useEffect(() => {
+    if (semTroco && !troco) {
+      setTroco(`R$ ${total.toFixed(2).replace(".", ",")}`);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [semTroco]);
+
   const chavePix = "88996445671";
 
   const copiarPix = async () => {
@@ -44,14 +53,14 @@ export function Pagamento() {
   const selecionar = (metodo: FormaPagamentoType) => {
     setPagamento(metodo);
     setErrorPagamento(false);
-    if (metodo !== "dinheiro") setTroco("");
+    if (metodo !== "dinheiro") { setTroco(""); setSemTroco(false); }
   };
 
   const continuar = () => {
     const erroPag = !pagamento;
-    const erroTroco = pagamento === "dinheiro" && !troco;
+    const erroTroco = pagamento === "dinheiro" && !semTroco && !troco;
     let trocoMenor = false;
-    if (pagamento === "dinheiro" && troco) {
+    if (pagamento === "dinheiro" && troco && !semTroco) {
       const valorTroco = Number(troco.replace("R$", "").replace(/\./g, "").replace(",", "."));
       trocoMenor = valorTroco < total;
     }
@@ -163,32 +172,48 @@ export function Pagamento() {
 
           {pagamento === "dinheiro" && (
             <div className="troco-box fade-slide">
-              <span className="troco-label">Precisa de troco?</span>
-              <div className={`troco-input${errorTroco ? " error" : ""}`}>
-                <span className="troco-prefix">R$</span>
-                <input
-                  placeholder="0,00"
-                  inputMode="numeric"
-                  value={troco.replace("R$ ", "")}
-                  onChange={(e) => {
-                    let valor = e.target.value.replace(/\D/g, "");
-                    valor = (Number(valor) / 100).toFixed(2);
-                    valor = valor.replace(".", ",");
-                    setTroco(`R$ ${valor}`);
-                    setErrorTroco(false);
-                  }}
-                />
-              </div>
-              {errorTroco && (
-                <p className="error-text">Valor insuficiente para o pedido</p>
-              )}
-              {trocoRestante !== null && (
-                <div className={`troco-result${trocoRestante < 0 ? " negative" : ""}`}>
-                  {trocoRestante < 0
-                    ? `Falta R$ ${Math.abs(trocoRestante).toFixed(2).replace(".", ",")}`
-                    : `Troco: R$ ${trocoRestante.toFixed(2).replace(".", ",")}`}
+              <span className="troco-label">TROCO PARA:</span>
+              {!semTroco && (
+                <div className={`troco-input${errorTroco ? " error" : ""}`}>
+                  <span className="troco-prefix">R$</span>
+                  <input
+                    placeholder="0,00"
+                    inputMode="numeric"
+                    value={troco.replace("R$ ", "")}
+                    onChange={(e) => {
+                      let valor = e.target.value.replace(/\D/g, "");
+                      valor = (Number(valor) / 100).toFixed(2);
+                      valor = valor.replace(".", ",");
+                      setTroco(`R$ ${valor}`);
+                      setErrorTroco(false);
+                    }}
+                  />
                 </div>
               )}
+              {errorTroco && !semTroco && (
+                <p className="error-text">
+                  {trocoRestante !== null && trocoRestante < 0
+                    ? `Valor insuficiente · falta R$ ${Math.abs(trocoRestante).toFixed(2).replace(".", ",")}`
+                    : "Informe o valor do troco"}
+                </p>
+              )}
+              {!semTroco && <div className="troco-ou">ou</div>}
+              <div
+                className={`troco-sem-troco${semTroco ? " active" : ""}`}
+                onClick={() => {
+                  const novoSemTroco = !semTroco;
+                  setSemTroco(novoSemTroco);
+                  if (novoSemTroco) {
+                    setTroco(`R$ ${total.toFixed(2).replace(".", ",")}`);
+                    setErrorTroco(false);
+                  } else {
+                    setTroco("");
+                  }
+                }}
+              >
+                <span className={`troco-sem-check${semTroco ? " checked" : ""}`} />
+                Não precisa de troco
+              </div>
             </div>
           )}
         </div>
