@@ -13,6 +13,7 @@ import { Confirmacao } from "./pages/confirmacao";
 import { Pagamento } from "./pages/pagamento";
 import { PedidoProvider } from "./context/PedidoProvider";
 import { StoreGuard } from "./utils/StoreGuard";
+import { PasswordGuard } from "./utils/PasswordGuard";
 import { Historico } from "./pages/historico";
 import { Painel } from "./pages/painel";
 import CreateOrder from "./pages/painel/create-order";
@@ -41,13 +42,15 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/confirmacao" element={<Confirmacao />} />
               <Route path="/revisao" element={<Revisao />} />
             </Route>
-            <Route path="/painel" element={<Painel />} />
-            <Route path="/painel/criarpedido" element={<CreateOrder />} />
-            <Route path="/painel/criarpedido/:id" element={<CreateOrder />} />
-            <Route path="/historico" element={<Historico />} />
-            <Route path="/sorteio" element={<SorteioPage />} />
-            <Route path="/estatisticas" element={<Estatisticas />} />
-            <Route path="/cozinha" element={<Cozinheiro />} />
+            <Route element={<PasswordGuard />}>
+              <Route path="/painel" element={<Painel />} />
+              <Route path="/painel/criarpedido" element={<CreateOrder />} />
+              <Route path="/painel/criarpedido/:id" element={<CreateOrder />} />
+              <Route path="/historico" element={<Historico />} />
+              <Route path="/sorteio" element={<SorteioPage />} />
+              <Route path="/estatisticas" element={<Estatisticas />} />
+              <Route path="/cozinha" element={<Cozinheiro />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </PedidoProvider>

@@ -5,7 +5,6 @@ import {
   useState,
   useCallback,
 } from "react";
-import { toast } from "sonner";
 import alertSound from "../../../sounds/alert.mp3";
 import {
   getOrders,
@@ -46,18 +45,6 @@ export function Painel() {
     return () => document.removeEventListener("mousedown", closeMenu);
   }, [menuOpen, closeMenu]);
   const [hideFinished, setHideFinished] = useState(true);
-  const [authorized, setAuthorized] = useState(() => {
-    const saved = localStorage.getItem("painel-auth");
-    if (!saved) return false;
-    const parsed = JSON.parse(saved);
-    const now = Date.now();
-    const TWELVE_HOURS = 1000 * 60 * 60 * 12;
-    if (now - parsed.time > TWELVE_HOURS) {
-      localStorage.removeItem("painel-auth");
-      return false;
-    }
-    return true;
-  });
 
   useEffect(() => {
     if (Notification.permission === "default") {
@@ -168,73 +155,6 @@ export function Painel() {
     }
   }
 
-  const [password, setPassword] = useState("");
-
-  if (!authorized) {
-    return (
-      <Container>
-        <div className="login-screen">
-          <div className="login-card">
-            <div className="icon">🔒</div>
-
-            <h2>Painel Administrativo</h2>
-
-            <p>Digite a senha para acessar o painel</p>
-
-            <div className="input-group">
-              <input
-                type="password"
-                placeholder="Sua senha"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    if (password === import.meta.env.VITE_ADMIN_PASSWORD) {
-                      localStorage.setItem(
-                        "painel-auth",
-                        JSON.stringify({ time: Date.now() }),
-                      );
-
-                      setPassword("");
-                      setAuthorized(true);
-
-                      return;
-                    }
-
-                    toast.error("Senha inválida");
-                    setPassword("");
-                  }
-                }}
-              />
-            </div>
-
-            <button
-              className="login-btn"
-              onClick={() => {
-                if (password === import.meta.env.VITE_ADMIN_PASSWORD) {
-                  localStorage.setItem(
-                    "painel-auth",
-                    JSON.stringify({ time: Date.now() }),
-                  );
-
-                  setPassword("");
-                  setAuthorized(true);
-
-                  return;
-                }
-
-                toast.error("Senha inválida");
-                setPassword("");
-              }}
-            >
-              Entrar no painel
-            </button>
-          </div>
-        </div>
-      </Container>
-    );
-  }
-
   return (
     <Container>
       <div className="topo">
@@ -295,7 +215,7 @@ export function Painel() {
           className="logout"
           onClick={() => {
             localStorage.removeItem("painel-auth");
-            setAuthorized(false);
+            window.location.reload();
           }}
         >
           Sair
