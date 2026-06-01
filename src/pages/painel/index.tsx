@@ -47,7 +47,7 @@ export function Painel() {
   const [hideFinished, setHideFinished] = useState(true);
 
   useEffect(() => {
-    if (Notification.permission === "default") {
+    if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
 
@@ -95,7 +95,7 @@ export function Painel() {
 
       tocarSom();
 
-      if (Notification.permission === "granted") {
+      if ("Notification" in window && Notification.permission === "granted") {
         new Notification("Novo pedido! 🍕", {
           body: `Pedido Nº ${pedido.codigo} — ${pedido.nomeCliente}`,
           icon: "/favicon.ico",

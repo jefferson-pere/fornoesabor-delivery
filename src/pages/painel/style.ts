@@ -328,25 +328,53 @@ opacity:.95;
   }
 
   @media (max-width: 700px) {
+    padding: 14px;
+
     .grid {
       grid-template-columns: 1fr;
     }
 
     .topo {
       flex-direction: column;
-
-      align-items: flex-start;
-
-      gap: 10px;
+      align-items: stretch;
+      gap: 12px;
 
       h1 {
-        font-size: 24px;
+        font-size: 22px;
       }
+
+      p {
+        font-size: 13px;
+      }
+    }
+
+    .top-actions {
+      flex-wrap: wrap;
+      gap: 8px;
+
+      button {
+        flex: 1 1 auto;
+        min-width: 0;
+        font-size: 13px;
+        padding: 0 12px;
+      }
+    }
+
+    .new-order {
+      height: 40px;
+    }
+
+    .more-menu-btn {
+      height: 40px;
+    }
+
+    .logout {
+      height: 40px;
+      width: 100%;
     }
 
     .login {
       padding: 24px;
-
       border-radius: 18px;
 
       h2 {
