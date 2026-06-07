@@ -58,7 +58,10 @@ export function Pedido() {
     }
     setMaxChocolate(false);
     if (delta > 0 && totalAtual >= combo.unidades) return;
-    setSabores((prev) => ({ ...prev, [s]: Math.max(qtdAtual + delta, 0) }));
+    const novaQtd = delta > 0
+      ? Math.min(qtdAtual + delta, qtdAtual + (combo.unidades - totalAtual))
+      : Math.max(qtdAtual + delta, 0);
+    setSabores((prev) => ({ ...prev, [s]: novaQtd }));
   };
 
   const cancelar = () => {
@@ -253,7 +256,7 @@ export function Pedido() {
                       <div className="qtd-control">
                         <button
                           className="qtd-btn minus"
-                          onClick={() => alterarQtd(s, -1)}
+                          onClick={() => alterarQtd(s, -5)}
                           disabled={qty === 0}
                         >
                           −
@@ -263,7 +266,7 @@ export function Pedido() {
                         </span>
                         <button
                           className="qtd-btn plus"
-                          onClick={() => alterarQtd(s, 1)}
+                          onClick={() => alterarQtd(s, 5)}
                           disabled={totalSabores >= combo.unidades}
                         >
                           +
