@@ -172,7 +172,8 @@ export const Container = styled.div`
   }
 
   .sabor-nome {
-    font-size: 14px;
+    margin: 3px 0;
+    font-size: 16px;
     font-weight: 600;
     color: #e5e7eb;
   }
