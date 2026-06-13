@@ -1,17 +1,16 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  height: 100vh;
-  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
   background: #111827;
   padding: 24px 20px;
   color: #fff;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 
   @supports (-webkit-touch-callout: none) {
-    height: -webkit-fill-available;
+    min-height: -webkit-fill-available;
   }
 
   .topo {
@@ -60,7 +59,6 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: 16px;
-    flex: 1;
     max-width: 560px;
     width: 100%;
     margin: 0 auto;
@@ -74,8 +72,6 @@ export const Container = styled.div`
     flex-direction: column;
     gap: 10px;
     border: 2px solid #374151;
-    flex: 1;
-    overflow-y: auto;
     animation: entrar 0.2s ease;
 
     @keyframes entrar {
@@ -260,7 +256,7 @@ export const Container = styled.div`
 
   @media (max-width: 768px) {
     padding: 12px;
-    height: 100vh;
+    min-height: 100vh;
 
     .topo {
       margin-bottom: 12px;
