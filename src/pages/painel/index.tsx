@@ -184,6 +184,14 @@ export function Painel() {
               <div className="more-menu-dropdown">
                 <button
                   onClick={() => {
+                    navigate("/cozinha");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Cozinha
+                </button>
+                <button
+                  onClick={() => {
                     navigate("/historico");
                     setMenuOpen(false);
                   }}
@@ -205,6 +213,14 @@ export function Painel() {
                   }}
                 >
                   Sorteio
+                </button>
+                <button
+                  onClick={() => {
+                    navigate("/painel/configuracoes");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Configurações
                 </button>
               </div>
             )}

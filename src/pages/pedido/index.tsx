@@ -10,6 +10,7 @@ import {
 import { usePedido } from "../../hook/usePedido";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { StepProgress } from "../../components/StepProgress";
+import { getMenuConfig, type MenuDisponibilidade } from "../../services/menu";
 
 export function Pedido() {
   const { step, setStep, itens, setItens, cidade } = usePedido();
@@ -33,12 +34,30 @@ export function Pedido() {
     refri: false,
   });
 
+  const [menuConfig, setMenuConfig] = useState<MenuDisponibilidade | null>(null);
+
   const saboresRef = useRef<HTMLDivElement | null>(null);
   const formRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (step < 2) navigate("/", { replace: true });
   }, [step, navigate]);
+
+  useEffect(() => {
+    getMenuConfig().then(setMenuConfig).catch(() => {});
+  }, []);
+
+  const isComboDisponivel = (id: number) =>
+    !menuConfig || menuConfig.combos[String(id)] !== false;
+
+  const isSaborDisponivel = (s: string) =>
+    !menuConfig || menuConfig.sabores[s] !== false;
+
+  const isRefriDisponivel = (r: string, tipo: "lata" | "1l") =>
+    !menuConfig ||
+    (tipo === "lata" ? menuConfig.refriLata[r] : menuConfig.refri1l[r]) !== false;
+
+  const isMaioneseDisponivel = !menuConfig || menuConfig.maionese !== false;
 
   useEffect(() => {
     if (combo) {
@@ -177,16 +196,21 @@ export function Pedido() {
                   : "Adicionar outro combo"}
               </div>
               <div className="combo-grid">
-                {combosDisponiveis.map((c) => (
+                {combosDisponiveis.map((c) => {
+                  const disponivel = isComboDisponivel(c.id);
+                  return (
                   <div
                     key={c.id}
-                    className="combo-card"
-                    onClick={() => selecionarCombo(c)}
+                    className={`combo-card${disponivel ? "" : " indisponivel"}`}
+                    onClick={() => disponivel && selecionarCombo(c)}
                   >
                     <div className="combo-top">
                       <span className={`combo-badge ${c.tipo}`}>
                         {c.nomeRef}
                       </span>
+                      {!disponivel && (
+                        <span className="badge-indisponivel">Indisponível</span>
+                      )}
                     </div>
                     <div className="combo-units">{c.unidades} Esfihas </div>
                     <div className="combo-extras">
@@ -198,11 +222,11 @@ export function Pedido() {
                       {c.maioneseInclusa && <span> e Maionese</span>}
                     </div >
                     <div className="container-price">
-
                     <span className="combo-price">R$ {c.preco.toFixed(2)}</span>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
           )}
@@ -250,14 +274,18 @@ export function Pedido() {
                 )}
                 {saboresLista.map((s) => {
                   const qty = sabores[s] || 0;
+                  const dispSabor = isSaborDisponivel(s);
                   return (
-                    <div key={s} className="sabor-row">
-                      <span className="sabor-name">{s}</span>
+                    <div key={s} className={`sabor-row${dispSabor ? "" : " sabor-indisponivel"}`}>
+                      <span className="sabor-name">
+                        {s}
+                        {!dispSabor && <span className="tag-indisponivel"> · Indisponível</span>}
+                      </span>
                       <div className="qtd-control">
                         <button
                           className="qtd-btn minus"
                           onClick={() => alterarQtd(s, -5)}
-                          disabled={qty === 0}
+                          disabled={qty === 0 || !dispSabor}
                         >
                           −
                         </button>
@@ -267,7 +295,7 @@ export function Pedido() {
                         <button
                           className="qtd-btn plus"
                           onClick={() => alterarQtd(s, 5)}
-                          disabled={totalSabores >= combo.unidades}
+                          disabled={totalSabores >= combo.unidades || !dispSabor}
                         >
                           +
                         </button>
@@ -297,18 +325,23 @@ export function Pedido() {
                     </p>
                   )}
                   <div className="chips">
-                    {saboresRefri[combo.refri].map((r) => (
+                    {saboresRefri[combo.refri as "lata" | "1l"].map((r) => {
+                      const dispRefri = isRefriDisponivel(r, combo.refri as "lata" | "1l");
+                      return (
                       <button
                         key={r}
-                        className={`chip${refri === r ? " active" : ""}`}
+                        className={`chip${refri === r ? " active" : ""}${dispRefri ? "" : " chip-indisponivel"}`}
+                        disabled={!dispRefri}
                         onClick={() => {
+                          if (!dispRefri) return;
                           setRefri(r);
                           setErrors((e) => ({ ...e, refri: false }));
                         }}
                       >
-                        {r}
+                        {r}{!dispRefri && " (Ind.)"}
                       </button>
-                    ))}
+                      );
+                    })}
                   </div>
                 </section>
               )}
@@ -334,14 +367,16 @@ export function Pedido() {
                   <div className="maionese-info">
                     <span className="maionese-title">Maionese caseira</span>
                     <span className="price-hint">
-                      R$ 0,99 unidade.{combo.maioneseInclusa ? " · ✓ inclusa" : ""}
+                      {!isMaioneseDisponivel
+                        ? "Indisponível no momento"
+                        : `R$ 0,99 unidade.${combo.maioneseInclusa ? " · ✓ inclusa" : ""}`}
                     </span>
                   </div>
                   <div className="qtd-control">
                     <button
                       className="qtd-btn minus"
                       onClick={() => setMaioneseQtd((v) => Math.max(v - 1, 0))}
-                      disabled={maioneseQtd === 0}
+                      disabled={maioneseQtd === 0 || !isMaioneseDisponivel}
                     >
                       −
                     </button>
@@ -353,6 +388,7 @@ export function Pedido() {
                     <button
                       className="qtd-btn plus"
                       onClick={() => setMaioneseQtd((v) => v + 1)}
+                      disabled={!isMaioneseDisponivel}
                     >
                       +
                     </button>
@@ -390,12 +426,12 @@ export function Pedido() {
                   }}
                 >
                   <option value="">Não quero</option>
-                  {saboresRefri.lata.map((r) => (
+                  {saboresRefri.lata.filter((r) => isRefriDisponivel(r, "lata")).map((r) => (
                     <option key={`${r}-lata`} value={`${r}-lata`}>
                       {r} Lata — R$ 5,00
                     </option>
                   ))}
-                  {saboresRefri["1l"].map((r) => (
+                  {saboresRefri["1l"].filter((r) => isRefriDisponivel(r, "1l")).map((r) => (
                     <option key={`${r}-1l`} value={`${r}-1l`}>
                       {r} 1L — R$ 8,00
                     </option>

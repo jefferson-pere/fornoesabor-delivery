@@ -20,6 +20,7 @@ import CreateOrder from "./pages/painel/create-order";
 import SorteioPage from "./pages/sorteio";
 import { Estatisticas } from "./pages/estatisticas";
 import { Cozinheiro } from "./pages/cozinheiro";
+import { Configuracoes } from "./pages/painel/configuracoes";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -50,6 +51,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/sorteio" element={<SorteioPage />} />
               <Route path="/estatisticas" element={<Estatisticas />} />
               <Route path="/cozinha" element={<Cozinheiro />} />
+              <Route path="/painel/configuracoes" element={<Configuracoes />} />
             </Route>
           </Routes>
         </BrowserRouter>

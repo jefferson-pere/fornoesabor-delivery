@@ -805,4 +805,36 @@ export const Container = styled.div`
       grid-template-columns: 1fr 640px;
     }
   }
+
+  /* INDISPONÍVEL */
+  .combo-card.indisponivel {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .badge-indisponivel {
+    font-size: 11px;
+    font-weight: 700;
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+
+  .sabor-row.sabor-indisponivel {
+    opacity: 0.4;
+  }
+
+  .tag-indisponivel {
+    font-size: 11px;
+    color: #dc2626;
+    font-weight: 600;
+  }
+
+  .chip.chip-indisponivel {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 `;
