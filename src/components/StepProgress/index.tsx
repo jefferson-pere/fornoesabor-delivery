@@ -69,10 +69,10 @@ const Bar = styled.div`
   }
 `;
 
-const STEPS = ["Dados", "Pedido", "Pagamento", "Revisão"];
+const STEPS = ["Dados", "Pedido", "Pagamento"];
 
 interface Props {
-  current: 1 | 2 | 3 | 4;
+  current: 1 | 2 | 3;
 }
 
 export function StepProgress({ current }: Props) {

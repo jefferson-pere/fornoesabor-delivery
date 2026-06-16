@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "styled-components";
 import { theme } from "./styles/theme";
 import { GlobalStyles } from "./styles/global";
 import { Toaster } from "sonner";
 import { App } from "./app";
 import { Pedido } from "./pages/pedido";
-import { Revisao } from "./pages/revisao";
 import { Home } from "./pages/home";
 import { Confirmacao } from "./pages/confirmacao";
 import { Pagamento } from "./pages/pagamento";
@@ -22,8 +22,11 @@ import { Estatisticas } from "./pages/estatisticas";
 import { Cozinheiro } from "./pages/cozinheiro";
 import { Configuracoes } from "./pages/painel/configuracoes";
 
+const queryClient = new QueryClient();
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <Toaster richColors position="top-right" />
@@ -41,7 +44,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/pedido" element={<Pedido />} />
               <Route path="/pagamento" element={<Pagamento />} />
               <Route path="/confirmacao" element={<Confirmacao />} />
-              <Route path="/revisao" element={<Revisao />} />
             </Route>
             <Route element={<PasswordGuard />}>
               <Route path="/painel" element={<Painel />} />
@@ -57,5 +59,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </BrowserRouter>
       </PedidoProvider>
     </ThemeProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
 );

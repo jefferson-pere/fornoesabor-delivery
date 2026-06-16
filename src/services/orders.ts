@@ -1,8 +1,32 @@
 import type { OrderStatus, Pedido } from "../types/order";
+import type { EnderecoType, FormaPagamentoType, ItemPedido } from "../types/pedido";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const API_KEY = import.meta.env.VITE_API_KEY;
+
+export type NovoPedidoPayload = {
+  nomeCliente: string;
+  telefone: string;
+  cidade: string;
+  endereco: EnderecoType | null;
+  itens: ItemPedido[];
+  pagamento: FormaPagamentoType;
+  troco: string;
+  observacao: string;
+};
+
+export async function criarPedido(dados: NovoPedidoPayload): Promise<void> {
+  const res = await fetch(`${API_URL}/orders`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": API_KEY,
+    },
+    body: JSON.stringify(dados),
+  });
+  if (!res.ok) throw new Error("Erro ao enviar pedido para o servidor");
+}
 
 export async function getOrders(all?: boolean) {
   const res = await fetch(`${API_URL}/orders${all ? "?all=true" : ""}`, {

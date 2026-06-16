@@ -390,6 +390,8 @@ export const Container = styled.div`
   .button:active { transform: scale(0.97); }
 
   .button.cancel {
+    flex: 0 0 88px;
+    font-size: 13px;
     background: #f0f0f0;
     color: #555;
   }

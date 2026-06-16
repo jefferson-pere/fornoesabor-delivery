@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import { Container } from "./style";
 import { usePedido } from "../../hook/usePedido";
 import type { FormaPagamentoType } from "../../types/pedido";
 import { MdPix, MdCreditCard, MdAttachMoney, MdCheckCircle, MdContentCopy } from "react-icons/md";
 import { StepProgress } from "../../components/StepProgress";
+import { criarPedido } from "../../services/orders";
 
 export function Pagamento() {
   const {
     step,
     setStep,
+    nome,
+    telefone,
+    endereco,
+    observacao,
     pagamento,
     setPagamento,
     troco,
@@ -23,6 +29,19 @@ export function Pagamento() {
   const [errorPagamento, setErrorPagamento] = useState(false);
   const [errorTroco, setErrorTroco] = useState(false);
   const [copiado, setCopiado] = useState(false);
+
+  const { mutate: enviarPedido, isPending } = useMutation({
+    mutationFn: criarPedido,
+    onSuccess: () => {
+      setStep(4);
+      navigate("/confirmacao", { state: { erro: false } });
+    },
+    onError: (err: Error) => {
+      navigate("/confirmacao", {
+        state: { erro: true, mensagem: err.message || "Erro de conexão com servidor" },
+      });
+    },
+  });
 
   useEffect(() => {
     if (step < 3) navigate("/");
@@ -67,8 +86,17 @@ export function Pagamento() {
     setErrorPagamento(erroPag);
     setErrorTroco(erroTroco || trocoMenor);
     if (erroPag || erroTroco || trocoMenor) return;
-    setStep(4);
-    navigate("/revisao");
+
+    enviarPedido({
+      nomeCliente: nome,
+      telefone,
+      cidade,
+      endereco: cidade !== "Retirada" ? endereco : null,
+      itens,
+      pagamento,
+      troco: semTroco && !troco ? `R$ ${total.toFixed(2).replace(".", ",")}` : troco,
+      observacao,
+    });
   };
 
   const trocoRestante = troco
@@ -222,8 +250,12 @@ export function Pagamento() {
           <button className="button cancel" onClick={() => navigate("/pedido")}>
             Voltar
           </button>
-          <button className="button" onClick={continuar}>
-            Revisar e confirmar
+          <button
+            className={`button${isPending ? " loading" : ""}`}
+            disabled={isPending}
+            onClick={continuar}
+          >
+            {isPending ? <div className="spinner" /> : "Confirmar pedido"}
           </button>
         </div>
       </div>
