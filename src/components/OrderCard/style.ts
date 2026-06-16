@@ -8,26 +8,54 @@ export const Container = styled.div`
   padding: 10px;
 
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  border: 1px solid #a5a4a4;
+  border: 2px solid #a5a4a4;
   cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    border-color: #aaa;
+  }
+
+  &:active {
+    transform: translateY(0px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  }
 
   .topo {
     display: flex;
-
-    margin: 0 0 10px;
-
-    justify-content: space-between;
-
     align-items: center;
+    gap: 6px;
+    margin: 0 0 10px;
 
     strong {
       font-size: 16px;
+      background: #f3f4f6;
+      padding: 1px 7px;
+      border-radius: 6px;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    span {
-      color: #666;
+    .hora {
+      font-size: 12px;
+      color: #888;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
 
-      font-size: 13px;
+    .codigo {
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      background: #013a22;
+      padding: 2px 7px;
+      border-radius: 99px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
   }
 
@@ -69,6 +97,7 @@ export const Container = styled.div`
     font-weight: 600;
 
     cursor: pointer;
+
   }
 
   .pago {
@@ -98,15 +127,16 @@ export const Container = styled.div`
     border: none;
 
     border-radius: 12px;
-    border: 1px solid #cacaca;
+    border: 1px solid #6d6d6d;
 
     cursor: pointer;
 
     font-weight: bold;
+
   }
 
   .detalhes {
-    background: #ececec;
+    background: #d6d6d6;
   }
 
   .avancar {

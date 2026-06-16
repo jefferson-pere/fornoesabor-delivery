@@ -26,16 +26,14 @@ export function OrderCard({ order, onMove, onTogglePayment, onDetails }: Props) 
   return (
     <Container onClick={() => onDetails(order)}>
       <div className="topo">
-        <div>
-          <strong>{order.nomeCliente}</strong>
-          <div className="hora">
-            {new Date(order.createdAt).toLocaleTimeString("pt-BR", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </div>
-        </div>
-        <span>{order.codigo}</span>
+        <strong>{order.nomeCliente}</strong>
+        <span className="hora">
+          {new Date(order.createdAt).toLocaleTimeString("pt-BR", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </span>
+        <span className="codigo">{order.codigo}</span>
       </div>
 
       <div className="infoendpag">
@@ -57,7 +55,10 @@ export function OrderCard({ order, onMove, onTogglePayment, onDetails }: Props) 
         {prevStatus() && (
           <button
             className="detalhes"
-            onClick={(e) => { e.stopPropagation(); onMove(order.id, prevStatus()!); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (confirm("Tem certeza que quer voltar?")) onMove(order.id, prevStatus()!);
+            }}
           >
             Voltar
           </button>
