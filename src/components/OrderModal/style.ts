@@ -26,10 +26,6 @@ export const Container = styled.div`
 
     max-width: 1300px;
 
-    max-height: 94vh;
-
-    overflow-y: auto;
-
     background: #f9fafb;
 
     border-radius: 28px;
@@ -393,10 +389,6 @@ export const Container = styled.div`
   }
 
   .acoes {
-    position: sticky;
-
-    bottom: 0;
-
     background: #f9fafb;
 
     display: flex;
@@ -476,19 +468,85 @@ export const Container = styled.div`
     .observacao-card {
       grid-column: span 1;
     }
+
+    .cliente-card {
+      min-width: unset;
+    }
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 600px) {
+    .overlay {
+      padding: 0;
+      align-items: flex-end;
+      overflow-y: auto;
+    }
+
     .modal {
-      padding: 16px;
+      width: 100%;
+      max-width: 100%;
+      border-radius: 24px 24px 0 0;
+      padding: 20px 16px 24px;
+      max-height: 92vh;
+      overflow-y: auto;
     }
 
     .topo {
-      flex-direction: column;
+      flex-direction: row;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .codigo h2 {
+      font-size: 22px;
+    }
+
+    .badges {
+      margin-top: 6px;
+    }
+
+    .badge {
+      font-size: 10px;
+      padding: 4px 10px;
+    }
+
+    .close {
+      width: 36px;
+      height: 36px;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .grid {
+      gap: 12px;
     }
 
     .acoes {
       flex-direction: column;
+      gap: 10px;
+      padding-top: 14px;
+      margin-top: 16px;
+    }
+
+    .acoes button {
+      height: 48px;
+      font-size: 14px;
+    }
+
+    .whats {
+      width: 100%;
+    }
+
+    .pedidos-grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .item {
+      padding: 12px;
+    }
+
+    .linha {
+      font-size: 12px;
     }
   }
 

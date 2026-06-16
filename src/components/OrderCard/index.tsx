@@ -8,88 +8,65 @@ type Props = {
   onDetails: (order: Pedido) => void;
 };
 
-export function OrderCard({
-  order,
-  onMove,
-  onTogglePayment,
-  onDetails,
-}: Props) {
+export function OrderCard({ order, onMove, onTogglePayment, onDetails }: Props) {
   function nextStatus(): OrderStatus | null {
-    if (order.status === "NOVO") {
-      return "PRODUCAO";
-    }
+    if (order.status === "NOVO") return "PRODUCAO";
+    if (order.status === "PRODUCAO") return "ENTREGA";
+    if (order.status === "ENTREGA") return "FINALIZADO";
+    return null;
+  }
 
-    if (order.status === "PRODUCAO") {
-      return "ENTREGA";
-    }
-
-    if (order.status === "ENTREGA") {
-      return "FINALIZADO";
-    }
-
+  function prevStatus(): OrderStatus | null {
+    if (order.status === "PRODUCAO") return "NOVO";
+    if (order.status === "ENTREGA") return "PRODUCAO";
+    if (order.status === "FINALIZADO") return "ENTREGA";
     return null;
   }
 
   return (
-    <Container>
+    <Container onClick={() => onDetails(order)}>
       <div className="topo">
         <div>
           <strong>{order.nomeCliente}</strong>
-
           <div className="hora">
             {new Date(order.createdAt).toLocaleTimeString("pt-BR", {
               hour: "2-digit",
-
               minute: "2-digit",
             })}
           </div>
         </div>
-
         <span>{order.codigo}</span>
       </div>
 
-      {/* <div className="combo">
-        {order.itens.map((item, i) => (
-          <div key={i}>• {item.combo.nome}</div>
-        ))}
-      </div> */}
       <div className="infoendpag">
         <div className="cidade">📍 {order.cidade}</div>
-
         <div className="pagamento">💳 {order.pagamento}</div>
       </div>
 
       <div className="footer">
         <strong>R$ {order.total.toFixed(2)}</strong>
-
         <button
           className={order.pago ? "pago" : "nao-pago"}
-          onClick={() => onTogglePayment(order.id, !order.pago)}
+          onClick={(e) => { e.stopPropagation(); onTogglePayment(order.id, !order.pago); }}
         >
           {order.pago ? "✅ Pago" : "❌ Não Pago"}
         </button>
       </div>
 
       <div className="acoes">
-        <button
-          className="detalhes"
-          onClick={(e) => {
-            e.stopPropagation();
-
-            onDetails(order);
-          }}
-        >
-          Detalhes
-        </button>
+        {prevStatus() && (
+          <button
+            className="detalhes"
+            onClick={(e) => { e.stopPropagation(); onMove(order.id, prevStatus()!); }}
+          >
+            Voltar
+          </button>
+        )}
 
         {nextStatus() && (
           <button
             className="avancar"
-            onClick={(e) => {
-              e.stopPropagation();
-
-              onMove(order.id, nextStatus()!);
-            }}
+            onClick={(e) => { e.stopPropagation(); onMove(order.id, nextStatus()!); }}
           >
             Avançar
           </button>

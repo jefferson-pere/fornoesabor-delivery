@@ -1,19 +1,20 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  background: #fff;
+  background: #ffffff;
 
   border-radius: 18px;
 
   padding: 10px;
 
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  border: 1px solid #cacaca;
+  border: 1px solid #a5a4a4;
+  cursor: pointer;
 
   .topo {
     display: flex;
 
-    margin-bottom: 5px;
+    margin: 0 0 10px;
 
     justify-content: space-between;
 

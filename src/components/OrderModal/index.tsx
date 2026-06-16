@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Receipt } from "../Receipt";
 import type { Pedido } from "../../types/order";
@@ -14,6 +14,14 @@ type Props = {
 export function OrderModal({ order, onClose }: Props) {
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [onClose]);
 
   if (!order) {
     return null;
@@ -62,8 +70,8 @@ export function OrderModal({ order, onClose }: Props) {
     <Container>
       <Receipt order={currentOrder} />
 
-      <div className="overlay no-print">
-        <div className="modal">
+      <div className="overlay no-print" onClick={onClose}>
+        <div className="modal" onClick={(e) => e.stopPropagation()}>
           <div className="topo">
             <div className="codigo">
               <h2>{currentOrder.codigo}</h2>
