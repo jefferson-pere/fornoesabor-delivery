@@ -134,6 +134,7 @@ export default function CreateOrder() {
 
   function alterarSabor(sabor: string, quantidade: number) {
     if (!comboSelecionado) return;
+    if (quantidade % 5 !== 0) return;
     const totalAtual = Object.entries(sabores).reduce((acc, [key, value]) => {
       if (key === sabor) return acc;
       return acc + value;
@@ -428,28 +429,43 @@ export default function CreateOrder() {
 
             {combosDisponiveis.map((combo) => (
               <option key={combo.id} value={String(combo.id)}>
-                {combo.nome}
+                {combo.nome} — R$ {combo.preco.toFixed(2)}
               </option>
             ))}
           </select>
 
           {comboSelecionado && (
             <>
+              <div className="combo-preco-badge">
+                R$ {comboSelecionado.preco.toFixed(2)}
+                <span>{comboSelecionado.unidades} esfihas</span>
+              </div>
+
               <div className="sabores">
-                {saboresLista.map((sabor) => (
+                {saboresLista.map((sabor) => {
+                  const qty = sabores[sabor] || 0;
+                  return (
                   <div key={sabor} className="sabor">
                     <span>{sabor}</span>
 
-                    <input
-                      type="number"
-                      min={0}
-                      value={sabores[sabor] || ""}
-                      onChange={(e) =>
-                        alterarSabor(sabor, Number(e.target.value || 0))
-                      }
-                    />
+                    <div className="sabor-qtd">
+                      <button
+                        type="button"
+                        className="qtd-btn"
+                        onClick={() => alterarSabor(sabor, Math.max(qty - 5, 0))}
+                        disabled={qty === 0}
+                      >−</button>
+                      <span className={`qtd-val${qty > 0 ? " has" : ""}`}>{qty}</span>
+                      <button
+                        type="button"
+                        className="qtd-btn"
+                        onClick={() => alterarSabor(sabor, qty + 5)}
+                        disabled={totalSabores >= comboSelecionado.unidades}
+                      >+</button>
+                    </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
 
               {comboSelecionado.refri !== "none" && (

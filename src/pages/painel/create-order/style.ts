@@ -149,6 +149,46 @@ export const Container = styled.div`
     margin: 16px 0;
   }
 
+  .combo-preco-badge {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background: #eff6ff;
+
+    border: 1px solid #bfdbfe;
+
+    border-radius: 10px;
+
+    padding: 8px 12px;
+
+    margin: 10px 0 0;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    color: #1d4ed8;
+  }
+
+  .combo-preco-badge span {
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: #64748b;
+
+    background: transparent;
+
+    min-width: unset;
+
+    height: unset;
+
+    border-radius: 0;
+  }
+
   .sabor {
     background: #f1f5f9;
 
@@ -156,7 +196,7 @@ export const Container = styled.div`
 
     border-radius: 10px;
 
-    padding: 8px;
+    padding: 8px 10px;
 
     display: flex;
 
@@ -167,24 +207,80 @@ export const Container = styled.div`
     gap: 8px;
   }
 
-  .sabor span {
-    font-size: 13px;
+  .sabor > span {
+    font-size: 12px;
 
     font-weight: 600;
 
     color: #334155;
+
+    flex: 1;
   }
 
-  .sabor input {
-    width: 55px;
+  .sabor-qtd {
+    display: flex;
 
-    padding: 6px;
+    align-items: center;
+
+    gap: 6px;
+  }
+
+  .qtd-btn {
+    width: 28px !important;
+
+    height: 28px !important;
+
+    min-width: 28px;
+
+    border-radius: 8px !important;
+
+    background: #e2e8f0 !important;
+
+    color: #334155 !important;
+
+    font-size: 16px !important;
+
+    font-weight: 700 !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    line-height: 1;
+  }
+
+  .qtd-btn:disabled {
+    opacity: 0.35;
+
+    cursor: not-allowed;
+  }
+
+  .qtd-btn:not(:disabled):hover {
+    background: #cbd5e1 !important;
+
+    opacity: 1 !important;
+  }
+
+  .qtd-val {
+    min-width: 24px;
 
     text-align: center;
 
-    margin: 0;
+    font-size: 13px;
 
-    background: white;
+    font-weight: 700;
+
+    color: #94a3b8;
+  }
+
+  .qtd-val.has {
+    color: #2563eb;
   }
 
   .item-btn-group {
