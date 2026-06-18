@@ -54,7 +54,7 @@ export function Revisao() {
           </div>
         </div>
 
-        <StepProgress current={4} />
+        <StepProgress current={3} />
         <div className="page-header">
           <span className="page-title">Revisar Pedido</span>
         </div>
