@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import type { Pedido, OrderStatus } from "../../types/order";
 import { Container } from "./style";
 
@@ -8,7 +9,23 @@ type Props = {
   onDetails: (order: Pedido) => void;
 };
 
+function getTimerColor(createdAt: string): string {
+  const minutes = Math.floor((Date.now() - new Date(createdAt).getTime()) / 60000);
+  if (minutes < 20) return "#16a34a";
+  if (minutes < 30) return "#4ade80";
+  if (minutes < 40) return "#eab308";
+  return "#ef4444";
+}
+
 export function OrderCard({ order, onMove, onTogglePayment, onDetails }: Props) {
+  const [borderColor, setBorderColor] = useState(() => getTimerColor(order.createdAt));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBorderColor(getTimerColor(order.createdAt));
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [order.createdAt]);
   function nextStatus(): OrderStatus | null {
     if (order.status === "NOVO") return "PRODUCAO";
     if (order.status === "PRODUCAO") return "ENTREGA";
@@ -24,7 +41,7 @@ export function OrderCard({ order, onMove, onTogglePayment, onDetails }: Props) 
   }
 
   return (
-    <Container onClick={() => onDetails(order)}>
+    <Container $borderColor={borderColor} onClick={() => onDetails(order)}>
       <div className="topo">
         <strong>{order.nomeCliente}</strong>
         <span className="hora">

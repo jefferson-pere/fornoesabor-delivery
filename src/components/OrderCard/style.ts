@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Container = styled.div`
+export const Container = styled.div<{ $borderColor: string }>`
   background: #ffffff;
 
   border-radius: 18px;
@@ -42,7 +42,11 @@ export const Container = styled.div`
 
     .hora {
       font-size: 12px;
-      color: #888;
+      color: #fff;
+      font-weight: 700;
+      background: ${({ $borderColor }) => $borderColor};
+      padding: 2px 7px;
+      border-radius: 99px;
       white-space: nowrap;
       flex-shrink: 0;
     }
