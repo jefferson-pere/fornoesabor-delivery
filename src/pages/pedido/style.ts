@@ -453,6 +453,32 @@ export const Container = styled.div`
     font-weight: 700;
   }
 
+  /* REFRI EXTRA */
+  .refri-extra-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px !important;
+    margin: 4px 0;
+  }
+
+  .refri-extra-section .section-label {
+    color: #64748b;
+    margin-bottom: 10px;
+  }
+
+  .refri-extra-select {
+    border-color: #cbd5e1 !important;
+    background: #fff !important;
+    font-size: 15px !important;
+    color: #334155 !important;
+  }
+
+  .refri-extra-select:focus {
+    border-color: #94a3b8 !important;
+    box-shadow: none !important;
+  }
+
   /* MAIONESE INLINE */
   .maionese-row {
     display: flex;
@@ -502,6 +528,38 @@ export const Container = styled.div`
   }
 
   /* OBSERVAÇÃO */
+  .btn-obs-toggle {
+    width: 100%;
+    padding: 10px;
+    border: 1.5px dashed #d1d5db;
+    border-radius: 10px;
+    background: transparent;
+    color: #9ca3af;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .btn-obs-toggle:hover {
+    border-color: #9ca3af;
+    color: #6b7280;
+  }
+
+  .btn-obs-fechar {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    margin-left: auto;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
   .obs-input {
     width: 100%;
     box-sizing: border-box;

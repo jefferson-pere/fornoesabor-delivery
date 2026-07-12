@@ -28,6 +28,7 @@ export function Pedido() {
   const [observacaoItem, setObservacaoItem] = useState("");
   const [maxChocolate, setMaxChocolate] = useState(false);
   const [adicionado, setAdicionado] = useState(false);
+  const [showObservacao, setShowObservacao] = useState(false);
   const [errors, setErrors] = useState({
     combo: false,
     sabores: false,
@@ -90,6 +91,7 @@ export function Pedido() {
     setRefriExtra(null);
     setMaioneseQtd(0);
     setObservacaoItem("");
+    setShowObservacao(false);
     setMaxChocolate(false);
     setErrors({ combo: false, sabores: false, refri: false });
   };
@@ -101,6 +103,7 @@ export function Pedido() {
     setRefriExtra(null);
     setMaioneseQtd(0);
     setObservacaoItem("");
+    setShowObservacao(false);
     setMaxChocolate(false);
     setErrors({ combo: false, sabores: false, refri: false });
   };
@@ -348,17 +351,34 @@ export function Pedido() {
 
               {/* OBSERVAÇÃO */}
               <section className="section">
-                <div className="section-label">
-                  Observação
-                  <span className="optional-tag">opcional</span>
-                </div>
-                <textarea
-                  className="obs-input"
-                  placeholder="Alguma observação?"
-                  value={observacaoItem}
-                  onChange={(e) => setObservacaoItem(e.target.value)}
-                  rows={2}
-                />
+                {!showObservacao && !observacaoItem ? (
+                  <button
+                    className="btn-obs-toggle"
+                    onClick={() => setShowObservacao(true)}
+                  >
+                    + Adicionar observação
+                  </button>
+                ) : (
+                  <>
+                    <div className="section-label">
+                      Observação
+                      <button
+                        className="btn-obs-fechar"
+                        onClick={() => { setShowObservacao(false); setObservacaoItem(""); }}
+                      >
+                        ✕ remover
+                      </button>
+                    </div>
+                    <textarea
+                      className="obs-input"
+                      placeholder="Alguma observação?"
+                      value={observacaoItem}
+                      onChange={(e) => setObservacaoItem(e.target.value)}
+                      rows={2}
+                      autoFocus
+                    />
+                  </>
+                )}
               </section>
 
               {/* MAIONESE */}
@@ -397,13 +417,13 @@ export function Pedido() {
               </section>
 
               {/* REFRI EXTRA */}
-              <section className="section">
+              <section className="section refri-extra-section">
                 <div className="section-label">
-                  Refrigerante extra
+                  Adicionar refrigerante?
                   <span className="optional-tag">opcional</span>
                 </div>
                 <select
-                  className="select-input"
+                  className="select-input refri-extra-select"
                   value={
                     refriExtra ? `${refriExtra.nome}-${refriExtra.tipo}` : ""
                   }
@@ -428,12 +448,12 @@ export function Pedido() {
                   <option value="">Não quero</option>
                   {saboresRefri.lata.filter((r) => isRefriDisponivel(r, "lata")).map((r) => (
                     <option key={`${r}-lata`} value={`${r}-lata`}>
-                      {r} Lata — R$ 5,00
+                      {r} — Lata R$ 5,00
                     </option>
                   ))}
                   {saboresRefri["1l"].filter((r) => isRefriDisponivel(r, "1l")).map((r) => (
                     <option key={`${r}-1l`} value={`${r}-1l`}>
-                      {r} 1L — R$ 8,00
+                      {r} — 1L R$ 8,00
                     </option>
                   ))}
                 </select>
