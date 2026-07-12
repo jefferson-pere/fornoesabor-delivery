@@ -48,8 +48,7 @@ export default function CreateOrder() {
   const [sabores, setSabores] = useState<Record<string, number>>({});
   const [refri, setRefri] = useState("");
   const [maioneseQtd, setMaioneseQtd] = useState(0);
-  const [refriExtraSelecao, setRefriExtraSelecao] = useState("");
-  const [refriExtraQtd, setRefriExtraQtd] = useState(1);
+  const [refrisExtras, setRefrisExtras] = useState<Record<string, number>>({});
   const [observacaoItem, setObservacaoItem] = useState("");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
@@ -164,13 +163,14 @@ export default function CreateOrder() {
       return;
     }
 
-    const refriExtraArray: RefriExtraType[] = refriExtraSelecao
-      ? (() => {
-          const [tipo, ...nomeParts] = refriExtraSelecao.split("-");
-          const nome = nomeParts.join("-");
-          return [{ nome, tipo: tipo as "lata" | "1l", preco: tipo === "lata" ? 5 : 8, qtd: refriExtraQtd }];
-        })()
-      : [];
+    const refriExtraArray: RefriExtraType[] = Object.entries(refrisExtras)
+      .filter(([, qtd]) => qtd > 0)
+      .map(([key, qtd]) => {
+        const lastDash = key.lastIndexOf("-");
+        const nome = key.substring(0, lastDash);
+        const tipo = key.substring(lastDash + 1) as "lata" | "1l";
+        return { nome, tipo, preco: tipo === "lata" ? 5 : 8, qtd };
+      });
 
     const novoItem: ItemPedido = {
       combo: comboSelecionado,
@@ -193,8 +193,7 @@ export default function CreateOrder() {
     setSabores({});
     setRefri("");
     setMaioneseQtd(0);
-    setRefriExtraSelecao("");
-    setRefriExtraQtd(1);
+    setRefrisExtras({});
     setObservacaoItem("");
   }
 
@@ -208,8 +207,7 @@ export default function CreateOrder() {
     setSabores({});
     setRefri("");
     setMaioneseQtd(0);
-    setRefriExtraSelecao("");
-    setRefriExtraQtd(1);
+    setRefrisExtras({});
     setObservacaoItem("");
   }
 
@@ -222,9 +220,11 @@ export default function CreateOrder() {
     setSabores({ ...item.sabores });
     setRefri(item.refri || "");
     setMaioneseQtd(item.maioneseQtd);
-    const primeiro = item.refriExtra?.[0];
-    setRefriExtraSelecao(primeiro ? `${primeiro.tipo}-${primeiro.nome}` : "");
-    setRefriExtraQtd(primeiro?.qtd || 1);
+    const extrasMap: Record<string, number> = {};
+    for (const r of (Array.isArray(item.refriExtra) ? item.refriExtra : [])) {
+      extrasMap[`${r.nome}-${r.tipo}`] = r.qtd;
+    }
+    setRefrisExtras(extrasMap);
     setObservacaoItem(item.observacaoItem || "");
   }
   async function criarPedido() {
@@ -528,53 +528,58 @@ export default function CreateOrder() {
 
               <div className="grid-2">
                 <select
-                  value={refriExtraSelecao}
+                  value=""
                   onChange={(e) => {
-                    setRefriExtraSelecao(e.target.value);
-                    if (!e.target.value) setRefriExtraQtd(1);
+                    if (!e.target.value) return;
+                    setRefrisExtras((prev) => ({
+                      ...prev,
+                      [e.target.value]: (prev[e.target.value] || 0) + 1,
+                    }));
                   }}
                 >
-                  <option value="">Refri extra</option>
-
+                  <option value="">
+                    {Object.values(refrisExtras).some((q) => q > 0) ? "Adicionar outro refri" : "Refri extra"}
+                  </option>
                   <optgroup label="Lata - R$ 5">
-                    {saboresRefri.lata.map((item) => (
-                      <option key={item} value={`lata-${item}`}>
-                        {item}
-                      </option>
+                    {saboresRefri.lata.map((r) => (
+                      <option key={r} value={`${r}-lata`}>{r}</option>
                     ))}
                   </optgroup>
-
                   <optgroup label="1L - R$ 8">
-                    {saboresRefri["1l"].map((item) => (
-                      <option key={item} value={`1l-${item}`}>
-                        {item}
-                      </option>
+                    {saboresRefri["1l"].map((r) => (
+                      <option key={r} value={`${r}-1l`}>{r}</option>
                     ))}
                   </optgroup>
                 </select>
 
                 <div className="extra-info">
-                  {refriExtraSelecao ? (
-                    <>
-                      <input
-                        type="number"
-                        min={1}
-                        value={refriExtraQtd}
-                        onChange={(e) => setRefriExtraQtd(Math.max(1, Number(e.target.value)))}
-                        style={{ width: 52, textAlign: "center" }}
-                      />
-                      <strong>
-                        R$ {((refriExtraSelecao.startsWith("lata") ? 5 : 8) * refriExtraQtd).toFixed(2)}
-                      </strong>
-                    </>
-                  ) : (
-                    <>
-                      <span>Extra</span>
-                      <strong>R$ 0,00</strong>
-                    </>
-                  )}
+                  <span>Extra</span>
+                  <strong>
+                    R$ {Object.entries(refrisExtras).filter(([, q]) => q > 0).reduce((acc, [key, qtd]) => {
+                      const tipo = key.substring(key.lastIndexOf("-") + 1);
+                      return acc + (tipo === "lata" ? 5 : 8) * qtd;
+                    }, 0).toFixed(2)}
+                  </strong>
                 </div>
               </div>
+
+              {Object.entries(refrisExtras).filter(([, q]) => q > 0).length > 0 && (
+                <div className="refri-extra-lista">
+                  {Object.entries(refrisExtras).filter(([, q]) => q > 0).map(([key, qty]) => {
+                    const lastDash = key.lastIndexOf("-");
+                    const nome = key.substring(0, lastDash);
+                    const tipo = key.substring(lastDash + 1) as "lata" | "1l";
+                    return (
+                      <div key={key} className="refri-extra-tag">
+                        <button onClick={() => setRefrisExtras((p) => ({ ...p, [key]: Math.max(0, p[key] - 1) }))}>−</button>
+                        <span>{qty}× {nome} ({tipo === "lata" ? "Lata" : "1L"}) — R$ {((tipo === "lata" ? 5 : 8) * qty).toFixed(2)}</span>
+                        <button onClick={() => setRefrisExtras((p) => ({ ...p, [key]: p[key] + 1 }))}>+</button>
+                        <button onClick={() => setRefrisExtras((p) => ({ ...p, [key]: 0 }))}>✕</button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
 
               <textarea
                 placeholder="Observação"

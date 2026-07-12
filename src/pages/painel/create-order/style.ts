@@ -331,6 +331,51 @@ export const Container = styled.div`
     color: #1d4ed8;
   }
 
+  .refri-extra-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .refri-extra-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1d4ed8;
+
+    span {
+      flex: 1;
+    }
+
+    button {
+      border: none;
+      background: #dbeafe;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1d4ed8;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+
+      &:last-child {
+        background: #fee2e2;
+        color: #dc2626;
+      }
+    }
+  }
+
   button {
     border: 0;
 
