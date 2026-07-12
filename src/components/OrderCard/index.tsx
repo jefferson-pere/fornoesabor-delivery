@@ -40,6 +40,13 @@ export function OrderCard({ order, onMove, onTogglePayment, onDetails }: Props) 
     return null;
   }
 
+  const totalCombos = order.itens.reduce((acc, item) => acc + item.combo.preco, 0);
+  const totalRefri = order.itens.reduce((acc, item) => acc + (Array.isArray(item.refriExtra) ? item.refriExtra.reduce((a, r) => a + r.preco * r.qtd, 0) : 0), 0);
+  const totalMaionese = order.itens.reduce((acc, item) => acc + item.maioneseQtd * 0.99, 0);
+  const frete = order.cidade === "Retirada" ? 0 : order.cidade === "Cariús" ? 3 : 5;
+  const taxaCartao = order.pagamento === "cartao" ? 1 : 0;
+  const orderTotal = totalCombos + totalRefri + totalMaionese + frete + taxaCartao;
+
   return (
     <Container $borderColor={borderColor} onClick={() => onDetails(order)}>
       <div className="topo">
@@ -59,7 +66,7 @@ export function OrderCard({ order, onMove, onTogglePayment, onDetails }: Props) 
       </div>
 
       <div className="footer">
-        <strong>R$ {order.total.toFixed(2)}</strong>
+        <strong>R$ {orderTotal.toFixed(2)}</strong>
         <button
           className={order.pago ? "pago" : "nao-pago"}
           onClick={(e) => { e.stopPropagation(); onTogglePayment(order.id, !order.pago); }}

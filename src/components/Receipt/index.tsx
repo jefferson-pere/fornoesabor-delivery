@@ -24,6 +24,9 @@ export function Receipt({ order }: Props) {
   const frete =
     order.cidade === "Retirada" ? 0 : order.cidade === "Cariús" ? 3 : 5;
 
+  const taxaCartao = order.pagamento === "cartao" ? 1 : 0;
+  const total = totalCombos + totalRefri + totalMaionese + frete + taxaCartao;
+
   return (
     <Container className="receipt-print">
       <div className="receipt-content">
@@ -82,7 +85,7 @@ export function Receipt({ order }: Props) {
 
             {item.refri && <div className="obs">** Refri: {item.refri}</div>}
 
-            {item.refriExtra?.map((r) => (
+            {(Array.isArray(item.refriExtra) ? item.refriExtra : []).map((r) => (
               <div key={`${r.nome}-${r.tipo}`} className="obs">** Refri: {r.qtd}× {r.nome} ({r.tipo})</div>
             ))}
 
@@ -166,7 +169,7 @@ export function Receipt({ order }: Props) {
                 .replace(",", ".")
                 .trim(),
             );
-            const troco = valorInformado - order.total;
+            const troco = valorInformado - total;
             return (
               <>
                 <div className="line">
@@ -198,7 +201,7 @@ export function Receipt({ order }: Props) {
 
         <div className="total">
           <span>TOTAL</span>
-          <span>R$ {order.total.toFixed(2)}</span>
+          <span>R$ {total.toFixed(2)}</span>
         </div>
 
         <div className="footer">

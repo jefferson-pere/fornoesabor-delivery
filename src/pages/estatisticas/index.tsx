@@ -807,7 +807,7 @@ export function Estatisticas() {
                         {item.refri && item.refri !== "" && (
                           <span>🥤 {item.refri}</span>
                         )}
-                        {item.refriExtra?.map((r) => (
+                        {(Array.isArray(item.refriExtra) ? item.refriExtra : []).map((r) => (
                           <span key={`${r.nome}-${r.tipo}`}>🥤 {r.qtd}× {r.nome} — R$ {(r.preco * r.qtd).toFixed(2)}</span>
                         ))}
                         {item.maioneseQtd > 0 && (

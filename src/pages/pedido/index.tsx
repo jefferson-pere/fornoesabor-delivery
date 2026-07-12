@@ -525,7 +525,7 @@ export function Pedido() {
                       {item.refri && (
                         <span className="tag">🥤 {item.refri}</span>
                       )}
-                      {item.refriExtra?.map((r) => (
+                      {(Array.isArray(item.refriExtra) ? item.refriExtra : []).map((r) => (
                         <span key={`${r.nome}-${r.tipo}`} className="tag">
                           🥤 {r.qtd}× {r.nome} ({r.tipo})
                         </span>

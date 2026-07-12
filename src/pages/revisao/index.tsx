@@ -117,7 +117,7 @@ export function Revisao() {
                   ) : null,
                 )}
                 {item.refri && <div className="sub">🥤 {item.refri}</div>}
-                {item.refriExtra?.map((r) => (
+                {(Array.isArray(item.refriExtra) ? item.refriExtra : []).map((r) => (
                   <div key={`${r.nome}-${r.tipo}`} className="sub">
                     🥤 {r.qtd}× {r.nome} ({r.tipo}) — R$ {(r.preco * r.qtd).toFixed(2)}
                   </div>
@@ -187,6 +187,7 @@ export function Revisao() {
                   pagamento,
                   troco: semTroco && !troco ? `R$ ${total.toFixed(2).replace(".", ",")}` : troco,
                   observacao,
+                  total,
                 };
                 const res = await fetch(
                   `${import.meta.env.VITE_API_URL}/orders`,
