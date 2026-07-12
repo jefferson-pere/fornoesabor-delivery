@@ -145,7 +145,7 @@ export function OrderModal({ order, onClose }: Props) {
                     0,
                   );
                   const totalRefri = currentOrder.itens.reduce(
-                    (acc, item) => acc + (item.refriExtra?.reduce((a, r) => a + r.preco * r.qtd, 0) || 0),
+                    (acc, item) => acc + (Array.isArray(item.refriExtra) ? item.refriExtra.reduce((a, r) => a + r.preco * r.qtd, 0) : 0),
                     0,
                   );
                   const totalMaionese = currentOrder.itens.reduce(

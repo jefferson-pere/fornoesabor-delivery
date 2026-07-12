@@ -36,7 +36,7 @@ export function Revisao() {
     0,
   );
   const adicionalRefri = itens.reduce(
-    (acc, item) => acc + (item.refriExtra?.reduce((a, r) => a + r.preco * r.qtd, 0) || 0),
+    (acc, item) => acc + (Array.isArray(item.refriExtra) ? item.refriExtra.reduce((a, r) => a + r.preco * r.qtd, 0) : 0),
     0,
   );
   const frete = cidade === "Cariús" ? 3 : cidade === "Jucás" ? 5 : 0;

@@ -102,7 +102,7 @@ export default function CreateOrder() {
         acc +
         item.combo.preco +
         (item.maioneseQtd || 0) * 0.99 +
-        (item.refriExtra?.reduce((a, r) => a + r.preco * r.qtd, 0) || 0)
+        (Array.isArray(item.refriExtra) ? item.refriExtra.reduce((a, r) => a + r.preco * r.qtd, 0) : 0)
       );
     }, 0);
   }, [itens]);
@@ -677,7 +677,7 @@ export default function CreateOrder() {
                       {(
                         item.combo.preco +
                         (item.maioneseQtd || 0) * 0.99 +
-                        (item.refriExtra?.reduce((a, r) => a + r.preco * r.qtd, 0) || 0)
+                        (Array.isArray(item.refriExtra) ? item.refriExtra.reduce((a, r) => a + r.preco * r.qtd, 0) : 0)
                       ).toFixed(2)}
                     </strong>
                   </small>

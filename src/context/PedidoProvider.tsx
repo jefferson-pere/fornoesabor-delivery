@@ -25,7 +25,12 @@ export function PedidoProvider({ children }: { children: ReactNode }) {
   });
   const [itens, setItens] = useState<ItemPedido[]>(() => {
     const saved = localStorage.getItem("pedido_itens");
-    return saved ? JSON.parse(saved) : [];
+    if (!saved) return [];
+    const parsed = JSON.parse(saved);
+    return parsed.map((item: ItemPedido) => ({
+      ...item,
+      refriExtra: Array.isArray(item.refriExtra) ? item.refriExtra : [],
+    }));
   });
   const [pagamento, setPagamento] = useState<FormaPagamentoType>(() => {
     return (localStorage.getItem("pedido_pagamento") as FormaPagamentoType) || "";
