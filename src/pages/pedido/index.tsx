@@ -204,25 +204,25 @@ export function Pedido() {
                     className={`combo-card${disponivel ? "" : " indisponivel"}`}
                     onClick={() => disponivel && selecionarCombo(c)}
                   >
-                    <div className="combo-top">
-                      <span className={`combo-badge ${c.tipo}`}>
-                        {c.nomeRef}
-                      </span>
-                      {!disponivel && (
-                        <span className="badge-indisponivel">Indisponível</span>
+                    <div className="combo-left">
+                      <div className="combo-top">
+                        <span className={`combo-badge ${c.tipo}`}>
+                          {c.nomeRef}
+                        </span>
+                        {!disponivel && (
+                          <span className="badge-indisponivel">Indisponível</span>
+                        )}
+                      </div>
+                      <div className="combo-units">{c.unidades} Esfihas</div>
+                      {c.maioneseInclusa && (
+                        <div className="combo-extras">
+                          <span>Maionese inclusa</span>
+                        </div>
                       )}
                     </div>
-                    <div className="combo-units">{c.unidades} Esfihas </div>
-                    <div className="combo-extras">
-                      {c.refri !== "none" && (
-                        <span>
-                          + 🥤 Refri {c.refri === "lata" ? "lata" : "1L"}
-                        </span>
-                      )}
-                      {c.maioneseInclusa && <span> e Maionese</span>}
-                    </div >
                     <div className="container-price">
-                    <span className="combo-price">R$ {c.preco.toFixed(2)}</span>
+                      <span className="combo-price">R$ {c.preco.toFixed(2)}</span>
+                      <span className="combo-arrow">›</span>
                     </div>
                   </div>
                   );

@@ -175,47 +175,64 @@ export const Container = styled.div`
   /* COMBO CARDS */
   .combo-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
 
   .combo-card {
-    border: 1.5px solid #b8b8b8;
-    border-radius: 14px;
-    padding: 12px;
-    background: #f7f7f7;
+    background: linear-gradient(135deg, #fff5f5 0%, #fff 60%);
+    border: 1.5px solid #fac8c8;
+    border-left: 8px solid #d90000;
+    border-radius: 16px;
+    padding: 18px 18px 18px 16px;
     cursor: pointer;
     transition:
-      border-color 0.15s,
-      background 0.15s,
-      transform 0.1s;
+      box-shadow 0.2s,
+      transform 0.15s,
+      border-color 0.2s,
+      background 0.2s;
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .combo-card:active {
-    transform: scale(0.97);
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    box-shadow: 0 3px 12px rgba(217, 0, 0, 0.09);
   }
 
   .combo-card:hover {
-    border-color: #fbb;
-    background: #fff8f8;
+    border-color: #d90000;
+    box-shadow: 0 8px 24px rgba(217, 0, 0, 0.46);
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #ffe8e8 0%, #fff5f5 60%);
+  }
+
+  .combo-card:active {
+    transform: scale(0.98) translateY(0);
+    box-shadow: 0 2px 8px rgba(217, 0, 0, 0.12);
+  }
+
+  .combo-left {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    min-width: 0;
   }
 
   .combo-top {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    gap: 8px;
+    margin-bottom: 0;
   }
 
   .combo-badge {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 800;
-    padding: 2px 7px;
-    border-radius: 6px;
-    letter-spacing: 0.3px;
+    padding: 3px 9px;
+    border-radius: 99px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
   }
 
   .combo-badge.prime {
@@ -224,37 +241,53 @@ export const Container = styled.div`
   }
 
   .combo-badge.classico {
-    background: #e0f2fe;
-    color: #0369a1;
+    background: #fef3c7;
+    color: #92400e;
   }
+
   .container-price {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    margin-right: 5px;
+    gap: 4px;
+    flex-shrink: 0;
   }
+
   .combo-price {
-    font-size: 14px;
-    font-weight: 800;
+    font-size: 22px;
+    font-weight: 900;
     color: #d90000;
+    line-height: 1;
+  }
+
+  .combo-arrow {
+    font-size: 20px;
+    color: #d90000;
+    opacity: 0.5;
+    line-height: 1;
   }
 
   .combo-units {
-    font-size: 16px;
-    font-weight: 600;
-    color: #222;
+    font-size: 20px;
+    font-weight: 800;
+    color: #111;
+    line-height: 1.1;
   }
 
   .combo-extras {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
-    margin-top: 2px;
+    margin-top: 0;
   }
 
   .combo-extras span {
     font-size: 12px;
-    color: #666;
+    color: #16a34a;
+    font-weight: 600;
+    background: #dcfce7;
+    padding: 2px 8px;
+    border-radius: 99px;
   }
 
   /* COMBO EDITANDO */
@@ -781,7 +814,7 @@ export const Container = styled.div`
     }
 
     .combo-grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr;
     }
 
     .sabor-name {
