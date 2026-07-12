@@ -5,6 +5,7 @@ import type {
   FormaPagamentoType,
   ItemPedido,
 } from "../types/pedido";
+import { combosDisponiveis } from "../data/menu";
 export function PedidoProvider({ children }: { children: ReactNode }) {
   const [step, setStep] = useState(() => {
     const saved = localStorage.getItem("pedido_step");
@@ -27,10 +28,13 @@ export function PedidoProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem("pedido_itens");
     if (!saved) return [];
     const parsed = JSON.parse(saved);
-    return parsed.map((item: ItemPedido) => ({
-      ...item,
-      refriExtra: Array.isArray(item.refriExtra) ? item.refriExtra : [],
-    }));
+    return parsed
+      .filter((item: ItemPedido) => combosDisponiveis.some((c) => c.id === item.combo?.id))
+      .map((item: ItemPedido) => ({
+        ...item,
+        combo: combosDisponiveis.find((c) => c.id === item.combo.id)!,
+        refriExtra: Array.isArray(item.refriExtra) ? item.refriExtra : [],
+      }));
   });
   const [pagamento, setPagamento] = useState<FormaPagamentoType>(() => {
     return (localStorage.getItem("pedido_pagamento") as FormaPagamentoType) || "";
