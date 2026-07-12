@@ -5,8 +5,22 @@ import type {
   FormaPagamentoType,
   ItemPedido,
 } from "../types/pedido";
-import { combosDisponiveis } from "../data/menu";
+import { combosDisponiveis, MENU_VERSION } from "../data/menu";
+const PEDIDO_KEYS = [
+  "pedido_step","pedido_nome","pedido_telefone","pedido_cidade","pedido_endereco",
+  "pedido_itens","pedido_pagamento","pedido_troco","pedido_sem_troco","pedido_observacao",
+];
+
+function checkMenuVersion() {
+  if (localStorage.getItem("menu_version") !== MENU_VERSION) {
+    PEDIDO_KEYS.forEach((k) => localStorage.removeItem(k));
+    localStorage.setItem("menu_version", MENU_VERSION);
+  }
+}
+
 export function PedidoProvider({ children }: { children: ReactNode }) {
+  checkMenuVersion();
+
   const [step, setStep] = useState(() => {
     const saved = localStorage.getItem("pedido_step");
     return saved ? Number(saved) : 1;
@@ -65,9 +79,7 @@ export function PedidoProvider({ children }: { children: ReactNode }) {
     setTroco("");
     setSemTroco(false);
     setObservacao("");
-    ["pedido_step","pedido_nome","pedido_telefone","pedido_cidade","pedido_endereco",
-     "pedido_itens","pedido_pagamento","pedido_troco","pedido_sem_troco","pedido_observacao"]
-      .forEach((k) => localStorage.removeItem(k));
+    PEDIDO_KEYS.forEach((k) => localStorage.removeItem(k));
   }, []);
   return (
     <PedidoContext.Provider
