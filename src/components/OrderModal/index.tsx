@@ -124,28 +124,17 @@ export function OrderModal({ order, onClose }: Props) {
               </div>
 
               <div className="linha">
-                <span>Cidade: </span>
+                <span>Endereço: </span>
 
-                <span className="valor">{currentOrder.cidade}</span>
+                <span className="valor">
+                  {currentOrder.cidade}
+                  {currentOrder.cidade !== "Retirada" && currentOrder.endereco?.rua && (
+                    <>, {currentOrder.endereco.rua}, {currentOrder.endereco.numero} — {currentOrder.endereco.referencia}</>
+                  )}
+                </span>
               </div>
 
-              {currentOrder.cidade !== "Retirada" && (
-                <>
-                  <div className="linha">
-                    <span>Rua: </span>
-
-                    <span className="valor">
-                      {currentOrder.endereco?.rua},{" "}
-                      {currentOrder.endereco?.numero} -{" "}
-                      {currentOrder.endereco?.referencia}
-                    </span>
-                  </div>
-                </>
-              )}
-
               <div className="financeiro">
-                <h3>Financeiro</h3>
-
                 <>
                   <div className="linha">
                     <span>Combos</span>
