@@ -47,8 +47,8 @@ export function Pagamento() {
     if (step < 3) navigate("/");
   }, [step, navigate]);
 
-  const subtotal = itens.reduce((acc, item) => acc + item.combo.preco, 0);
-  const adicional = itens.reduce((acc, item) => acc + item.maioneseQtd * 0.99, 0);
+  const subtotal = itens.reduce((acc, item) => acc + (item.combo?.preco ?? 0), 0);
+  const adicional = itens.reduce((acc, item) => acc + (item.maioneseQtd ?? 0) * 0.99, 0);
   const adicionalRefri = itens.reduce((acc, item) => acc + (Array.isArray(item.refriExtra) ? item.refriExtra.reduce((a, r) => a + r.preco * r.qtd, 0) : 0), 0);
   const frete = cidade === "Cariús" ? 3 : cidade === "Jucás" ? 5 : 0;
   const taxaCartao = pagamento === "cartao" ? 1 : 0;

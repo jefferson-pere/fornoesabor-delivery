@@ -172,10 +172,10 @@ export function Pedido() {
     removerItem(index);
   };
 
-  const subtotal = itens.reduce((acc, item) => acc + item.combo.preco, 0);
+  const subtotal = itens.reduce((acc, item) => acc + (item.combo?.preco ?? 0), 0);
   const adicional = itens.reduce(
     (acc, item) =>
-      acc + item.maioneseQtd * 0.99 + (Array.isArray(item.refriExtra) ? item.refriExtra.reduce((a, r) => a + r.preco * r.qtd, 0) : 0),
+      acc + (item.maioneseQtd ?? 0) * 0.99 + (Array.isArray(item.refriExtra) ? item.refriExtra.reduce((a, r) => a + r.preco * r.qtd, 0) : 0),
     0,
   );
   const frete = cidade === "Cariús" ? 3 : cidade === "Jucás" ? 5 : 0;

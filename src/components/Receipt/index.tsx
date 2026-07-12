@@ -7,7 +7,7 @@ type Props = {
 
 export function Receipt({ order }: Props) {
   const totalCombos = order.itens.reduce(
-    (acc, item) => acc + item.combo.preco,
+    (acc, item) => acc + (item.combo?.preco ?? 0),
     0,
   );
 
@@ -17,7 +17,7 @@ export function Receipt({ order }: Props) {
   );
 
   const totalMaionese = order.itens.reduce(
-    (acc, item) => acc + item.maioneseQtd * 0.99,
+    (acc, item) => acc + (item.maioneseQtd ?? 0) * 0.99,
     0,
   );
 

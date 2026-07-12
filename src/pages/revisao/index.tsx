@@ -30,9 +30,9 @@ export function Revisao() {
   useEffect(() => {
     if (step < 3) navigate("/");
   }, [step, navigate]);
-  const subtotal = itens.reduce((acc, item) => acc + item.combo.preco, 0);
+  const subtotal = itens.reduce((acc, item) => acc + (item.combo?.preco ?? 0), 0);
   const adicional = itens.reduce(
-    (acc, item) => acc + item.maioneseQtd * 0.99,
+    (acc, item) => acc + (item.maioneseQtd ?? 0) * 0.99,
     0,
   );
   const adicionalRefri = itens.reduce(
