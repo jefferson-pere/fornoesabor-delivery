@@ -83,7 +83,7 @@ export function Receipt({ order }: Props) {
             {item.refri && <div className="obs">** Refri: {item.refri}</div>}
 
             {item.refriExtra?.map((r) => (
-              <div key={`${r.nome}-${r.tipo}`} className="obs">** Refri Extra: {r.qtd}× {r.nome} ({r.tipo})</div>
+              <div key={`${r.nome}-${r.tipo}`} className="obs">** Refri: {r.qtd}× {r.nome} ({r.tipo})</div>
             ))}
 
             {item.maioneseQtd > 0 && (
