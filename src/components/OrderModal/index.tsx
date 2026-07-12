@@ -145,7 +145,7 @@ export function OrderModal({ order, onClose }: Props) {
                     0,
                   );
                   const totalRefri = currentOrder.itens.reduce(
-                    (acc, item) => acc + (item.refriExtra?.preco || 0),
+                    (acc, item) => acc + (item.refriExtra?.reduce((a, r) => a + r.preco * r.qtd, 0) || 0),
                     0,
                   );
                   const totalMaionese = currentOrder.itens.reduce(
@@ -270,11 +270,11 @@ export function OrderModal({ order, onClose }: Props) {
 
                     {item.refri && <div className="extra">🥤 {item.refri}</div>}
 
-                    {item.refriExtra && (
-                      <div className="extra">
-                        🥤 Extra: {item.refriExtra.nome}
+                    {item.refriExtra?.map((r) => (
+                      <div key={`${r.nome}-${r.tipo}`} className="extra">
+                        🥤 {r.qtd}× {r.nome} ({r.tipo})
                       </div>
-                    )}
+                    ))}
 
                     {item.maioneseQtd > 0 && (
                       <div className="extra">

@@ -36,7 +36,7 @@ export function Revisao() {
     0,
   );
   const adicionalRefri = itens.reduce(
-    (acc, item) => acc + (item.refriExtra?.preco || 0),
+    (acc, item) => acc + (item.refriExtra?.reduce((a, r) => a + r.preco * r.qtd, 0) || 0),
     0,
   );
   const frete = cidade === "Cariús" ? 3 : cidade === "Jucás" ? 5 : 0;
@@ -117,12 +117,11 @@ export function Revisao() {
                   ) : null,
                 )}
                 {item.refri && <div className="sub">🥤 {item.refri}</div>}
-                {item.refriExtra && (
-                  <div className="sub">
-                    🥤 Extra: {item.refriExtra.nome} ({item.refriExtra.tipo}) —
-                    R$ {item.refriExtra.preco.toFixed(2)}
+                {item.refriExtra?.map((r) => (
+                  <div key={`${r.nome}-${r.tipo}`} className="sub">
+                    🥤 {r.qtd}× {r.nome} ({r.tipo}) — R$ {(r.preco * r.qtd).toFixed(2)}
                   </div>
-                )}
+                ))}
                 {item.maioneseQtd > 0 && (
                   <div className="sub">🧄 {item.maioneseQtd}x maionese</div>
                 )}

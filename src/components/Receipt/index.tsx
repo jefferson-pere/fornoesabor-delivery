@@ -12,7 +12,7 @@ export function Receipt({ order }: Props) {
   );
 
   const totalRefri = order.itens.reduce(
-    (acc, item) => acc + (item.refriExtra?.preco || 0),
+    (acc, item) => acc + (item.refriExtra?.reduce((a, r) => a + r.preco * r.qtd, 0) || 0),
     0,
   );
 
@@ -82,9 +82,9 @@ export function Receipt({ order }: Props) {
 
             {item.refri && <div className="obs">** Refri: {item.refri}</div>}
 
-            {item.refriExtra && (
-              <div className="obs">** Refri Extra: {item.refriExtra.nome}</div>
-            )}
+            {item.refriExtra?.map((r) => (
+              <div key={`${r.nome}-${r.tipo}`} className="obs">** Refri Extra: {r.qtd}× {r.nome} ({r.tipo})</div>
+            ))}
 
             {item.maioneseQtd > 0 && (
               <div className="obs">

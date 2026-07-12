@@ -48,7 +48,8 @@ export default function CreateOrder() {
   const [sabores, setSabores] = useState<Record<string, number>>({});
   const [refri, setRefri] = useState("");
   const [maioneseQtd, setMaioneseQtd] = useState(0);
-  const [refriExtra, setRefriExtra] = useState<RefriExtraType | null>(null);
+  const [refriExtraSelecao, setRefriExtraSelecao] = useState("");
+  const [refriExtraQtd, setRefriExtraQtd] = useState(1);
   const [observacaoItem, setObservacaoItem] = useState("");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
@@ -83,7 +84,7 @@ export default function CreateOrder() {
           refri: item.refri,
           maioneseQtd: item.maioneseQtd || 0,
           observacaoItem: item.observacaoItem,
-          refriExtra: item.refriExtra || null,
+          refriExtra: item.refriExtra || [],
         };
       });
 
@@ -101,7 +102,7 @@ export default function CreateOrder() {
         acc +
         item.combo.preco +
         (item.maioneseQtd || 0) * 0.99 +
-        (item.refriExtra?.preco || 0)
+        (item.refriExtra?.reduce((a, r) => a + r.preco * r.qtd, 0) || 0)
       );
     }, 0);
   }, [itens]);
@@ -163,13 +164,21 @@ export default function CreateOrder() {
       return;
     }
 
+    const refriExtraArray: RefriExtraType[] = refriExtraSelecao
+      ? (() => {
+          const [tipo, ...nomeParts] = refriExtraSelecao.split("-");
+          const nome = nomeParts.join("-");
+          return [{ nome, tipo: tipo as "lata" | "1l", preco: tipo === "lata" ? 5 : 8, qtd: refriExtraQtd }];
+        })()
+      : [];
+
     const novoItem: ItemPedido = {
       combo: comboSelecionado,
       sabores,
       refri,
       maioneseQtd,
       observacaoItem,
-      refriExtra,
+      refriExtra: refriExtraArray,
     };
 
     if (editingIndex !== null) {
@@ -184,7 +193,8 @@ export default function CreateOrder() {
     setSabores({});
     setRefri("");
     setMaioneseQtd(0);
-    setRefriExtra(null);
+    setRefriExtraSelecao("");
+    setRefriExtraQtd(1);
     setObservacaoItem("");
   }
 
@@ -198,7 +208,8 @@ export default function CreateOrder() {
     setSabores({});
     setRefri("");
     setMaioneseQtd(0);
-    setRefriExtra(null);
+    setRefriExtraSelecao("");
+    setRefriExtraQtd(1);
     setObservacaoItem("");
   }
 
@@ -208,12 +219,12 @@ export default function CreateOrder() {
     const comboAtual =
       combosDisponiveis.find((combo) => combo.id === item.combo.id) || null;
     setComboSelecionado(comboAtual);
-    setSabores({
-      ...item.sabores,
-    });
+    setSabores({ ...item.sabores });
     setRefri(item.refri || "");
     setMaioneseQtd(item.maioneseQtd);
-    setRefriExtra(item.refriExtra || null);
+    const primeiro = item.refriExtra?.[0];
+    setRefriExtraSelecao(primeiro ? `${primeiro.tipo}-${primeiro.nome}` : "");
+    setRefriExtraQtd(primeiro?.qtd || 1);
     setObservacaoItem(item.observacaoItem || "");
   }
   async function criarPedido() {
@@ -517,29 +528,10 @@ export default function CreateOrder() {
 
               <div className="grid-2">
                 <select
-                  value={
-                    refriExtra ? `${refriExtra.tipo}-${refriExtra.nome}` : ""
-                  }
+                  value={refriExtraSelecao}
                   onChange={(e) => {
-                    const value = e.target.value;
-
-                    if (!value) {
-                      setRefriExtra(null);
-
-                      return;
-                    }
-
-                    const [tipo, ...nomeParts] = value.split("-");
-
-                    const nome = nomeParts.join("-");
-
-                    setRefriExtra({
-                      nome,
-
-                      tipo: tipo as "lata" | "1l",
-
-                      preco: tipo === "lata" ? 5 : 8,
-                    });
+                    setRefriExtraSelecao(e.target.value);
+                    if (!e.target.value) setRefriExtraQtd(1);
                   }}
                 >
                   <option value="">Refri extra</option>
@@ -562,16 +554,22 @@ export default function CreateOrder() {
                 </select>
 
                 <div className="extra-info">
-                  {refriExtra ? (
+                  {refriExtraSelecao ? (
                     <>
-                      <span>{refriExtra.nome}</span>
-
-                      <strong>R$ {refriExtra.preco.toFixed(2)}</strong>
+                      <input
+                        type="number"
+                        min={1}
+                        value={refriExtraQtd}
+                        onChange={(e) => setRefriExtraQtd(Math.max(1, Number(e.target.value)))}
+                        style={{ width: 52, textAlign: "center" }}
+                      />
+                      <strong>
+                        R$ {((refriExtraSelecao.startsWith("lata") ? 5 : 8) * refriExtraQtd).toFixed(2)}
+                      </strong>
                     </>
                   ) : (
                     <>
                       <span>Extra</span>
-
                       <strong>R$ 0,00</strong>
                     </>
                   )}
@@ -665,10 +663,10 @@ export default function CreateOrder() {
                     </small>
                   )}
 
-                  {item.refriExtra && (
+                  {(item.refriExtra?.length ?? 0) > 0 && (
                     <small>
                       Extra:
-                      <strong>R$ {item.refriExtra.preco.toFixed(2)}</strong>
+                      <strong>R$ {item.refriExtra!.reduce((a, r) => a + r.preco * r.qtd, 0).toFixed(2)}</strong>
                     </small>
                   )}
 
@@ -679,7 +677,7 @@ export default function CreateOrder() {
                       {(
                         item.combo.preco +
                         (item.maioneseQtd || 0) * 0.99 +
-                        (item.refriExtra?.preco || 0)
+                        (item.refriExtra?.reduce((a, r) => a + r.preco * r.qtd, 0) || 0)
                       ).toFixed(2)}
                     </strong>
                   </small>

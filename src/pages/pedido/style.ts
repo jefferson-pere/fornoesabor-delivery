@@ -465,6 +465,86 @@ export const Container = styled.div`
   .refri-extra-section .section-label {
     color: #64748b;
     margin-bottom: 10px;
+    justify-content: center;
+  }
+
+  .refri-extra-add-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .refri-extra-add-row .select-input {
+    flex: 1;
+  }
+
+  .btn-refri-add {
+    flex-shrink: 0;
+    width: 40px;
+    height: 42px;
+    border-radius: 10px;
+    border: none;
+    background: #d90000;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s;
+  }
+
+  .btn-refri-add:disabled {
+    background: #e5e5e5;
+    color: #aaa;
+    cursor: not-allowed;
+  }
+
+  .refri-extra-lista {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .refri-extra-prices {
+    font-size: 11px;
+    color: #777;
+    margin: -6px 0 8px;
+    text-align: center;
+  }
+
+  .refri-extra-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+    width: 100%;
+  }
+
+  .refri-extra-tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #dbeafe;
+    border: 1.5px solid #93c5fd;
+    border-radius: 99px;
+    padding: 6px 10px 6px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e40af;
+  }
+
+  .refri-extra-tag button {
+    background: none;
+    border: none;
+    color: #60a5fa;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
   }
 
   .refri-extra-select {
@@ -472,11 +552,6 @@ export const Container = styled.div`
     background: #fff !important;
     font-size: 15px !important;
     color: #334155 !important;
-  }
-
-  .refri-extra-select:focus {
-    border-color: #94a3b8 !important;
-    box-shadow: none !important;
   }
 
   /* MAIONESE INLINE */

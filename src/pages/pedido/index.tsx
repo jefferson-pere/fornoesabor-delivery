@@ -19,11 +19,7 @@ export function Pedido() {
   const [combo, setCombo] = useState<ComboType | null>(null);
   const [sabores, setSabores] = useState<Record<string, number>>({});
   const [refri, setRefri] = useState("");
-  const [refriExtra, setRefriExtra] = useState<{
-    nome: string;
-    tipo: "lata" | "1l";
-    preco: number;
-  } | null>(null);
+  const [refrisExtras, setRefrisExtras] = useState<Record<string, number>>({});
   const [maioneseQtd, setMaioneseQtd] = useState(0);
   const [observacaoItem, setObservacaoItem] = useState("");
   const [maxChocolate, setMaxChocolate] = useState(false);
@@ -88,7 +84,7 @@ export function Pedido() {
     setCombo(null);
     setSabores({});
     setRefri("");
-    setRefriExtra(null);
+    setRefrisExtras({});
     setMaioneseQtd(0);
     setObservacaoItem("");
     setShowObservacao(false);
@@ -100,12 +96,19 @@ export function Pedido() {
     setCombo(c);
     setSabores({});
     setRefri("");
-    setRefriExtra(null);
+    setRefrisExtras({});
     setMaioneseQtd(0);
     setObservacaoItem("");
     setShowObservacao(false);
     setMaxChocolate(false);
     setErrors({ combo: false, sabores: false, refri: false });
+  };
+
+  const alterarRefriExtra = (key: string, delta: number) => {
+    setRefrisExtras((prev) => ({
+      ...prev,
+      [key]: Math.max((prev[key] || 0) + delta, 0),
+    }));
   };
 
   const adicionarItem = () => {
@@ -123,13 +126,22 @@ export function Pedido() {
     }
     if (Object.values(newErrors).some(Boolean)) return;
 
+    const refriExtraArray = Object.entries(refrisExtras)
+      .filter(([, qtd]) => qtd > 0)
+      .map(([key, qtd]) => {
+        const lastDash = key.lastIndexOf("-");
+        const nome = key.substring(0, lastDash);
+        const tipo = key.substring(lastDash + 1) as "lata" | "1l";
+        return { nome, tipo, preco: tipo === "lata" ? 5 : 8, qtd };
+      });
+
     setItens((prev) => [
       ...prev,
       {
         combo: combo!,
         sabores: Object.fromEntries(Object.entries(sabores).filter(([, qtd]) => qtd > 0)),
         refri,
-        refriExtra,
+        refriExtra: refriExtraArray,
         maioneseQtd,
         observacaoItem,
       },
@@ -149,16 +161,21 @@ export function Pedido() {
     setCombo(item.combo);
     setSabores(item.sabores);
     setRefri(item.refri || "");
-    setRefriExtra(item.refriExtra || null);
+    const extrasMap: Record<string, number> = {};
+    for (const r of (item.refriExtra || [])) {
+      extrasMap[`${r.nome}-${r.tipo}`] = r.qtd;
+    }
+    setRefrisExtras(extrasMap);
     setMaioneseQtd(item.maioneseQtd || 0);
     setObservacaoItem(item.observacaoItem || "");
+    if (item.observacaoItem) setShowObservacao(true);
     removerItem(index);
   };
 
   const subtotal = itens.reduce((acc, item) => acc + item.combo.preco, 0);
   const adicional = itens.reduce(
     (acc, item) =>
-      acc + item.maioneseQtd * 0.99 + (item.refriExtra?.preco || 0),
+      acc + item.maioneseQtd * 0.99 + (item.refriExtra?.reduce((a, r) => a + r.preco * r.qtd, 0) || 0),
     0,
   );
   const frete = cidade === "Cariús" ? 3 : cidade === "Jucás" ? 5 : 0;
@@ -422,41 +439,47 @@ export function Pedido() {
                   Adicionar refrigerante?
                   <span className="optional-tag">opcional</span>
                 </div>
+                <p className="refri-extra-prices">Lata R$ 5,00 &nbsp;·&nbsp; 1 Litro R$ 8,00</p>
+
                 <select
                   className="select-input refri-extra-select"
-                  value={
-                    refriExtra ? `${refriExtra.nome}-${refriExtra.tipo}` : ""
-                  }
+                  value=""
                   onChange={(e) => {
-                    const value = e.target.value;
-                    if (!value) {
-                      setRefriExtra(null);
-                      return;
-                    }
-                    const lastIndex = value.lastIndexOf("-");
-                    const nome = value.substring(0, lastIndex);
-                    const tipo = value.substring(lastIndex + 1) as
-                      | "lata"
-                      | "1l";
-                    setRefriExtra({
-                      nome,
-                      tipo,
-                      preco: tipo === "lata" ? 5 : 8,
-                    });
+                    if (!e.target.value) return;
+                    alterarRefriExtra(e.target.value, 1);
                   }}
                 >
-                  <option value="">Não quero</option>
-                  {saboresRefri.lata.filter((r) => isRefriDisponivel(r, "lata")).map((r) => (
-                    <option key={`${r}-lata`} value={`${r}-lata`}>
-                      {r} — Lata R$ 5,00
-                    </option>
-                  ))}
-                  {saboresRefri["1l"].filter((r) => isRefriDisponivel(r, "1l")).map((r) => (
-                    <option key={`${r}-1l`} value={`${r}-1l`}>
-                      {r} — 1L R$ 8,00
-                    </option>
-                  ))}
+                  <option value="">
+                    {Object.values(refrisExtras).some((q) => q > 0) ? "Adicionar outro refrigerante?" : "Escolha o refri para adicionar"}
+                  </option>
+                  <optgroup label="Lata — R$ 5,00">
+                    {saboresRefri.lata.filter((r) => isRefriDisponivel(r, "lata")).map((r) => (
+                      <option key={r} value={`${r}-lata`}>{r}</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="1 Litro — R$ 8,00">
+                    {saboresRefri["1l"].filter((r) => isRefriDisponivel(r, "1l")).map((r) => (
+                      <option key={r} value={`${r}-1l`}>{r}</option>
+                    ))}
+                  </optgroup>
                 </select>
+
+                {Object.entries(refrisExtras).filter(([, q]) => q > 0).length > 0 && (
+                  <div className="refri-extra-lista">
+                    <span className="refri-extra-label">você adicionou:</span>
+                    {Object.entries(refrisExtras).filter(([, q]) => q > 0).map(([key, qty]) => {
+                      const lastDash = key.lastIndexOf("-");
+                      const nome = key.substring(0, lastDash);
+                      const tipo = key.substring(lastDash + 1) as "lata" | "1l";
+                      return (
+                        <div key={key} className="refri-extra-tag">
+                          <span>🥤 {qty}× {nome} ({tipo === "lata" ? "Lata" : "1L"})</span>
+                          <button onClick={() => setRefrisExtras(prev => ({ ...prev, [key]: 0 }))}>✕</button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </section>
 
               {/* AÇÕES DO COMBO */}
@@ -502,12 +525,11 @@ export function Pedido() {
                       {item.refri && (
                         <span className="tag">🥤 {item.refri}</span>
                       )}
-                      {item.refriExtra && (
-                        <span className="tag">
-                          🥤 Extra {item.refriExtra.nome} (
-                          {item.refriExtra.tipo})
+                      {item.refriExtra?.map((r) => (
+                        <span key={`${r.nome}-${r.tipo}`} className="tag">
+                          🥤 {r.qtd}× {r.nome} ({r.tipo})
                         </span>
-                      )}
+                      ))}
                       {item.maioneseQtd > 0 && (
                         <span className="tag">
                           🧄 {item.maioneseQtd}× maionese

@@ -23,6 +23,8 @@ export type RefriExtraType = {
   tipo: "lata" | "1l";
 
   preco: number;
+
+  qtd: number;
 };
 
 /* =========================
@@ -39,7 +41,7 @@ export type ItemPedido = {
 
   observacaoItem?: string;
 
-  refriExtra?: RefriExtraType | null;
+  refriExtra?: RefriExtraType[];
 };
 
 /* =========================

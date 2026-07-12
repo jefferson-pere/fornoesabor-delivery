@@ -219,15 +219,14 @@ export function Estatisticas() {
           total++;
           custoTotal += custo;
         }
-        if (item.refriExtra) {
-          const nome = item.refriExtra.nome;
-          const custo = CUSTOS_REFRI[nome] ?? 0;
-          if (!map[nome]) map[nome] = { quantidade: 0, custoTotal: 0, custoUnitario: custo };
-          map[nome].quantidade++;
-          map[nome].custoTotal += custo;
-          total++;
-          custoTotal += custo;
-          fatExtra += item.refriExtra.preco;
+        for (const r of (item.refriExtra || [])) {
+          const custo = CUSTOS_REFRI[r.nome] ?? 0;
+          if (!map[r.nome]) map[r.nome] = { quantidade: 0, custoTotal: 0, custoUnitario: custo };
+          map[r.nome].quantidade += r.qtd;
+          map[r.nome].custoTotal += custo * r.qtd;
+          total += r.qtd;
+          custoTotal += custo * r.qtd;
+          fatExtra += r.preco * r.qtd;
         }
       });
     });
@@ -808,9 +807,9 @@ export function Estatisticas() {
                         {item.refri && item.refri !== "" && (
                           <span>🥤 {item.refri}</span>
                         )}
-                        {item.refriExtra && (
-                          <span>🥤 Extra: {item.refriExtra.nome} — R$ {item.refriExtra.preco.toFixed(2)}</span>
-                        )}
+                        {item.refriExtra?.map((r) => (
+                          <span key={`${r.nome}-${r.tipo}`}>🥤 {r.qtd}× {r.nome} — R$ {(r.preco * r.qtd).toFixed(2)}</span>
+                        ))}
                         {item.maioneseQtd > 0 && (
                           <span>🧂 Maionese: {item.maioneseQtd}x</span>
                         )}

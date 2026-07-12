@@ -19,6 +19,8 @@ export type RefriExtra = {
   tipo: "lata" | "1l";
 
   preco: number;
+
+  qtd: number;
 };
 
 export type ItemPedido = {
@@ -36,7 +38,7 @@ export type ItemPedido = {
 
   refri?: string;
 
-  refriExtra?: RefriExtra | null;
+  refriExtra?: RefriExtra[];
 
   maioneseQtd: number;
 
