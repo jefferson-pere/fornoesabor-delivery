@@ -13,7 +13,7 @@ import {
 } from "../../../data/menu";
 import type {
   FormaPagamentoType,
-  ItemPedido,
+  ItemPedidoForm,
   RefriExtraType,
 } from "../../../types/pedido";
 
@@ -40,7 +40,7 @@ export default function CreateOrder() {
   const [pagamento, setPagamento] = useState<FormaPagamentoType | "">("");
   const [troco, setTroco] = useState("");
   const [observacao, setObservacao] = useState("");
-  const [itens, setItens] = useState<ItemPedido[]>([]);
+  const [itens, setItens] = useState<ItemPedidoForm[]>([]);
   const [comboSelecionado, setComboSelecionado] = useState<ComboType | null>(
     null,
   );
@@ -72,7 +72,7 @@ export default function CreateOrder() {
         setReferencia(order.endereco.referencia || "");
       }
 
-      const itensConvertidos: ItemPedido[] = order.itens.map((item) => {
+      const itensConvertidos: ItemPedidoForm[] = order.itens.map((item) => {
         const comboEncontrado = combosDisponiveis.find(
           (combo) => combo.nome === item.combo.nome,
         );
@@ -83,7 +83,7 @@ export default function CreateOrder() {
           refri: item.refri,
           maioneseQtd: item.maioneseQtd || 0,
           observacaoItem: item.observacaoItem,
-          refriExtra: item.refriExtra || [],
+          refriExtra: Array.isArray(item.refriExtra) ? item.refriExtra : [],
         };
       });
 
@@ -260,7 +260,7 @@ export default function CreateOrder() {
         sabores: Object.fromEntries(
           Object.entries(item.sabores).filter(([, qtd]) => qtd > 0),
         ),
-        maioneseQtd: item.maioneseQtd > 0 ? item.maioneseQtd : undefined,
+        maioneseQtd: item.maioneseQtd > 0 ? item.maioneseQtd : 0,
         refriExtra: item.refriExtra || undefined,
         observacaoItem: item.observacaoItem?.trim()
           ? item.observacaoItem

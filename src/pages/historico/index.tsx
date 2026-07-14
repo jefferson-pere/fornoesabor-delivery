@@ -25,17 +25,9 @@ export function Historico() {
 
   const [search, setSearch] = useState("");
 
-  const [date, setDate] = useState(() => {
-    const now = new Date();
-
-    const year = now.getFullYear();
-
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-
-    const day = String(now.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  });
+  const [date, setDate] = useState(() =>
+    getDataBrasilia(new Date().toISOString()),
+  );
 
   // 🔥 carregar histórico
   useEffect(() => {

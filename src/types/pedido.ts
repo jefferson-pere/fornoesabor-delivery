@@ -28,9 +28,9 @@ export type RefriExtraType = {
 };
 
 /* =========================
-   ITEM DO PEDIDO
+   ITEM DO PEDIDO (formulário local — não confundir com ItemPedido de order.ts)
 ========================= */
-export type ItemPedido = {
+export type ItemPedidoForm = {
   combo: ComboType;
 
   sabores: Record<string, number>;
@@ -63,8 +63,8 @@ export type PedidoContextType = {
   endereco: EnderecoType;
   setEndereco: React.Dispatch<React.SetStateAction<EnderecoType>>;
 
-  itens: ItemPedido[];
-  setItens: React.Dispatch<React.SetStateAction<ItemPedido[]>>;
+  itens: ItemPedidoForm[];
+  setItens: React.Dispatch<React.SetStateAction<ItemPedidoForm[]>>;
 
   pagamento: FormaPagamentoType;
   setPagamento: React.Dispatch<React.SetStateAction<FormaPagamentoType>>;

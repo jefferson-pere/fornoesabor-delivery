@@ -83,13 +83,9 @@ export function Estatisticas() {
   const [loading, setLoading] = useState(true);
   const [periodo, setPeriodo] = useState<Periodo>("dia");
 
-  const [dataSelecionada, setDataSelecionada] = useState(() => {
-    const now = new Date();
-    const y = now.getFullYear();
-    const m = String(now.getMonth() + 1).padStart(2, "0");
-    const d = String(now.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
-  });
+  const [dataSelecionada, setDataSelecionada] = useState(() =>
+    getDataBrasilia(new Date().toISOString()),
+  );
 
   const [anoSelecionado, setAnoSelecionado] = useState(() => new Date().getFullYear());
   const [mesSelecionado, setMesSelecionado] = useState(() => new Date().getMonth() + 1);
@@ -219,7 +215,7 @@ export function Estatisticas() {
           total++;
           custoTotal += custo;
         }
-        for (const r of (item.refriExtra || [])) {
+        for (const r of (Array.isArray(item.refriExtra) ? item.refriExtra : [])) {
           const custo = CUSTOS_REFRI[r.nome] ?? 0;
           if (!map[r.nome]) map[r.nome] = { quantidade: 0, custoTotal: 0, custoUnitario: custo };
           map[r.nome].quantidade += r.qtd;

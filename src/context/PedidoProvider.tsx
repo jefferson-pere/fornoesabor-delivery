@@ -3,7 +3,7 @@ import { PedidoContext } from "./PedidoContext";
 import type {
   EnderecoType,
   FormaPagamentoType,
-  ItemPedido,
+  ItemPedidoForm,
 } from "../types/pedido";
 
 export function PedidoProvider({ children }: { children: ReactNode }) {
@@ -12,7 +12,7 @@ export function PedidoProvider({ children }: { children: ReactNode }) {
   const [telefone, setTelefone] = useState("");
   const [cidade, setCidade] = useState("");
   const [endereco, setEndereco] = useState<EnderecoType>({ rua: "", numero: "", referencia: "" });
-  const [itens, setItens] = useState<ItemPedido[]>([]);
+  const [itens, setItens] = useState<ItemPedidoForm[]>([]);
   const [pagamento, setPagamento] = useState<FormaPagamentoType>("");
   const [troco, setTroco] = useState("");
   const [semTroco, setSemTroco] = useState(false);

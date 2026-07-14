@@ -1,5 +1,5 @@
 import type { OrderStatus, Pedido } from "../types/order";
-import type { EnderecoType, FormaPagamentoType, ItemPedido } from "../types/pedido";
+import type { EnderecoType, FormaPagamentoType, ItemPedidoForm } from "../types/pedido";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -10,7 +10,7 @@ export type NovoPedidoPayload = {
   telefone: string;
   cidade: string;
   endereco: EnderecoType | null;
-  itens: ItemPedido[];
+  itens: ItemPedidoForm[];
   pagamento: FormaPagamentoType;
   troco: string;
   observacao: string;
@@ -28,7 +28,7 @@ export async function criarPedido(dados: NovoPedidoPayload): Promise<void> {
   if (!res.ok) throw new Error("Erro ao enviar pedido para o servidor");
 }
 
-export async function getOrders(all?: boolean) {
+export async function getOrders(all?: boolean): Promise<Pedido[]> {
   const res = await fetch(`${API_URL}/orders${all ? "?all=true" : ""}`, {
     headers: { "x-api-key": API_KEY },
   });
@@ -37,10 +37,10 @@ export async function getOrders(all?: boolean) {
     throw new Error("Erro ao buscar pedidos");
   }
 
-  return res.json();
+  return res.json() as Promise<Pedido[]>;
 }
 
-export async function updateOrderStatus(id: number, status: OrderStatus) {
+export async function updateOrderStatus(id: number, status: OrderStatus): Promise<Pedido> {
   const res = await fetch(`${API_URL}/orders/${id}/status`, {
     method: "PATCH",
 
@@ -52,10 +52,10 @@ export async function updateOrderStatus(id: number, status: OrderStatus) {
     body: JSON.stringify({ status }),
   });
 
-  return res.json();
+  return res.json() as Promise<Pedido>;
 }
 
-export async function updatePayment(id: number, pago: boolean) {
+export async function updatePayment(id: number, pago: boolean): Promise<Pedido> {
   const res = await fetch(`${API_URL}/orders/${id}/payment`, {
     method: "PATCH",
 
@@ -67,7 +67,7 @@ export async function updatePayment(id: number, pago: boolean) {
     body: JSON.stringify({ pago }),
   });
 
-  return res.json();
+  return res.json() as Promise<Pedido>;
 }
 export async function updateOrder(id: number, data: Partial<Pedido>) {
   const res = await fetch(`${API_URL}/orders/${id}`, {
