@@ -172,7 +172,7 @@ export default function CreateOrder() {
         return { nome, tipo, preco: tipo === "lata" ? 5 : 8, qtd };
       });
 
-    const novoItem: ItemPedido = {
+    const novoItem: ItemPedidoForm = {
       combo: comboSelecionado,
       sabores,
       refri,
