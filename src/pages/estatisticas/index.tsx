@@ -18,16 +18,19 @@ function getDataBrasilia(isoStr: string): string {
 }
 
 const CUSTOS_SABORES: Record<string, number> = {
-  "Frango com mussarela": 0.38,
-  "Calabresa com mussarela": 0.46,
-  "Frango com catupiry": 0.28,
-  "Calabresa com catupiry": 0.36,
-  "Frango com bacon": 0.34,
-  "Bacon com mussarela": 0.51,
-  "Mussarela": 0.45,
-  "Mista": 0.37,
-  "Chocolate com granulado": 0.34,
-  "Carne moída": 0.35,
+  "Frango com catupiry": 0.58,
+  "Frango com mussarela": 0.71,
+  "Frango com bacon": 0.74,
+  "Calabresa com catupiry": 0.43,
+  "Calabresa com mussarela": 0.48,
+  "Carne moída": 0.69,
+  "Misto (presunto e mussarela)": 0.46,
+  "Mussarela": 0.67,
+  "Bacon com mussarela": 0.67,
+  "Chocolate": 0.57,
+  // nomes antigos — compatibilidade com pedidos já salvos
+  "Mista": 0.46,
+  "Chocolate com granulado": 0.57,
 };
 
 const CUSTOS_REFRI: Record<string, number> = {
