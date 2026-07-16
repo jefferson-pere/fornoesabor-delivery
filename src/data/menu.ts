@@ -1,5 +1,3 @@
-export const MENU_VERSION = "2";
-
 export type RefriType = "lata" | "1l" | "none";
 
 export type ComboType = {

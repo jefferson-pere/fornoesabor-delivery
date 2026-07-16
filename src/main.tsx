@@ -1,5 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    window.location.reload();
+  });
+}
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "styled-components";
@@ -27,7 +33,7 @@ const queryClient = new QueryClient();
 [
   "pedido_step", "pedido_nome", "pedido_telefone", "pedido_cidade",
   "pedido_endereco", "pedido_itens", "pedido_pagamento", "pedido_troco",
-  "pedido_sem_troco", "pedido_observacao", "menu_version",
+  "pedido_sem_troco", "pedido_observacao",
 ].forEach((k) => localStorage.removeItem(k));
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
