@@ -8,6 +8,7 @@ import {
   combosDisponiveis,
   saboresLista,
   saboresRefri,
+  getPrecoRefri,
   type ComboType,
   type RefriType,
 } from "../../../data/menu";
@@ -169,7 +170,7 @@ export default function CreateOrder() {
         const lastDash = key.lastIndexOf("-");
         const nome = key.substring(0, lastDash);
         const tipo = key.substring(lastDash + 1) as "lata" | "1l";
-        return { nome, tipo, preco: tipo === "lata" ? 5 : 8, qtd };
+        return { nome, tipo, preco: getPrecoRefri(nome, tipo), qtd };
       });
 
     const novoItem: ItemPedidoForm = {
@@ -546,7 +547,12 @@ export default function CreateOrder() {
                     ))}
                   </optgroup>
                   <optgroup label="1L - R$ 8">
-                    {saboresRefri["1l"].map((r) => (
+                    {saboresRefri["1l"].filter((r) => getPrecoRefri(r, "1l") === 8).map((r) => (
+                      <option key={r} value={`${r}-1l`}>{r}</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="1L - R$ 9">
+                    {saboresRefri["1l"].filter((r) => getPrecoRefri(r, "1l") === 9).map((r) => (
                       <option key={r} value={`${r}-1l`}>{r}</option>
                     ))}
                   </optgroup>
@@ -556,8 +562,10 @@ export default function CreateOrder() {
                   <span>Extra</span>
                   <strong>
                     R$ {Object.entries(refrisExtras).filter(([, q]) => q > 0).reduce((acc, [key, qtd]) => {
-                      const tipo = key.substring(key.lastIndexOf("-") + 1);
-                      return acc + (tipo === "lata" ? 5 : 8) * qtd;
+                      const lastDash = key.lastIndexOf("-");
+                      const nomeR = key.substring(0, lastDash);
+                      const tipoR = key.substring(lastDash + 1) as "lata" | "1l";
+                      return acc + getPrecoRefri(nomeR, tipoR) * qtd;
                     }, 0).toFixed(2)}
                   </strong>
                 </div>
@@ -572,7 +580,7 @@ export default function CreateOrder() {
                     return (
                       <div key={key} className="refri-extra-tag">
                         <button onClick={() => setRefrisExtras((p) => ({ ...p, [key]: Math.max(0, p[key] - 1) }))}>−</button>
-                        <span>{qty}× {nome} ({tipo === "lata" ? "Lata" : "1L"}) — R$ {((tipo === "lata" ? 5 : 8) * qty).toFixed(2)}</span>
+                        <span>{qty}× {nome} ({tipo === "lata" ? "Lata" : "1L"}) — R$ {(getPrecoRefri(nome, tipo) * qty).toFixed(2)}</span>
                         <button onClick={() => setRefrisExtras((p) => ({ ...p, [key]: p[key] + 1 }))}>+</button>
                         <button onClick={() => setRefrisExtras((p) => ({ ...p, [key]: 0 }))}>✕</button>
                       </div>

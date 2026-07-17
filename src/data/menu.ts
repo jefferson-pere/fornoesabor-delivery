@@ -83,5 +83,14 @@ export const saboresLista: string[] = [
 
 export const saboresRefri: Record<"lata" | "1l", string[]> = {
   lata: ["Coca cola", "Coca cola Zero", "Fanta laranja", "Cajuína"],
-  "1l": ["Guaraná", "Pepsi", "Sukita laranja"],
+  "1l": ["Guaraná", "Pepsi", "Sukita laranja", "Cajuína"],
 };
+
+const precoRefri1lEspecial: Record<string, number> = {
+  Cajuína: 9,
+};
+
+export function getPrecoRefri(nome: string, tipo: "lata" | "1l"): number {
+  if (tipo === "lata") return 5;
+  return precoRefri1lEspecial[nome] ?? 8;
+}

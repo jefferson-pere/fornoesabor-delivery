@@ -5,6 +5,7 @@ import {
   combosDisponiveis,
   saboresLista,
   saboresRefri,
+  getPrecoRefri,
   type ComboType,
 } from "../../data/menu";
 import { usePedido } from "../../hook/usePedido";
@@ -136,7 +137,7 @@ export function Pedido() {
         const lastDash = key.lastIndexOf("-");
         const nome = key.substring(0, lastDash);
         const tipo = key.substring(lastDash + 1) as "lata" | "1l";
-        return { nome, tipo, preco: tipo === "lata" ? 5 : 8, qtd };
+        return { nome, tipo, preco: getPrecoRefri(nome, tipo), qtd };
       });
 
     setItens((prev) => [
@@ -453,7 +454,7 @@ export function Pedido() {
                   Adicionar refrigerante?
                   <span className="optional-tag">opcional</span>
                 </div>
-                <p className="refri-extra-prices">Lata R$ 5,00 &nbsp;·&nbsp; 1 Litro R$ 8,00</p>
+                <p className="refri-extra-prices">Lata R$ 5,00 &nbsp;·&nbsp; 1 Litro R$ 8,00 / R$ 9,00</p>
 
                 <select
                   className="select-input refri-extra-select"
@@ -472,7 +473,12 @@ export function Pedido() {
                     ))}
                   </optgroup>
                   <optgroup label="1 Litro — R$ 8,00">
-                    {saboresRefri["1l"].filter((r) => isRefriDisponivel(r, "1l")).map((r) => (
+                    {saboresRefri["1l"].filter((r) => getPrecoRefri(r, "1l") === 8 && isRefriDisponivel(r, "1l")).map((r) => (
+                      <option key={r} value={`${r}-1l`}>{r}</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="1 Litro — R$ 9,00">
+                    {saboresRefri["1l"].filter((r) => getPrecoRefri(r, "1l") === 9 && isRefriDisponivel(r, "1l")).map((r) => (
                       <option key={r} value={`${r}-1l`}>{r}</option>
                     ))}
                   </optgroup>
