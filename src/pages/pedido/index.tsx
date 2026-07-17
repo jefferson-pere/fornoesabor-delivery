@@ -32,6 +32,7 @@ export function Pedido() {
   });
 
   const [menuConfig, setMenuConfig] = useState<MenuDisponibilidade | null>(null);
+  const [menuLoading, setMenuLoading] = useState(true);
 
   const saboresRef = useRef<HTMLDivElement | null>(null);
   const formRef = useRef<HTMLDivElement | null>(null);
@@ -41,7 +42,10 @@ export function Pedido() {
   }, [step, navigate]);
 
   useEffect(() => {
-    getMenuConfig().then(setMenuConfig).catch(() => {});
+    getMenuConfig()
+      .then(setMenuConfig)
+      .catch(() => {})
+      .finally(() => setMenuLoading(false));
   }, []);
 
   const isComboDisponivel = (id: number) =>
@@ -183,6 +187,16 @@ export function Pedido() {
 
   const nomeCombo = (c: ComboType) =>
     c.nome.split(" - ")[0].replace("Combo ", "");
+
+  if (menuLoading) {
+    return (
+      <Container>
+        <div className="content" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
+          <span style={{ color: "#888", fontSize: "1rem" }}>Carregando cardápio...</span>
+        </div>
+      </Container>
+    );
+  }
 
   return (
     <Container>
