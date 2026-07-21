@@ -4,10 +4,15 @@ export const Wrapper = styled.div`
   position: relative;
   margin-bottom: 24px;
 
-  .metrics-toggle {
+  .metrics-actions {
     position: absolute;
-    top: -36px;
+    top: -40px;
     right: 0;
+    display: flex;
+    gap: 4px;
+  }
+
+  .metrics-toggle {
     background: none;
     border: none;
     cursor: pointer;
@@ -23,30 +28,35 @@ export const Wrapper = styled.div`
       background: #f0f0f0;
       color: #333;
     }
+
+    body.painel-dark & {
+      color: #94a3b8;
+      &:hover {
+        background: #1e293b;
+        color: #f8fafc;
+      }
+    }
   }
 `;
 
 export const Container = styled.div`
   display: grid;
-
   grid-template-columns: repeat(5, 1fr);
-
   gap: 16px;
 
   .card {
     background: #fff;
-
     border-radius: 18px;
-
     padding: 20px;
-
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-
     display: flex;
-
     flex-direction: column;
-
     gap: 8px;
+
+    body.painel-dark & {
+      background: #1e293b;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
 
     .card-header {
       display: flex;
@@ -56,6 +66,10 @@ export const Container = styled.div`
       span {
         color: #666;
         font-size: 14px;
+
+        body.painel-dark & {
+          color: #94a3b8;
+        }
       }
 
       .card-toggle {
@@ -72,13 +86,21 @@ export const Container = styled.div`
         &:hover {
           color: #555;
         }
+
+        body.painel-dark & {
+          color: #475569;
+          &:hover { color: #f8fafc; }
+        }
       }
     }
 
     strong {
       font-size: 28px;
-
       color: #111;
+
+      body.painel-dark & {
+        color: #f8fafc;
+      }
     }
   }
 

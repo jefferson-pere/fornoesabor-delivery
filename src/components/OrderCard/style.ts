@@ -2,15 +2,19 @@ import styled from "styled-components";
 
 export const Container = styled.div<{ $borderColor: string }>`
   background: #ffffff;
-
   border-radius: 18px;
-
   padding: 10px;
-
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   border: 2px solid #a5a4a4;
   cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s;
+
+  body.painel-dark & {
+    background: #0f172a;
+    border-color: #334155;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    color: #f8fafc;
+  }
 
   &:hover {
     transform: translateY(-1px);
@@ -38,6 +42,11 @@ export const Container = styled.div<{ $borderColor: string }>`
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+
+      body.painel-dark & {
+        background: #1e293b;
+        color: #f8fafc;
+      }
     }
 
     .hora {
@@ -72,10 +81,10 @@ export const Container = styled.div<{ $borderColor: string }>`
   }
   .combo {
     color: #444;
-
     margin-bottom: 18px;
-
     font-size: 14px;
+
+    body.painel-dark & { color: #94a3b8; }
   }
 
   .footer {
@@ -141,6 +150,7 @@ export const Container = styled.div<{ $borderColor: string }>`
 
   .detalhes {
     background: #d6d6d6;
+    body.painel-dark & { background: #334155; color: #f8fafc; border-color: #475569; }
   }
 
   .avancar {

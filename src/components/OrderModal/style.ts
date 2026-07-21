@@ -51,36 +51,33 @@ export const Container = styled.div`
 
   .codigo {
     display: flex;
-
-    flex-direction: column;
-
-    gap: 8px;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
 
     h2 {
       margin: 0;
-
-      font-size: 32px;
-
+      font-size: 20px;
       color: #111827;
-
       font-weight: 900;
     }
 
     small {
       color: #6b7280;
-
       font-size: 13px;
     }
   }
 
+  .meta-sep {
+    color: #d1d5db;
+    font-size: 14px;
+  }
+
   .badges {
     display: flex;
-
-    gap: 8px;
-
+    gap: 6px;
     flex-wrap: wrap;
-
-    margin-top: 8px;
   }
 
   .badge {
@@ -548,6 +545,68 @@ export const Container = styled.div`
     .linha {
       font-size: 12px;
     }
+  }
+
+  body.painel-dark & {
+    .modal {
+      background: #0f172a;
+    }
+
+    .codigo h2 { color: #f8fafc; }
+
+    .meta small { color: #94a3b8; }
+
+    .card {
+      background: #1e293b;
+      border-color: #334155;
+
+      h3 { color: #f8fafc; }
+    }
+
+    .linha {
+      background: #0f172a;
+      border-color: #334155;
+      color: #f8fafc;
+
+      span:first-child { color: #94a3b8; }
+    }
+
+    .valor { color: #f8fafc; }
+
+    .financeiro { border-color: #334155; }
+
+    .total-linha {
+      background: #052e16 !important;
+      border-color: #166534 !important;
+
+      span { color: #f8fafc !important; }
+    }
+
+    .print {
+      background: #1e293b;
+      border: 1px solid #475569;
+    }
+
+    .item {
+      background: #0f172a;
+      border-color: #334155;
+    }
+
+    .combo { color: #f8fafc; }
+
+    .sabores { color: #94a3b8; }
+
+    .extra {
+      background: #1e293b;
+      color: #f8fafc;
+    }
+
+    .observacao {
+      background: #1e293b;
+      color: #94a3b8;
+    }
+
+    .acoes { background: #0f172a; }
   }
 
   @media print {

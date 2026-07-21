@@ -1,10 +1,12 @@
 import { useState } from "react";
 import type { Pedido } from "../../types/order";
 import { Container, Wrapper } from "./style";
-import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { MdVisibility, MdVisibilityOff, MdDarkMode, MdLightMode } from "react-icons/md";
 
 type Props = {
   orders: Pedido[];
+  darkMode: boolean;
+  onToggleDark: () => void;
 };
 
 type OcultoState = {
@@ -15,7 +17,7 @@ type OcultoState = {
   naoPago: boolean;
 };
 
-export function DashboardMetrics({ orders }: Props) {
+export function DashboardMetrics({ orders, darkMode, onToggleDark }: Props) {
   const [ocultoTodos, setOcultoTodos] = useState(false);
   const [oculto, setOculto] = useState<OcultoState>({
     totalPedidos: false,
@@ -50,13 +52,22 @@ export function DashboardMetrics({ orders }: Props) {
 
   return (
     <Wrapper>
-      <button
-        className="metrics-toggle"
-        onClick={() => setOcultoTodos((v) => !v)}
-        title={ocultoTodos ? "Mostrar métricas" : "Ocultar métricas"}
-      >
-        {ocultoTodos ? <MdVisibilityOff /> : <MdVisibility />}
-      </button>
+      <div className="metrics-actions">
+        <button
+          className="metrics-toggle"
+          onClick={() => setOcultoTodos((v) => !v)}
+          title={ocultoTodos ? "Mostrar métricas" : "Ocultar métricas"}
+        >
+          {ocultoTodos ? <MdVisibilityOff /> : <MdVisibility />}
+        </button>
+        <button
+          className="metrics-toggle"
+          onClick={onToggleDark}
+          title={darkMode ? "Modo claro" : "Modo escuro"}
+        >
+          {darkMode ? <MdLightMode /> : <MdDarkMode />}
+        </button>
+      </div>
 
       {!ocultoTodos && (
         <Container>

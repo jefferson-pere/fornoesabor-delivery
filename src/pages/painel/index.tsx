@@ -45,6 +45,20 @@ export function Painel() {
     return () => document.removeEventListener("mousedown", closeMenu);
   }, [menuOpen, closeMenu]);
   const [hideFinished, setHideFinished] = useState(true);
+  const [darkMode, setDarkMode] = useState(
+    () => localStorage.getItem("painel_dark") === "true",
+  );
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("painel-dark");
+      localStorage.setItem("painel_dark", "true");
+    } else {
+      document.body.classList.remove("painel-dark");
+      localStorage.setItem("painel_dark", "false");
+    }
+    return () => document.body.classList.remove("painel-dark");
+  }, [darkMode]);
 
   useEffect(() => {
     if ("Notification" in window && Notification.permission === "default") {
@@ -171,9 +185,11 @@ export function Painel() {
           <p>Painel de controle</p>
         </div>
 
-        <div className="top-actions">
+        <div className="topo-center">
           <StoreStatus />
+        </div>
 
+        <div className="top-actions">
           <button
             className="new-order"
             onClick={() => navigate("/painel/criarpedido")}
@@ -230,22 +246,27 @@ export function Painel() {
                 >
                   Configurações
                 </button>
+                <hr className="menu-divider" />
+                <button
+                  className="logout-menu"
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    setMenuOpen(false);
+                  }}
+                >
+                  Sair
+                </button>
               </div>
             )}
           </div>
         </div>
-
-        <button
-          className="logout"
-          onClick={async () => {
-            await supabase.auth.signOut();
-          }}
-        >
-          Sair
-        </button>
       </div>
 
-      <DashboardMetrics orders={orders} />
+      <DashboardMetrics
+        orders={orders}
+        darkMode={darkMode}
+        onToggleDark={() => setDarkMode((v) => !v)}
+      />
 
       <div className="grid">
         <KanbanColumn

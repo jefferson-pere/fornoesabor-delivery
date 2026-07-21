@@ -620,6 +620,81 @@ export const Container = styled.div`
     background: #cbd5e1 !important;
   }
 
+  body.painel-dark & {
+    background: #0f172a;
+
+    h2 { color: #f8fafc; }
+
+    .card {
+      background: #1e293b;
+      border-color: #334155;
+    }
+
+    input, select, textarea {
+      background: #0f172a;
+      border-color: #334155;
+      color: #f8fafc;
+
+      &:focus {
+        background: #0f172a;
+        border-color: #2563eb;
+      }
+    }
+
+    .sabor {
+      background: #0f172a;
+      border-color: #334155;
+
+      & > span { color: #f8fafc; }
+    }
+
+    .qtd-btn {
+      background: #334155 !important;
+      color: #f8fafc !important;
+
+      &:not(:disabled):hover { background: #475569 !important; }
+    }
+
+    .item-card {
+      background: #0f172a;
+      border-color: #334155;
+    }
+
+    .item-header strong { color: #f8fafc; }
+    .item-header small { color: #94a3b8; }
+
+    .sabor-tag {
+      background: #1e293b;
+      border-color: #334155;
+      color: #f8fafc;
+    }
+
+    .item-values small {
+      background: #334155;
+      color: #f8fafc;
+    }
+
+    .item-values strong { color: #f8fafc; }
+
+    .prices div { color: #94a3b8; }
+    .prices strong { color: #f8fafc; }
+    .total { border-color: #334155; }
+
+    .cancel-btn {
+      background: #334155 !important;
+      color: #f8fafc !important;
+
+      &:hover { background: #475569 !important; }
+    }
+
+    .cancel-finish {
+      background: #334155 !important;
+      color: #f8fafc !important;
+
+      &:hover { background: #475569 !important; }
+    }
+  }
+
   @media (max-width: 1000px) {
     grid-template-columns: 1fr;
 

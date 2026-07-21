@@ -35,11 +35,6 @@ import { Configuracoes } from "./pages/painel/configuracoes";
 
 const queryClient = new QueryClient();
 
-[
-  "pedido_step", "pedido_nome", "pedido_telefone", "pedido_cidade",
-  "pedido_endereco", "pedido_itens", "pedido_pagamento", "pedido_troco",
-  "pedido_sem_troco", "pedido_observacao",
-].forEach((k) => localStorage.removeItem(k));
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

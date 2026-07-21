@@ -2,41 +2,49 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   min-height: 100vh;
-
   background: #ececec;
-
   padding: 20px;
+  transition: background 0.25s;
+
+  body.painel-dark & {
+    background: #0f172a;
+  }
 
   .topo {
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
     margin-bottom: 28px;
+
+    & > div:first-child,
+    .top-actions {
+      flex: 1;
+    }
+
+    .topo-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
 
     h1 {
       font-size: 32px;
-
       font-weight: 800;
-
       color: #111;
-
       margin-bottom: 6px;
+      body.painel-dark & { color: #f8fafc; }
     }
 
     p {
       color: #666;
-
       font-size: 15px;
+      body.painel-dark & { color: #94a3b8; }
     }
   }
 .top-actions {
   display: flex;
-
   align-items: center;
-
+  justify-content: flex-end;
   gap: 12px;
 }
 //
@@ -169,6 +177,13 @@ opacity:.95;
       background: #111;
       color: #fff;
     }
+
+    body.painel-dark & {
+      background: #1e293b;
+      color: #f8fafc;
+      box-shadow: none;
+      &:hover { background: #334155; }
+    }
   }
 
   .more-menu-dropdown {
@@ -186,6 +201,11 @@ opacity:.95;
     z-index: 100;
     animation: fadeDown 0.15s ease;
 
+    body.painel-dark & {
+      background: #1e293b;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+
     button {
       height: 42px;
       padding: 0 16px;
@@ -201,6 +221,30 @@ opacity:.95;
 
       &:hover {
         background: #f3f4f6;
+      }
+
+      body.painel-dark & {
+        color: #f8fafc;
+        &:hover { background: #334155; }
+      }
+    }
+
+    .menu-divider {
+      border: none;
+      border-top: 1px solid #e5e7eb;
+      margin: 4px 0;
+
+      body.painel-dark & { border-color: #334155; }
+    }
+
+    .logout-menu {
+      color: #dc2626 !important;
+
+      &:hover { background: #fee2e2 !important; }
+
+      body.painel-dark & {
+        color: #f87171 !important;
+        &:hover { background: #2d1515 !important; }
       }
     }
   }

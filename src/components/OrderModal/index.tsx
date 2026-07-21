@@ -72,22 +72,18 @@ export function OrderModal({ order, onClose }: Props) {
           <div className="topo">
             <div className="codigo">
               <h2>{currentOrder.codigo}</h2>
-
+              <span className="meta-sep">·</span>
               <small>
                 {new Date(currentOrder.createdAt).toLocaleString("pt-BR")}
               </small>
-
+              <span className="meta-sep">·</span>
               <div className="badges">
                 <div className={`badge ${currentOrder.status.toLowerCase()}`}>
                   {currentOrder.status}
                 </div>
-
-                <div
-                  className={`badge ${currentOrder.pago ? "pago" : "nao-pago"}`}
-                >
+                <div className={`badge ${currentOrder.pago ? "pago" : "nao-pago"}`}>
                   {currentOrder.pago ? "Pago" : "Não Pago"}
                 </div>
-
                 <div className="badge novo">{currentOrder.pagamento}</div>
               </div>
             </div>
