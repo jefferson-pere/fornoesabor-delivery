@@ -73,4 +73,6 @@ export type Pedido = {
   pago: boolean;
 
   createdAt: string;
+
+  deleted?: boolean;
 };
