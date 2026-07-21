@@ -346,6 +346,93 @@ export const Container = styled.div`
     transform: rotate(45deg);
   }
 
+  /* MODAL CARDÁPIO DESATUALIZADO */
+  .cardapio-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 24px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .cardapio-modal {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px 28px 28px;
+    max-width: 340px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    animation: scaleIn 0.22s ease;
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0.88); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  .cardapio-icon {
+    font-size: 72px;
+    color: #d90000;
+    display: block;
+    margin: 0 auto 12px;
+    animation: pulse 0.8s ease-in-out 2;
+  }
+
+  @keyframes pulse {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.18); }
+    100% { transform: scale(1); }
+  }
+
+  .cardapio-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #d90000;
+    margin: 0 0 8px;
+  }
+
+  .cardapio-desc {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+    margin: 0 0 22px;
+  }
+
+  .cardapio-bar-wrap {
+    height: 6px;
+    background: #f0f0f0;
+    border-radius: 99px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .cardapio-bar {
+    height: 100%;
+    background: #d90000;
+    border-radius: 99px;
+    animation: fillBar 5s linear forwards;
+  }
+
+  @keyframes fillBar {
+    from { width: 0%; }
+    to   { width: 100%; }
+  }
+
+  .cardapio-hint {
+    font-size: 12px;
+    color: #aaa;
+  }
+
   /* ANIMAÇÃO */
   .fade-slide {
     animation: fadeSlide 0.25s ease;

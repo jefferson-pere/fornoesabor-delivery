@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import { supabase } from "../lib/supabase";
 
 export type MenuDisponibilidade = {
   combos: Record<string, boolean>;
@@ -9,23 +9,26 @@ export type MenuDisponibilidade = {
 };
 
 export async function getMenuConfig(): Promise<MenuDisponibilidade> {
-  const res = await fetch(`${API_URL}/menu`);
-  if (!res.ok) throw new Error("Erro ao carregar configuração do menu");
-  return res.json();
+  const { data, error } = await supabase
+    .from("menu_config")
+    .select("disponibilidade")
+    .eq("id", 1)
+    .single();
+
+  if (error) throw new Error("Erro ao carregar configuração do menu");
+
+  return data.disponibilidade as MenuDisponibilidade;
 }
 
-export async function updateMenuConfig(
-  data: MenuDisponibilidade,
-): Promise<MenuDisponibilidade> {
-  const res = await fetch(`${API_URL}/menu`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": import.meta.env.VITE_API_KEY,
-    },
-    body: JSON.stringify(data),
-  });
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.error || "Erro ao atualizar menu");
-  return json;
+export async function updateMenuConfig(disponibilidade: MenuDisponibilidade): Promise<MenuDisponibilidade> {
+  const { data, error } = await supabase
+    .from("menu_config")
+    .update({ disponibilidade })
+    .eq("id", 1)
+    .select("disponibilidade")
+    .single();
+
+  if (error) throw new Error(error.message || "Erro ao atualizar menu");
+
+  return data.disponibilidade as MenuDisponibilidade;
 }

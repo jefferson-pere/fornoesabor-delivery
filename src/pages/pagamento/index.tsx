@@ -4,9 +4,10 @@ import { useMutation } from "@tanstack/react-query";
 import { Container } from "./style";
 import { usePedido } from "../../hook/usePedido";
 import type { FormaPagamentoType } from "../../types/pedido";
-import { MdPix, MdCreditCard, MdAttachMoney, MdCheckCircle, MdContentCopy } from "react-icons/md";
+import { MdPix, MdCreditCard, MdAttachMoney, MdCheckCircle, MdContentCopy, MdCancel } from "react-icons/md";
 import { StepProgress } from "../../components/StepProgress";
 import { criarPedido } from "../../services/orders";
+import { combosDisponiveis } from "../../data/menu";
 
 export function Pagamento() {
   const {
@@ -29,6 +30,7 @@ export function Pagamento() {
   const [errorPagamento, setErrorPagamento] = useState(false);
   const [errorTroco, setErrorTroco] = useState(false);
   const [copiado, setCopiado] = useState(false);
+  const [cardapioDesatualizado, setCardapioDesatualizado] = useState(false);
 
   const { mutate: enviarPedido, isPending } = useMutation({
     mutationFn: criarPedido,
@@ -37,6 +39,11 @@ export function Pagamento() {
       navigate("/confirmacao", { state: { erro: false } });
     },
     onError: (err: Error) => {
+      if (err.message === "CARDAPIO_DESATUALIZADO") {
+        setCardapioDesatualizado(true);
+        setTimeout(() => window.location.reload(), 5000);
+        return;
+      }
       navigate("/confirmacao", {
         state: { erro: true, mensagem: err.message || "Erro de conexão com servidor" },
       });
@@ -76,6 +83,12 @@ export function Pagamento() {
   };
 
   const continuar = () => {
+    const idsValidos = new Set(combosDisponiveis.map((c) => c.id));
+    if (itens.some((item) => !idsValidos.has(item.combo.id))) {
+      setCardapioDesatualizado(true);
+      setTimeout(() => window.location.reload(), 5000);
+      return;
+    }
     const erroPag = !pagamento;
     const erroTroco = pagamento === "dinheiro" && !semTroco && !troco;
     let trocoMenor = false;
@@ -105,6 +118,22 @@ export function Pagamento() {
 
   return (
     <Container>
+      {cardapioDesatualizado && (
+        <div className="cardapio-overlay">
+          <div className="cardapio-modal">
+            <MdCancel className="cardapio-icon" />
+            <h2 className="cardapio-title">Cardápio atualizado!</h2>
+            <p className="cardapio-desc">
+              O cardápio mudou desde que você abriu o app.<br />
+              A página será recarregada automaticamente.
+            </p>
+            <div className="cardapio-bar-wrap">
+              <div className="cardapio-bar" />
+            </div>
+            <span className="cardapio-hint">Recarregando em instantes…</span>
+          </div>
+        </div>
+      )}
       <div className="content">
         <div className="desktop-side">
           <img src="/banner.png" alt="" onError={(e) => (e.currentTarget.style.display = "none")} />

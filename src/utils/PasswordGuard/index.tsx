@@ -1,25 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
-
-const STORAGE_KEY = "painel-auth";
-const TWELVE_HOURS = 1000 * 60 * 60 * 12;
-
-function checkAuth(): boolean {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (!saved) return false;
-  try {
-    const { time } = JSON.parse(saved);
-    if (Date.now() - time > TWELVE_HOURS) {
-      localStorage.removeItem(STORAGE_KEY);
-      return false;
-    }
-    return true;
-  } catch {
-    localStorage.removeItem(STORAGE_KEY);
-    return false;
-  }
-}
+import { supabase } from "../../lib/supabase";
 
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(18px); }
@@ -215,12 +197,17 @@ const Button = styled.button`
   margin-top: 4px;
   letter-spacing: 0.3px;
 
-  &:hover {
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 12px 32px rgba(249, 115, 22, 0.45);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: translateY(0);
   }
 `;
@@ -233,24 +220,42 @@ const Footer = styled.p`
 `;
 
 export function PasswordGuard() {
-  const [authenticated, setAuthenticated] = useState(checkAuth);
-  const [value, setValue] = useState("");
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [shaking, setShaking] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  if (authenticated) {
-    return <Outlet />;
-  }
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setAuthenticated(!!session);
+    });
 
-  function handleSubmit(e: React.FormEvent) {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (authenticated === null) return null;
+  if (authenticated) return <Outlet />;
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (value === import.meta.env.VITE_ADMIN_PASSWORD) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ time: Date.now() }));
-      setAuthenticated(true);
-    } else {
+    setLoading(true);
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    setLoading(false);
+    if (authError) {
       setError(true);
       setShaking(true);
-      setValue("");
+      setPassword("");
       setTimeout(() => setShaking(false), 450);
     }
   }
@@ -261,32 +266,48 @@ export function PasswordGuard() {
         <IconWrap>🍕</IconWrap>
         <Brand>Forno e Sabor</Brand>
         <Title>Área Restrita</Title>
-        <Subtitle>Somente colaboradores autorizados<br />podem acessar este painel.</Subtitle>
+        <Subtitle>
+          Somente colaboradores autorizados
+          <br />
+          podem acessar este painel.
+        </Subtitle>
 
-        <form
-          onSubmit={handleSubmit}
-          style={{ width: "100%" }}
-        >
-          <InputWrap $shake={shaking}>
-            <InputLabel>Senha de acesso</InputLabel>
+        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+          <InputWrap $shake={false}>
+            <InputLabel>E-mail</InputLabel>
             <Input
-              type="password"
-              placeholder="••••••••"
-              value={value}
+              type="email"
+              placeholder="admin@email.com"
+              value={email}
               autoFocus
               onChange={(e) => {
-                setValue(e.target.value);
+                setEmail(e.target.value);
                 setError(false);
               }}
             />
           </InputWrap>
 
-          {error && <ErrorMsg>Senha incorreta. Tente novamente.</ErrorMsg>}
+          <InputWrap $shake={shaking}>
+            <InputLabel>Senha de acesso</InputLabel>
+            <Input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError(false);
+              }}
+            />
+          </InputWrap>
 
-          <Button type="submit">Entrar no painel</Button>
+          {error && <ErrorMsg>E-mail ou senha incorretos. Tente novamente.</ErrorMsg>}
+
+          <Button type="submit" disabled={loading}>
+            {loading ? "Entrando..." : "Entrar no painel"}
+          </Button>
         </form>
 
-        <Footer>Acesso expira após 12 horas</Footer>
+        <Footer>Sessão gerenciada com segurança</Footer>
       </Card>
     </Page>
   );

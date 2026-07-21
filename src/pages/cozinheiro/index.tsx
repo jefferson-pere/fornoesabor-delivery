@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import alertSound from "../../../sounds/alert.mp3";
 import { getOrders, updateOrderStatus } from "../../services/orders";
-import { socket } from "../../services/socket";
+import { supabase } from "../../lib/supabase";
 import type { Pedido } from "../../types/order";
 import { Container } from "./style";
 
@@ -60,33 +60,40 @@ export function Cozinheiro() {
     }
     init();
 
-    socket.on("novo-pedido", (pedido: Pedido) => {
-      if (pedido.status === "PRODUCAO") {
-        setOrders((prev) => [...prev, pedido]);
-        tocarSom();
-      }
-    });
-
-    socket.on("pedido-atualizado", (pedido: Pedido) => {
-      setOrders((prev) => {
-        if (pedido.status === "PRODUCAO") {
-          const exists = prev.find((o) => o.id === pedido.id);
-          if (exists) return prev.map((o) => (o.id === pedido.id ? pedido : o));
-          tocarSom();
-          return [...prev, pedido];
-        }
-        return prev.filter((o) => o.id !== pedido.id);
-      });
-    });
-
-    socket.on("pedido-removido", (id: number) => {
-      setOrders((prev) => prev.filter((o) => o.id !== id));
-    });
+    const channel = supabase
+      .channel("cozinha-orders")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "orders" },
+        ({ new: pedido }) => {
+          if ((pedido as Pedido).status === "PRODUCAO") {
+            setOrders((prev) => [...prev, pedido as Pedido]);
+            tocarSom();
+          }
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "orders" },
+        ({ new: pedido }) => {
+          setOrders((prev) => {
+            if ((pedido as Pedido).deleted) {
+              return prev.filter((o) => o.id !== (pedido as Pedido).id);
+            }
+            if ((pedido as Pedido).status === "PRODUCAO") {
+              const exists = prev.find((o) => o.id === (pedido as Pedido).id);
+              if (exists) return prev.map((o) => (o.id === (pedido as Pedido).id ? (pedido as Pedido) : o));
+              tocarSom();
+              return [...prev, pedido as Pedido];
+            }
+            return prev.filter((o) => o.id !== (pedido as Pedido).id);
+          });
+        },
+      )
+      .subscribe();
 
     return () => {
-      socket.off("novo-pedido");
-      socket.off("pedido-atualizado");
-      socket.off("pedido-removido");
+      supabase.removeChannel(channel);
     };
   }, []);
 

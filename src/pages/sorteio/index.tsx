@@ -86,16 +86,13 @@ export default function SorteioPage() {
     try {
       const { inicio, fim } = getIntervaloSemana();
 
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/orders?all=true`,
-        {
-          headers: {
-            "x-api-key": import.meta.env.VITE_API_KEY || "",
-          },
-        },
-      );
+      const { supabase } = await import("../../lib/supabase");
+      const { data, error } = await supabase
+        .from("orders")
+        .select("id, nomeCliente, createdAt, total")
+        .eq("deleted", false);
 
-      if (!res.ok) {
+      if (error) {
         setMensagem("Erro ao carregar pedidos.");
 
         setLoadingCarregar(false);
@@ -103,7 +100,7 @@ export default function SorteioPage() {
         return;
       }
 
-      const pedidos: PedidoApi[] = await res.json();
+      const pedidos: PedidoApi[] = data ?? [];
 
       const filtrados = pedidos
         .filter((p: PedidoApi) => {

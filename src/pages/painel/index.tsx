@@ -11,7 +11,7 @@ import {
   updateOrderStatus,
   updatePayment,
 } from "../../services/orders";
-import { socket } from "../../services/socket";
+import { supabase } from "../../lib/supabase";
 import type { Pedido, OrderStatus } from "../../types/order";
 import { KanbanColumn } from "../../components/KanbanColumn";
 import { DashboardMetrics } from "../../components/DashboardMetrics";
@@ -90,31 +90,39 @@ export function Painel() {
 
     init();
 
-    socket.on("novo-pedido", (pedido: Pedido) => {
-      setOrders((prev) => [pedido, ...prev]);
-
-      tocarSom();
-
-      if ("Notification" in window && Notification.permission === "granted") {
-        new Notification("Novo pedido! 🍕", {
-          body: `Pedido Nº ${pedido.codigo} — ${pedido.nomeCliente}`,
-          icon: "/favicon.ico",
-        });
-      }
-    });
-
-    socket.on("pedido-atualizado", (pedido: Pedido) => {
-      setOrders((prev) => prev.map((o) => (o.id === pedido.id ? pedido : o)));
-    });
-
-    socket.on("pedido-removido", (id: number) => {
-      setOrders((prev) => prev.filter((o) => o.id !== id));
-    });
+    const channel = supabase
+      .channel("painel-orders")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "orders" },
+        ({ new: pedido }) => {
+          setOrders((prev) => [pedido as Pedido, ...prev]);
+          tocarSom();
+          if ("Notification" in window && Notification.permission === "granted") {
+            new Notification("Novo pedido! 🍕", {
+              body: `Pedido Nº ${(pedido as Pedido).codigo} — ${(pedido as Pedido).nomeCliente}`,
+              icon: "/favicon.ico",
+            });
+          }
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "orders" },
+        ({ new: pedido }) => {
+          if ((pedido as Pedido).deleted) {
+            setOrders((prev) => prev.filter((o) => o.id !== (pedido as Pedido).id));
+          } else {
+            setOrders((prev) =>
+              prev.map((o) => (o.id === (pedido as Pedido).id ? (pedido as Pedido) : o)),
+            );
+          }
+        },
+      )
+      .subscribe();
 
     return () => {
-      socket.off("novo-pedido");
-      socket.off("pedido-atualizado");
-      socket.off("pedido-removido");
+      supabase.removeChannel(channel);
     };
   }, []);
 
@@ -229,9 +237,8 @@ export function Painel() {
 
         <button
           className="logout"
-          onClick={() => {
-            localStorage.removeItem("painel-auth");
-            window.location.reload();
+          onClick={async () => {
+            await supabase.auth.signOut();
           }}
         >
           Sair

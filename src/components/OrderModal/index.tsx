@@ -48,23 +48,13 @@ export function OrderModal({ order, onClose }: Props) {
   }
 
   async function handleDelete() {
-    const password = prompt("Digite a senha");
-    if (password !== import.meta.env.VITE_DELETE_PASSWORD) {
-      toast.error("Senha inválida");
-      return;
-    }
-    const confirmDelete = confirm("Deseja apagar?");
-    if (!confirmDelete) {
-      return;
-    }
+    if (!confirm("Deseja apagar este pedido?")) return;
 
     try {
       await deleteOrder(currentOrder.id);
-
       onClose();
     } catch (error) {
       console.error(error);
-
       toast.error("Erro ao apagar");
     }
   }

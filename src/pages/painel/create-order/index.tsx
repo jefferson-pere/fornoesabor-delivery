@@ -289,23 +289,14 @@ export default function CreateOrder() {
 
       setLoading(true);
 
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/orders${order ? `/${order.id}` : ""}`,
-        {
-          method: order ? "PUT" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": import.meta.env.VITE_API_KEY,
-          },
-          body: JSON.stringify(pedido),
-        },
-      );
+      const { criarPedido, updateOrder } = await import("../../../services/orders");
 
-      if (!res.ok) {
-        const error = await res.json();
-        toast.error(error.error || "Erro ao salvar pedido");
-        return;
+      if (order) {
+        await updateOrder(order.id, pedido as any);
+      } else {
+        await criarPedido(pedido as any);
       }
+
       toast.success(order ? "Pedido atualizado" : "Pedido criado");
       if (order) {
         navigate("/painel", {

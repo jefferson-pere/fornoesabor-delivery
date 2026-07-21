@@ -1,13 +1,37 @@
 import styled from "styled-components";
 
+export const Wrapper = styled.div`
+  position: relative;
+  margin-bottom: 24px;
+
+  .metrics-toggle {
+    position: absolute;
+    top: -36px;
+    right: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+      background: #f0f0f0;
+      color: #333;
+    }
+  }
+`;
+
 export const Container = styled.div`
   display: grid;
 
   grid-template-columns: repeat(5, 1fr);
 
   gap: 16px;
-
-  margin-bottom: 24px;
 
   .card {
     background: #fff;
@@ -24,10 +48,31 @@ export const Container = styled.div`
 
     gap: 8px;
 
-    span {
-      color: #666;
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-      font-size: 14px;
+      span {
+        color: #666;
+        font-size: 14px;
+      }
+
+      .card-toggle {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #bbb;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        padding: 0;
+        transition: color 0.15s;
+
+        &:hover {
+          color: #555;
+        }
+      }
     }
 
     strong {

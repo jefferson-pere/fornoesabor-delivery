@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Container } from "./style";
 import { usePedido } from "../../hook/usePedido";
 import { StepProgress } from "../../components/StepProgress";
+import { combosDisponiveis } from "../../data/menu";
 
 const formatarPagamento = (p: string) => {
   if (p === "pix") return "PIX";
@@ -189,26 +191,34 @@ export function Revisao() {
                   observacao,
                   total,
                 };
-                const res = await fetch(
-                  `${import.meta.env.VITE_API_URL}/orders`,
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                      "x-api-key": import.meta.env.VITE_API_KEY,
-                    },
-                    body: JSON.stringify(pedido),
-                  },
-                );
-                if (!res.ok) {
-                  navigate("/confirmacao", {
-                    state: { erro: true, mensagem: "Erro ao enviar pedido para o servidor" },
-                  });
+                const idsValidos = new Set(combosDisponiveis.map((c) => c.id));
+                const cardapioDesatualizado = itens.some((item) => !idsValidos.has(item.combo.id));
+                if (cardapioDesatualizado) {
+                  toast.warning("O cardápio foi atualizado! A página será recarregada.", { duration: 3000 });
+                  setTimeout(() => window.location.reload(), 2500);
+                  setLoadingConfirm(false);
                   return;
                 }
+
+                const { criarPedido } = await import("../../services/orders");
+                await criarPedido({
+                  nomeCliente: pedido.nomeCliente,
+                  telefone: pedido.telefone,
+                  cidade: pedido.cidade,
+                  endereco: pedido.endereco as any,
+                  itens: pedido.itens as any,
+                  pagamento: pedido.pagamento as any,
+                  troco: pedido.troco as string,
+                  observacao: pedido.observacao,
+                });
                 setStep(4);
                 navigate("/confirmacao", { state: { erro: false } });
               } catch (err) {
+                if (err instanceof Error && err.message === "CARDAPIO_DESATUALIZADO") {
+                  toast.warning("O cardápio foi atualizado! A página será recarregada.", { duration: 3000 });
+                  setTimeout(() => window.location.reload(), 2500);
+                  return;
+                }
                 console.error(err);
                 navigate("/confirmacao", {
                   state: { erro: true, mensagem: "Erro de conexão com servidor" },

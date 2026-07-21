@@ -18,7 +18,7 @@ export type CidadeType = {
 
 export const combosDisponiveis: ComboType[] = [
   {
-    id: 1,
+    id: 2,
     nome: "CLÁSSICO 15 - 15 Mini Esfihas",
     preco: 24.9,
     unidades: 15,
@@ -29,7 +29,7 @@ export const combosDisponiveis: ComboType[] = [
   },
 
   {
-    id: 2,
+    id: 21,
     nome: "CLÁSSICO 20 - 20 Mini Esfihas",
     preco: 29.9,
     unidades: 20,
@@ -40,7 +40,7 @@ export const combosDisponiveis: ComboType[] = [
   },
 
   {
-    id: 3,
+    id: 22,
     nome: "CLÁSSICO 30 - 30 Mini Esfihas com Maionese caseira inclusa",
     preco: 41.9,
     unidades: 30,
