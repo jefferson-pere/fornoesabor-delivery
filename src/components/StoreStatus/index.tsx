@@ -85,7 +85,6 @@ export function StoreStatus() {
     <Container>
       <div className="info">
         <h2>Status da Loja</h2>
-        <p>{store.mensagem || "Loja funcionando normalmente"}</p>
       </div>
       <div className="actions">
         {renderStatus()}
