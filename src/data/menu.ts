@@ -18,7 +18,7 @@ export type CidadeType = {
 
 export const combosDisponiveis: ComboType[] = [
   {
-    id: 2,
+    id: 20,
     nome: "CLÁSSICO 15 - 15 Mini Esfihas",
     preco: 24.9,
     unidades: 15,
