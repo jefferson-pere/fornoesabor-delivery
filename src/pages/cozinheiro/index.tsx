@@ -44,9 +44,12 @@ export function Cozinheiro() {
   }
 
   useEffect(() => {
-    async function init() {
+    let mounted = true;
+
+    async function fetchOrders() {
       try {
         const data = await getOrders();
+        if (!mounted) return;
         const emProducao = data
           .filter((o: Pedido) => o.status === "PRODUCAO")
           .sort(
@@ -58,7 +61,6 @@ export function Cozinheiro() {
         console.error("Erro pedidos:", err);
       }
     }
-    init();
 
     const channel = supabase
       .channel("cozinha-orders")
@@ -90,9 +92,14 @@ export function Cozinheiro() {
           });
         },
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          fetchOrders();
+        }
+      });
 
     return () => {
+      mounted = false;
       supabase.removeChannel(channel);
     };
   }, []);

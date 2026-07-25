@@ -93,16 +93,16 @@ export function Painel() {
   }
 
   useEffect(() => {
-    async function init() {
+    let mounted = true;
+
+    async function fetchOrders() {
       try {
         const data = await getOrders();
-        setOrders(data);
+        if (mounted) setOrders(data);
       } catch (err) {
         console.error("Erro pedidos:", err);
       }
     }
-
-    init();
 
     const channel = supabase
       .channel("painel-orders")
@@ -110,14 +110,18 @@ export function Painel() {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "orders" },
         ({ new: pedido }) => {
-          setOrders((prev) => [pedido as Pedido, ...prev]);
-          tocarSom();
-          if ("Notification" in window && Notification.permission === "granted") {
-            new Notification("Novo pedido! 🍕", {
-              body: `Pedido Nº ${(pedido as Pedido).codigo} — ${(pedido as Pedido).nomeCliente}`,
-              icon: "/favicon.ico",
-            });
-          }
+          const p = pedido as Pedido;
+          setOrders((prev) => {
+            if (prev.some((o) => o.id === p.id)) return prev;
+            tocarSom();
+            if ("Notification" in window && Notification.permission === "granted") {
+              new Notification("Novo pedido! 🍕", {
+                body: `Pedido Nº ${p.codigo} — ${p.nomeCliente}`,
+                icon: "/favicon.ico",
+              });
+            }
+            return [p, ...prev];
+          });
         },
       )
       .on(
@@ -133,9 +137,14 @@ export function Painel() {
           }
         },
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          fetchOrders();
+        }
+      });
 
     return () => {
+      mounted = false;
       supabase.removeChannel(channel);
     };
   }, []);

@@ -24,7 +24,7 @@ const Page = styled.div`
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%);
+  background: linear-gradient(135deg, #0f0f0f 0%, #0d1a1a 50%, #0a1628 100%);
   position: relative;
   overflow: hidden;
 
@@ -34,7 +34,7 @@ const Page = styled.div`
     width: 500px;
     height: 500px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(20, 184, 166, 0.15) 0%, transparent 70%);
     top: -120px;
     right: -120px;
     pointer-events: none;
@@ -46,7 +46,7 @@ const Page = styled.div`
     width: 400px;
     height: 400px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(20, 184, 166, 0.08) 0%, transparent 70%);
     bottom: -100px;
     left: -80px;
     pointer-events: none;
@@ -83,13 +83,13 @@ const IconWrap = styled.div`
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 36px;
   margin-bottom: 24px;
-  box-shadow: 0 8px 32px rgba(249, 115, 22, 0.4);
+  box-shadow: 0 8px 32px rgba(20, 184, 166, 0.4);
 `;
 
 const Brand = styled.p`
@@ -97,7 +97,7 @@ const Brand = styled.p`
   font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #f97316;
+  color: #14b8a6;
   margin: 0 0 8px;
 `;
 
@@ -154,9 +154,9 @@ const Input = styled.input`
   }
 
   &:focus {
-    border-color: #f97316;
-    background: rgba(249, 115, 22, 0.07);
-    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18);
+    border-color: #14b8a6;
+    background: rgba(20, 184, 166, 0.07);
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.18);
   }
 `;
 
@@ -189,13 +189,13 @@ const Button = styled.button`
   height: 54px;
   border: none;
   border-radius: 14px;
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
   color: #fff;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
-  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.35);
+  box-shadow: 0 8px 24px rgba(20, 184, 166, 0.35);
   margin-top: 4px;
   letter-spacing: 0.3px;
 
@@ -206,7 +206,7 @@ const Button = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(249, 115, 22, 0.45);
+    box-shadow: 0 12px 32px rgba(20, 184, 166, 0.45);
   }
 
   &:active:not(:disabled) {
@@ -221,7 +221,7 @@ const Footer = styled.p`
   text-align: center;
 `;
 
-export function PasswordGuard() {
+export function DeliveryGuard() {
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -232,14 +232,12 @@ export function PasswordGuard() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       const isDelivery = session?.user?.email === DELIVERY_EMAIL;
-      setAuthenticated(!!session && !isDelivery);
+      setAuthenticated(!!session && isDelivery);
     });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       const isDelivery = session?.user?.email === DELIVERY_EMAIL;
-      setAuthenticated(!!session && !isDelivery);
+      setAuthenticated(!!session && isDelivery);
     });
 
     return () => subscription.unsubscribe();
@@ -251,29 +249,31 @@ export function PasswordGuard() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-    if (authError) {
+
+    if (authError || data.user?.email !== DELIVERY_EMAIL) {
+      if (!authError && data.user?.email !== DELIVERY_EMAIL) {
+        await supabase.auth.signOut();
+      }
       setError(true);
       setShaking(true);
       setPassword("");
       setTimeout(() => setShaking(false), 450);
+      return;
     }
   }
 
   return (
     <Page>
       <Card>
-        <IconWrap>🍕</IconWrap>
+        <IconWrap>🛵</IconWrap>
         <Brand>Forno e Sabor</Brand>
-        <Title>Área Restrita</Title>
+        <Title>Área do Entregador</Title>
         <Subtitle>
-          Somente colaboradores autorizados
+          Acesso exclusivo para entregadores
           <br />
-          podem acessar este painel.
+          autorizados.
         </Subtitle>
 
         <form onSubmit={handleSubmit} style={{ width: "100%" }}>
@@ -281,33 +281,27 @@ export function PasswordGuard() {
             <InputLabel>E-mail</InputLabel>
             <Input
               type="email"
-              placeholder="admin@email.com"
+              placeholder="entregador@email.com"
               value={email}
               autoFocus
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setError(false);
-              }}
+              onChange={(e) => { setEmail(e.target.value); setError(false); }}
             />
           </InputWrap>
 
           <InputWrap $shake={shaking}>
-            <InputLabel>Senha de acesso</InputLabel>
+            <InputLabel>Senha</InputLabel>
             <Input
               type="password"
               placeholder="••••••••"
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setError(false);
-              }}
+              onChange={(e) => { setPassword(e.target.value); setError(false); }}
             />
           </InputWrap>
 
-          {error && <ErrorMsg>E-mail ou senha incorretos. Tente novamente.</ErrorMsg>}
+          {error && <ErrorMsg>Credenciais inválidas ou sem permissão.</ErrorMsg>}
 
           <Button type="submit" disabled={loading}>
-            {loading ? "Entrando..." : "Entrar no painel"}
+            {loading ? "Entrando..." : "Entrar"}
           </Button>
         </form>
 

@@ -25,6 +25,8 @@ import { Pagamento } from "./pages/pagamento";
 import { PedidoProvider } from "./context/PedidoProvider";
 import { StoreGuard } from "./utils/StoreGuard";
 import { PasswordGuard } from "./utils/PasswordGuard";
+import { DeliveryGuard } from "./utils/DeliveryGuard";
+import { Entregador } from "./pages/entregador";
 import { Historico } from "./pages/historico";
 import { Painel } from "./pages/painel";
 import CreateOrder from "./pages/painel/create-order";
@@ -56,6 +58,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/pedido" element={<Pedido />} />
               <Route path="/pagamento" element={<Pagamento />} />
               <Route path="/confirmacao" element={<Confirmacao />} />
+            </Route>
+            <Route element={<DeliveryGuard />}>
+              <Route path="/entregador" element={<Entregador />} />
             </Route>
             <Route element={<PasswordGuard />}>
               <Route path="/painel" element={<Painel />} />
