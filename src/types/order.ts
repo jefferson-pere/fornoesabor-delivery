@@ -42,6 +42,8 @@ export type ItemPedido = {
 
   maioneseQtd: number;
 
+  maioneseBaconQtd?: number;
+
   observacaoItem?: string;
 };
 

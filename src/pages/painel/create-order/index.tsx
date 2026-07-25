@@ -49,6 +49,7 @@ export default function CreateOrder() {
   const [sabores, setSabores] = useState<Record<string, number>>({});
   const [refri, setRefri] = useState("");
   const [maioneseQtd, setMaioneseQtd] = useState(0);
+  const [maioneseBaconQtd, setMaioneseBaconQtd] = useState(0);
   const [refrisExtras, setRefrisExtras] = useState<Record<string, number>>({});
   const [observacaoItem, setObservacaoItem] = useState("");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -83,6 +84,7 @@ export default function CreateOrder() {
           sabores: item.sabores,
           refri: item.refri,
           maioneseQtd: item.maioneseQtd || 0,
+          maioneseBaconQtd: item.maioneseBaconQtd || 0,
           observacaoItem: item.observacaoItem,
           refriExtra: Array.isArray(item.refriExtra) ? item.refriExtra : [],
         };
@@ -101,7 +103,7 @@ export default function CreateOrder() {
       return (
         acc +
         item.combo.preco +
-        (item.maioneseQtd || 0) * 0.99 +
+        ((item.maioneseQtd || 0) + (item.maioneseBaconQtd || 0)) * 0.99 +
         (Array.isArray(item.refriExtra) ? item.refriExtra.reduce((a, r) => a + r.preco * r.qtd, 0) : 0)
       );
     }, 0);
@@ -178,6 +180,7 @@ export default function CreateOrder() {
       sabores,
       refri,
       maioneseQtd,
+      maioneseBaconQtd,
       observacaoItem,
       refriExtra: refriExtraArray,
     };
@@ -194,6 +197,7 @@ export default function CreateOrder() {
     setSabores({});
     setRefri("");
     setMaioneseQtd(0);
+    setMaioneseBaconQtd(0);
     setRefrisExtras({});
     setObservacaoItem("");
   }
@@ -208,6 +212,7 @@ export default function CreateOrder() {
     setSabores({});
     setRefri("");
     setMaioneseQtd(0);
+    setMaioneseBaconQtd(0);
     setRefrisExtras({});
     setObservacaoItem("");
   }
@@ -221,6 +226,7 @@ export default function CreateOrder() {
     setSabores({ ...item.sabores });
     setRefri(item.refri || "");
     setMaioneseQtd(item.maioneseQtd);
+    setMaioneseBaconQtd(item.maioneseBaconQtd || 0);
     const extrasMap: Record<string, number> = {};
     for (const r of (Array.isArray(item.refriExtra) ? item.refriExtra : [])) {
       extrasMap[`${r.nome}-${r.tipo}`] = r.qtd;
@@ -494,27 +500,31 @@ export default function CreateOrder() {
                   min={0}
                   placeholder={
                     comboSelecionado.maioneseInclusa
-                      ? "Maionese extra"
-                      : "Qtd maionese"
+                      ? "Maionese temperada (extra)"
+                      : "Maionese temperada (40g)"
                   }
                   value={maioneseQtd || ""}
                   onChange={(e) => setMaioneseQtd(Number(e.target.value || 0))}
                 />
 
                 <div className="extra-info">
-                  {comboSelecionado.maioneseInclusa ? (
-                    <>
-                      <span>1 inclusa + extras</span>
+                  <span>Temperada</span>
+                  <strong>R$ {(maioneseQtd * 0.99).toFixed(2)}</strong>
+                </div>
+              </div>
 
-                      <strong>+ R$ {maioneseQtd * 0.99}</strong>
-                    </>
-                  ) : (
-                    <>
-                      <span>Maionese</span>
+              <div className="grid-2">
+                <input
+                  type="number"
+                  min={0}
+                  placeholder="Maionese de bacon (30g)"
+                  value={maioneseBaconQtd || ""}
+                  onChange={(e) => setMaioneseBaconQtd(Number(e.target.value || 0))}
+                />
 
-                      <strong>R$ {maioneseQtd * 0.99}</strong>
-                    </>
-                  )}
+                <div className="extra-info">
+                  <span>Bacon</span>
+                  <strong>R$ {(maioneseBaconQtd * 0.99).toFixed(2)}</strong>
                 </div>
               </div>
 
@@ -660,9 +670,18 @@ export default function CreateOrder() {
 
                   {item.maioneseQtd > 0 && (
                     <small>
-                      Maionese:
+                      Maionese temperada ({item.maioneseQtd}x):
                       <strong>
                         R$ {((item.maioneseQtd || 0) * 0.99).toFixed(2)}
+                      </strong>
+                    </small>
+                  )}
+
+                  {(item.maioneseBaconQtd ?? 0) > 0 && (
+                    <small>
+                      Maionese de bacon ({item.maioneseBaconQtd}x):
+                      <strong>
+                        R$ {((item.maioneseBaconQtd || 0) * 0.99).toFixed(2)}
                       </strong>
                     </small>
                   )}
@@ -680,7 +699,7 @@ export default function CreateOrder() {
                       R${" "}
                       {(
                         item.combo.preco +
-                        (item.maioneseQtd || 0) * 0.99 +
+                        ((item.maioneseQtd || 0) + (item.maioneseBaconQtd || 0)) * 0.99 +
                         (Array.isArray(item.refriExtra) ? item.refriExtra.reduce((a, r) => a + r.preco * r.qtd, 0) : 0)
                       ).toFixed(2)}
                     </strong>

@@ -554,30 +554,76 @@ export const Container = styled.div`
     color: #334155 !important;
   }
 
-  /* MAIONESE INLINE */
-  .maionese-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    padding: 5px;
-    border: 1px solid #b9b9b9;
-    border-radius: 8px;
-    background: #eeeded;
-  }
-
-  .maionese-info {
+  /* MAIONESE */
+  .maionese-cards {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    border: 1.5px solid #fde68a;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fffcf5;
   }
 
-  .maionese-title {
-    font-size: 16px;
+  .maionese-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+  }
+
+  .maionese-item + .maionese-item {
+    border-top: 1px solid #fef3c7;
+  }
+
+  .maionese-item-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .maionese-item-name {
+    font-size: 14px;
     font-weight: 700;
-    color: #6d6d6d;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    color: #1c1c1c;
+  }
+
+  .maionese-item-detail {
+    font-size: 12px;
+    color: #92400e;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .maionese-item-detail .gram {
+    background: #fef3c7;
+    color: #78716c;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 99px;
+  }
+
+  .maionese-item-detail .preco {
+    color: #d90000;
+    font-weight: 700;
+  }
+
+  .maionese-item-detail .inclusa {
+    color: #16a34a;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .maionese-indisponivel .maionese-item-name {
+    color: #aaa;
+  }
+
+  .maionese-indisponivel .maionese-item-detail {
+    color: #bbb;
   }
 
   /* SELECT */

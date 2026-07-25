@@ -72,12 +72,14 @@ export const saboresLista: string[] = [
   "Frango com catupiry",
   "Frango com mussarela",
   "Frango com bacon",
+  "Frango com calabresa",
   "Calabresa com catupiry",
   "Calabresa com mussarela",
   "Carne moída",
   "Misto (presunto e mussarela)",
   "Mussarela",
   "Bacon com mussarela",
+  "Bacon com catupiry",
   "Chocolate",
 ];
 

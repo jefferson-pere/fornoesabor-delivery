@@ -17,7 +17,7 @@ export function Receipt({ order }: Props) {
   );
 
   const totalMaionese = order.itens.reduce(
-    (acc, item) => acc + (item.maioneseQtd ?? 0) * 0.99,
+    (acc, item) => acc + ((item.maioneseQtd ?? 0) + (item.maioneseBaconQtd ?? 0)) * 0.99,
     0,
   );
 
@@ -91,7 +91,13 @@ export function Receipt({ order }: Props) {
 
             {item.maioneseQtd > 0 && (
               <div className="obs">
-                ** Maionese caseira ({item.maioneseQtd}x)
+                ** Maionese temperada ({item.maioneseQtd}x)
+              </div>
+            )}
+
+            {(item.maioneseBaconQtd ?? 0) > 0 && (
+              <div className="obs">
+                ** Maionese de bacon ({item.maioneseBaconQtd}x)
               </div>
             )}
 

@@ -31,7 +31,7 @@ export function OrderModal({ order, onClose }: Props) {
 
   const _totalCombos = currentOrder.itens.reduce((acc, item) => acc + (item.combo?.preco ?? 0), 0);
   const _totalRefri = currentOrder.itens.reduce((acc, item) => acc + (Array.isArray(item.refriExtra) ? item.refriExtra.reduce((a, r) => a + r.preco * r.qtd, 0) : 0), 0);
-  const _totalMaionese = currentOrder.itens.reduce((acc, item) => acc + (item.maioneseQtd ?? 0) * 0.99, 0);
+  const _totalMaionese = currentOrder.itens.reduce((acc, item) => acc + ((item.maioneseQtd ?? 0) + (item.maioneseBaconQtd ?? 0)) * 0.99, 0);
   const _frete = currentOrder.cidade === "Retirada" ? 0 : currentOrder.cidade === "Cariús" ? 3 : 5;
   const _taxaCartao = currentOrder.pagamento === "cartao" ? 1 : 0;
   const orderTotal = _totalCombos + _totalRefri + _totalMaionese + _frete + _taxaCartao;
@@ -215,7 +215,13 @@ export function OrderModal({ order, onClose }: Props) {
 
                     {item.maioneseQtd > 0 && (
                       <div className="extra">
-                        🧄{item.maioneseQtd}x Maionese extra
+                        🧄 {item.maioneseQtd}x Maionese temperada
+                      </div>
+                    )}
+
+                    {(item.maioneseBaconQtd ?? 0) > 0 && (
+                      <div className="extra">
+                        🧄 {item.maioneseBaconQtd}x Maionese de bacon
                       </div>
                     )}
 
