@@ -904,6 +904,45 @@ export const Container = styled.div`
     cursor: not-allowed;
   }
 
+  /* LOADING CARDÁPIO */
+  .loading-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    gap: 20px;
+    background: #fff;
+  }
+
+  .loading-logo {
+    font-size: 15px;
+    font-weight: 800;
+    color: #d90000;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .loading-spinner {
+    width: 44px;
+    height: 44px;
+    border: 4px solid #f0f0f0;
+    border-top-color: #d90000;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .loading-text {
+    font-size: 14px;
+    color: #aaa;
+    font-weight: 500;
+    margin-top: -6px;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
   /* ── DESKTOP ── */
   @media (min-width: 1024px) {
     .content {

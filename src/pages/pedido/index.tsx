@@ -60,7 +60,8 @@ export function Pedido() {
     !menuConfig ||
     (tipo === "lata" ? menuConfig.refriLata[r] : menuConfig.refri1l[r]) !== false;
 
-  const isMaioneseDisponivel = !menuConfig || menuConfig.maionese !== false;
+  const isMaioneseTemperadaDisponivel = !menuConfig || menuConfig.maioneseTemperada !== false;
+  const isMaioneseBaconDisponivel = !menuConfig || menuConfig.maioneseBacon !== false;
 
   useEffect(() => {
     if (combo) {
@@ -197,8 +198,12 @@ export function Pedido() {
   if (menuLoading) {
     return (
       <Container>
-        <div className="content" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
-          <span style={{ color: "#888", fontSize: "1rem" }}>Carregando cardápio...</span>
+        <div className="content">
+          <div className="loading-screen">
+            <div className="loading-logo">Forno e Sabor</div>
+            <div className="loading-spinner" />
+            <span className="loading-text">Carregando cardápio...</span>
+          </div>
         </div>
       </Container>
     );
@@ -421,14 +426,14 @@ export function Pedido() {
               {/* MAIONESE */}
               <section className="section">
                 <div className="section-label">Maionese</div>
-                <div className={`maionese-cards${!isMaioneseDisponivel ? " maionese-indisponivel" : ""}`}>
+                <div className="maionese-cards">
                   {/* Temperada */}
-                  <div className="maionese-item">
+                  <div className={`maionese-item${!isMaioneseTemperadaDisponivel ? " maionese-indisponivel" : ""}`}>
                     <div className="maionese-item-body">
                       <span className="maionese-item-name">Maionese temperada</span>
                       <div className="maionese-item-detail">
                         <span className="gram">40g</span>
-                        {!isMaioneseDisponivel
+                        {!isMaioneseTemperadaDisponivel
                           ? <span>Indisponível</span>
                           : <><span className="preco">R$ 0,99</span>{combo.maioneseInclusa && <span className="inclusa">· ✓ inclusa</span>}</>
                         }
@@ -438,24 +443,24 @@ export function Pedido() {
                       <button
                         className="qtd-btn minus"
                         onClick={() => setMaioneseQtd((v) => Math.max(v - 1, 0))}
-                        disabled={maioneseQtd === 0 || !isMaioneseDisponivel}
+                        disabled={maioneseQtd === 0 || !isMaioneseTemperadaDisponivel}
                       >−</button>
                       <span className={`qtd-value${maioneseQtd > 0 ? " has" : ""}`}>{maioneseQtd}</span>
                       <button
                         className="qtd-btn plus"
                         onClick={() => setMaioneseQtd((v) => v + 1)}
-                        disabled={!isMaioneseDisponivel}
+                        disabled={!isMaioneseTemperadaDisponivel}
                       >+</button>
                     </div>
                   </div>
 
                   {/* Bacon */}
-                  <div className="maionese-item">
+                  <div className={`maionese-item${!isMaioneseBaconDisponivel ? " maionese-indisponivel" : ""}`}>
                     <div className="maionese-item-body">
                       <span className="maionese-item-name">Maionese de bacon</span>
                       <div className="maionese-item-detail">
                         <span className="gram">30g</span>
-                        {!isMaioneseDisponivel
+                        {!isMaioneseBaconDisponivel
                           ? <span>Indisponível</span>
                           : <span className="preco">R$ 0,99</span>
                         }
@@ -465,13 +470,13 @@ export function Pedido() {
                       <button
                         className="qtd-btn minus"
                         onClick={() => setMaioneseBaconQtd((v) => Math.max(v - 1, 0))}
-                        disabled={maioneseBaconQtd === 0 || !isMaioneseDisponivel}
+                        disabled={maioneseBaconQtd === 0 || !isMaioneseBaconDisponivel}
                       >−</button>
                       <span className={`qtd-value${maioneseBaconQtd > 0 ? " has" : ""}`}>{maioneseBaconQtd}</span>
                       <button
                         className="qtd-btn plus"
                         onClick={() => setMaioneseBaconQtd((v) => v + 1)}
-                        disabled={!isMaioneseDisponivel}
+                        disabled={!isMaioneseBaconDisponivel}
                       >+</button>
                     </div>
                   </div>

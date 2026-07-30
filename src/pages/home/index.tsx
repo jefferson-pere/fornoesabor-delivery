@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { Container } from "./style";
 import { usePedido } from "../../hook/usePedido";
 import { useEffect, useState } from "react";
@@ -8,18 +7,7 @@ import { StoreBlock } from "../StoreBlock";
 import { StepProgress } from "../../components/StepProgress";
 
 export function Home() {
-  const {
-    setStep,
-    setNome,
-    setTelefone,
-    setCidade,
-    setEndereco,
-    nome,
-    telefone,
-    cidade,
-    endereco,
-  } = usePedido();
-  const navigate = useNavigate();
+  const { nome, telefone, cidade, endereco } = usePedido();
   const [loading, setLoading] = useState(false);
   const [tipoEntrega, setTipoEntrega] = useState<"entrega" | "retirada" | null>(
     cidade === "Retirada"
@@ -105,31 +93,41 @@ export function Home() {
     setLoading(true);
     setTimeout(() => {
       const nomeCompleto = `${nomeLocal.trim()} ${sobrenomeLocal.trim()}`;
-      setNome(nomeCompleto);
-      setTelefone(telefoneLocal);
 
       localStorage.setItem("cliente_nome", nomeLocal.trim());
       localStorage.setItem("cliente_sobrenome", sobrenomeLocal.trim());
       localStorage.setItem("cliente_telefone", telefoneLocal);
       localStorage.setItem("cliente_tipoEntrega", tipoEntrega || "");
 
+      let cidadeFinal = "";
+      let enderecoFinal = { rua: "", numero: "", referencia: "" };
+
       if (tipoEntrega === "retirada") {
-        setCidade("Retirada");
-        setEndereco({ rua: "", numero: "", referencia: "" });
+        cidadeFinal = "Retirada";
         localStorage.removeItem("cliente_cidade");
         localStorage.removeItem("cliente_rua");
         localStorage.removeItem("cliente_numero");
         localStorage.removeItem("cliente_referencia");
       } else {
-        setCidade(cidadeLocal);
-        setEndereco({ rua: rua.trim(), numero: numero.trim(), referencia: referencia.trim() });
+        cidadeFinal = cidadeLocal;
+        enderecoFinal = { rua: rua.trim(), numero: numero.trim(), referencia: referencia.trim() };
         localStorage.setItem("cliente_cidade", cidadeLocal);
         localStorage.setItem("cliente_rua", rua.trim());
         localStorage.setItem("cliente_numero", numero.trim());
         localStorage.setItem("cliente_referencia", referencia.trim());
       }
-      setStep(2);
-      navigate("/pedido");
+
+      const estadoAtual = JSON.parse(localStorage.getItem("pedido_state") || "{}");
+      localStorage.setItem("pedido_state", JSON.stringify({
+        ...estadoAtual,
+        step: 2,
+        nome: nomeCompleto,
+        telefone: telefoneLocal,
+        cidade: cidadeFinal,
+        endereco: enderecoFinal,
+      }));
+
+      window.location.href = "/pedido";
     }, 700);
   };
 

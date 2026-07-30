@@ -60,6 +60,61 @@ export const Container = styled.div`
     }
   }
 
+  /* ── RESET BAR ── */
+  .reset-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    flex-shrink: 0;
+  }
+
+  .reset-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .reset-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111;
+  }
+
+  .reset-sub {
+    font-size: 11px;
+    color: #888;
+  }
+
+  .btn-reset {
+    height: 34px;
+    padding: 0 14px;
+    border: none;
+    border-radius: 8px;
+    background: #16a34a;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    &:hover:not(:disabled) {
+      background: #15803d;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+  }
+
   /* ── GRID ── */
   .sections {
     flex: 1;

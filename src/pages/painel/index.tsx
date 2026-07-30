@@ -11,6 +11,7 @@ import {
   updateOrderStatus,
   updatePayment,
 } from "../../services/orders";
+import { checkAndAutoReset } from "../../services/menu";
 import { supabase } from "../../lib/supabase";
 import type { Pedido, OrderStatus } from "../../types/order";
 import { KanbanColumn } from "../../components/KanbanColumn";
@@ -59,6 +60,10 @@ export function Painel() {
     }
     return () => document.body.classList.remove("painel-dark");
   }, [darkMode]);
+
+  useEffect(() => {
+    checkAndAutoReset();
+  }, []);
 
   useEffect(() => {
     if ("Notification" in window && Notification.permission === "default") {

@@ -2,31 +2,34 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { combosDisponiveis, saboresLista, saboresRefri } from "../../../data/menu";
-import { getMenuConfig, updateMenuConfig, type MenuDisponibilidade } from "../../../services/menu";
+import {
+  buildDefaultConfig,
+  getMenuConfig,
+  resetMenuConfig,
+  updateMenuConfig,
+  type MenuDisponibilidade,
+} from "../../../services/menu";
 import { Container } from "./style";
-
-const DEFAULT_CONFIG: MenuDisponibilidade = {
-  combos: Object.fromEntries(combosDisponiveis.map((c) => [String(c.id), true])),
-  sabores: Object.fromEntries(saboresLista.map((s) => [s, true])),
-  refriLata: Object.fromEntries(saboresRefri.lata.map((r) => [r, true])),
-  refri1l: Object.fromEntries(saboresRefri["1l"].map((r) => [r, true])),
-  maionese: true,
-};
 
 export function Configuracoes() {
   const navigate = useNavigate();
-  const [config, setConfig] = useState<MenuDisponibilidade>(DEFAULT_CONFIG);
+  const [config, setConfig] = useState<MenuDisponibilidade>(buildDefaultConfig());
   const [loading, setLoading] = useState(true);
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
+    const defaults = buildDefaultConfig();
     getMenuConfig()
       .then((data) => {
         setConfig({
-          combos: { ...DEFAULT_CONFIG.combos, ...data.combos },
-          sabores: { ...DEFAULT_CONFIG.sabores, ...data.sabores },
-          refriLata: { ...DEFAULT_CONFIG.refriLata, ...data.refriLata },
-          refri1l: { ...DEFAULT_CONFIG.refri1l, ...data.refri1l },
+          combos: { ...defaults.combos, ...data.combos },
+          sabores: { ...defaults.sabores, ...data.sabores },
+          refriLata: { ...defaults.refriLata, ...data.refriLata },
+          refri1l: { ...defaults.refri1l, ...data.refri1l },
           maionese: data.maionese !== false,
+          maioneseTemperada: data.maioneseTemperada !== false,
+          maioneseBacon: data.maioneseBacon !== false,
+          ultimoReset: data.ultimoReset,
         });
       })
       .catch(() => toast.error("Erro ao carregar configurações"))
@@ -48,8 +51,8 @@ export function Configuracoes() {
     }
   }
 
-  async function toggleMaionese() {
-    const newConfig = { ...config, maionese: !config.maionese };
+  async function toggleBoolField(field: "maionese" | "maioneseTemperada" | "maioneseBacon") {
+    const newConfig = { ...config, [field]: !config[field] };
     setConfig(newConfig);
     try {
       await updateMenuConfig(newConfig);
@@ -57,6 +60,20 @@ export function Configuracoes() {
     } catch {
       toast.error("Erro ao salvar");
       setConfig(config);
+    }
+  }
+
+  async function handleReset() {
+    if (!confirm("Resetar tudo e deixar todos os itens disponíveis?")) return;
+    setResetting(true);
+    try {
+      const novo = await resetMenuConfig();
+      setConfig(novo);
+      toast.success("Tudo disponível!");
+    } catch {
+      toast.error("Erro ao resetar");
+    } finally {
+      setResetting(false);
     }
   }
 
@@ -85,6 +102,24 @@ export function Configuracoes() {
         </div>
       </div>
 
+      <div className="reset-bar">
+        <div className="reset-info">
+          <span className="reset-label">Reset automático diário</span>
+          <span className="reset-sub">
+            {config.ultimoReset
+              ? `Último reset: ${config.ultimoReset}`
+              : "Nunca resetado automaticamente"}
+          </span>
+        </div>
+        <button
+          className="btn-reset"
+          onClick={handleReset}
+          disabled={resetting}
+        >
+          {resetting ? "Resetando..." : "↺ Resetar tudo"}
+        </button>
+      </div>
+
       <div className="sections">
         {/* COMBOS + MAIONESE */}
         <div className="card">
@@ -111,16 +146,28 @@ export function Configuracoes() {
 
           <div className="card-subtitle">Maionese</div>
           <div className="items-list">
-            <div className={`item-row${config.maionese !== false ? "" : " off"}`}>
+            <div className={`item-row${config.maioneseTemperada !== false ? "" : " off"}`}>
               <div className="item-info">
-                <span className="item-name">Maionese caseira</span>
-                <span className="item-sub">R$ 0,99 unidade</span>
+                <span className="item-name">Maionese temperada</span>
+                <span className="item-sub">40g · R$ 0,99</span>
               </div>
               <button
-                className={`toggle${config.maionese !== false ? " on" : ""}`}
-                onClick={toggleMaionese}
+                className={`toggle${config.maioneseTemperada !== false ? " on" : ""}`}
+                onClick={() => toggleBoolField("maioneseTemperada")}
               >
-                {config.maionese !== false ? "✓ Disponível" : "✕ Indisponível"}
+                {config.maioneseTemperada !== false ? "✓ Disponível" : "✕ Indisponível"}
+              </button>
+            </div>
+            <div className={`item-row${config.maioneseBacon !== false ? "" : " off"}`}>
+              <div className="item-info">
+                <span className="item-name">Maionese de bacon</span>
+                <span className="item-sub">30g · R$ 0,99</span>
+              </div>
+              <button
+                className={`toggle${config.maioneseBacon !== false ? " on" : ""}`}
+                onClick={() => toggleBoolField("maioneseBacon")}
+              >
+                {config.maioneseBacon !== false ? "✓ Disponível" : "✕ Indisponível"}
               </button>
             </div>
           </div>
@@ -147,7 +194,7 @@ export function Configuracoes() {
           </div>
         </div>
 
-        {/* REFRI LATA */}
+        {/* REFRIGERANTES */}
         <div className="card">
           <div className="card-title">Refrigerantes</div>
 
@@ -187,10 +234,7 @@ export function Configuracoes() {
             })}
           </div>
         </div>
-
       </div>
-
     </Container>
-
   );
 }

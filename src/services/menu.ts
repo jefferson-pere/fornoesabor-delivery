@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import { combosDisponiveis, saboresLista, saboresRefri } from "../data/menu";
 
 export type MenuDisponibilidade = {
   combos: Record<string, boolean>;
@@ -6,7 +7,23 @@ export type MenuDisponibilidade = {
   refriLata: Record<string, boolean>;
   refri1l: Record<string, boolean>;
   maionese: boolean;
+  maioneseTemperada: boolean;
+  maioneseBacon: boolean;
+  ultimoReset?: string;
 };
+
+export function buildDefaultConfig(): MenuDisponibilidade {
+  return {
+    combos: Object.fromEntries(combosDisponiveis.map((c) => [String(c.id), true])),
+    sabores: Object.fromEntries(saboresLista.map((s) => [s, true])),
+    refriLata: Object.fromEntries(saboresRefri.lata.map((r) => [r, true])),
+    refri1l: Object.fromEntries(saboresRefri["1l"].map((r) => [r, true])),
+    maionese: true,
+    maioneseTemperada: true,
+    maioneseBacon: true,
+    ultimoReset: new Date().toISOString().slice(0, 10),
+  };
+}
 
 export async function getMenuConfig(): Promise<MenuDisponibilidade> {
   const { data, error } = await supabase
@@ -31,4 +48,20 @@ export async function updateMenuConfig(disponibilidade: MenuDisponibilidade): Pr
   if (error) throw new Error(error.message || "Erro ao atualizar menu");
 
   return data.disponibilidade as MenuDisponibilidade;
+}
+
+export async function resetMenuConfig(): Promise<MenuDisponibilidade> {
+  return updateMenuConfig(buildDefaultConfig());
+}
+
+export async function checkAndAutoReset(): Promise<void> {
+  try {
+    const config = await getMenuConfig();
+    const today = new Date().toISOString().slice(0, 10);
+    if (config.ultimoReset !== today) {
+      await resetMenuConfig();
+    }
+  } catch {
+    // falha silenciosa para não bloquear o painel
+  }
 }
