@@ -13,11 +13,11 @@ export type NovoPedidoPayload = {
   observacao: string;
 };
 
-function calcularSubtotal(itens: { combo: { preco: number }; maioneseQtd: number; refriExtra?: { preco: number; qtd: number }[] }[]): number {
+function calcularSubtotal(itens: { combo: { preco: number }; maioneseQtd: number; maioneseBaconQtd?: number; refriExtra?: { preco: number; qtd: number }[] }[]): number {
   let subtotal = 0;
   for (const item of itens) {
     subtotal += Number(item?.combo?.preco) || 0;
-    subtotal += (Number(item?.maioneseQtd) || 0) * 0.99;
+    subtotal += ((Number(item?.maioneseQtd) || 0) + (Number(item?.maioneseBaconQtd) || 0)) * 0.99;
     subtotal += (item.refriExtra || []).reduce((acc, r) => acc + r.preco * r.qtd, 0);
   }
   return Number(subtotal.toFixed(2));
