@@ -16,6 +16,8 @@ export function App() {
 
     if (!localStorage.getItem(STORAGE_KEY)) {
       localStorage.setItem(STORAGE_KEY, String(Date.now()));
+      window.location.reload();
+      return;
     }
 
     function handleVisibility() {
