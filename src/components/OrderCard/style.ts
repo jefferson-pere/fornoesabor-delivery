@@ -31,7 +31,7 @@ export const Container = styled.div<{ $borderColor: string }>`
     display: flex;
     align-items: center;
     gap: 6px;
-    margin: 0 0 3px;
+    margin: 0 0 6px;
 
     strong {
       font-size: 16px;
@@ -75,40 +75,42 @@ export const Container = styled.div<{ $borderColor: string }>`
   .infoendpag {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    margin-bottom: 4px;
+    gap: 6px;
+    margin-bottom: 6px;
+
+    .cidade-pag {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
 
     .cidade {
-      font-size: 12px;
+      font-size: 13px;
       color: #555;
       body.painel-dark & { color: #94a3b8; }
     }
 
-    .pagamento-pago {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-
-      span {
-        font-size: 12px;
-        color: #555;
-        text-transform: capitalize;
-        body.painel-dark & { color: #94a3b8; }
-      }
+    .pagamento-text {
+      font-size: 13px;
+      color: #555;
+      text-transform: capitalize;
+      body.painel-dark & { color: #94a3b8; }
     }
 
-    .entregador {
-      font-size: 11px;
-      font-weight: 700;
-      color: #0d9488;
-      background: rgba(20, 184, 166, 0.1);
-      padding: 1px 8px;
-      border-radius: 99px;
-      white-space: nowrap;
-      align-self: flex-start;
-    }
   }
+
+  .entregador {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0d9488;
+    background: rgba(20, 184, 166, 0.1);
+    padding: 1px 8px;
+    border-radius: 99px;
+    white-space: nowrap;
+    align-self: flex-start;
+  }
+
   .combo {
     color: #444;
     margin-bottom: 18px;
@@ -117,11 +119,21 @@ export const Container = styled.div<{ $borderColor: string }>`
     body.painel-dark & { color: #94a3b8; }
   }
 
-  .footer {
+  .designar-pago {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 6px;
+    justify-content: space-between;
+    margin-bottom: 4px;
+
+    .designar-inline {
+      flex: 1;
+    }
+
+    > .pago,
+    > .nao-pago {
+      flex-shrink: 0;
+      margin-left: auto;
+    }
   }
 
   .pago,
@@ -236,20 +248,32 @@ export const Container = styled.div<{ $borderColor: string }>`
 
   .acoes {
     display: flex;
-    gap: 6px;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+
+    .total {
+      flex: 1;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #111;
+      body.painel-dark & { color: #f8fafc; }
+    }
   }
 
   .detalhes,
   .avancar,
   .escolher-entregador,
   .cancelar-entregador {
-    flex: 1;
-    height: 30px;
+    height: 28px;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     border: 1px solid #6d6d6d;
     cursor: pointer;
     font-weight: bold;
+    padding: 0 28px;
+    white-space: nowrap;
   }
 
   .detalhes {

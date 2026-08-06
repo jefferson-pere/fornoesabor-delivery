@@ -86,25 +86,14 @@ export function OrderCard({ order, onMove, onTogglePayment, onDetails, onDesigna
       </div>
 
       <div className="infoendpag">
-        <div className="cidade">📍 {order.cidade}</div>
-        <div className="pagamento-pago">
-          <span>💳 {order.pagamento}</span>
-          <button
-            className={order.pago ? "pago" : "nao-pago"}
-            onClick={(e) => { e.stopPropagation(); onTogglePayment(order.id, !order.pago); }}
-          >
-            {order.pago ? "✅ Pago" : "❌ Não Pago"}
-          </button>
+        <div className="cidade-pag">
+          <span className="cidade">📍 {order.cidade}</span>
+          <span className="pagamento-text">💳 {order.pagamento}</span>
         </div>
-        {order.entregador && (
-          <div className="entregador">{order.entregador}</div>
-        )}
       </div>
 
-      <div className="footer" onClick={(e) => e.stopPropagation()}>
-        <strong>R$ {orderTotal.toFixed(2)}</strong>
-
-        {order.status === "ENTREGA" && onDesignar && (
+      <div className="designar-pago" onClick={(e) => e.stopPropagation()}>
+        {order.status === "ENTREGA" && onDesignar ? (
           <div className="designar-inline">
             {order.entregadorDesignado ? (
               trocando ? (
@@ -134,7 +123,15 @@ export function OrderCard({ order, onMove, onTogglePayment, onDetails, onDesigna
               </div>
             )}
           </div>
-        )}
+        ) : order.entregador ? (
+          <div className="entregador">{order.entregador}</div>
+        ) : null}
+        <button
+          className={order.pago ? "pago" : "nao-pago"}
+          onClick={(e) => { e.stopPropagation(); onTogglePayment(order.id, !order.pago); }}
+        >
+          {order.pago ? "✅ Pago" : "❌ Não Pago"}
+        </button>
       </div>
 
       <div className="acoes" onClick={(e) => e.stopPropagation()}>
@@ -149,6 +146,8 @@ export function OrderCard({ order, onMove, onTogglePayment, onDetails, onDesigna
             Voltar
           </button>
         )}
+
+        <strong className="total">R$ {orderTotal.toFixed(2)}</strong>
 
         {nextStatus() && (
           <button
