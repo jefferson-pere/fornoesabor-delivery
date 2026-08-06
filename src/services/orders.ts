@@ -76,10 +76,24 @@ export async function getOrders(all?: boolean): Promise<Pedido[]> {
   return (data ?? []) as Pedido[];
 }
 
-export async function updateOrderStatus(id: number, status: OrderStatus): Promise<Pedido> {
+export async function updateOrderStatus(id: number, status: OrderStatus, entregador?: string): Promise<Pedido> {
+  const payload: Record<string, unknown> = { status };
+  if (entregador) payload.entregador = entregador;
+
   const { data, error } = await supabase
     .from("orders")
-    .update({ status })
+    .update(payload)
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return data as Pedido;
+}
+
+export async function designarEntregador(id: number, entregadorDesignado: string): Promise<Pedido> {
+  const { data, error } = await supabase
+    .from("orders")
+    .update({ entregadorDesignado })
     .eq("id", id)
     .select()
     .single();

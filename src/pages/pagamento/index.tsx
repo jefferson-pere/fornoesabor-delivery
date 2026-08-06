@@ -25,6 +25,7 @@ export function Pagamento() {
     setSemTroco,
     itens,
     cidade,
+    resetPedido,
   } = usePedido();
   const navigate = useNavigate();
   const [errorPagamento, setErrorPagamento] = useState(false);
@@ -41,7 +42,10 @@ export function Pagamento() {
     onError: (err: Error) => {
       if (err.message === "CARDAPIO_DESATUALIZADO") {
         setCardapioDesatualizado(true);
-        setTimeout(() => window.location.reload(), 5000);
+        setTimeout(() => {
+          resetPedido();
+          navigate("/");
+        }, 3000);
         return;
       }
       navigate("/confirmacao", {

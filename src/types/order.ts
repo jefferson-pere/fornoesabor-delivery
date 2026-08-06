@@ -77,4 +77,8 @@ export type Pedido = {
   createdAt: string;
 
   deleted?: boolean;
+
+  entregador?: string;
+
+  entregadorDesignado?: string;
 };

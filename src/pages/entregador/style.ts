@@ -37,6 +37,14 @@ export const Header = styled.header`
       font-size: 20px;
       font-weight: 800;
       color: #fff;
+      margin: 0;
+    }
+
+    span.nome-entregador {
+      font-size: 12px;
+      font-weight: 600;
+      color: #14b8a6;
+      letter-spacing: 0.5px;
     }
   }
 
@@ -101,6 +109,29 @@ export const Content = styled.div`
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
+
+  .resumo-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(74, 222, 128, 0.08);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-top: 4px;
+
+    span {
+      font-size: 14px;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    strong {
+      font-size: 22px;
+      font-weight: 800;
+      color: #4ade80;
+    }
+  }
 `;
 
 export const Empty = styled.div`
@@ -358,9 +389,15 @@ export const HistoricoCard = styled.div`
     gap: 3px;
     flex-shrink: 0;
 
-    .total {
-      font-size: 16px;
+    .frete {
+      font-size: 17px;
       font-weight: 800;
+      color: #f59e0b;
+    }
+
+    .total {
+      font-size: 13px;
+      font-weight: 600;
       color: #4ade80;
     }
 

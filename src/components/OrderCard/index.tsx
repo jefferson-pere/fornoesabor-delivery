@@ -1,12 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Pedido, OrderStatus } from "../../types/order";
 import { Container } from "./style";
 
+const TROCA_SENHA = import.meta.env.VITE_TROCA_ENTREGADOR_SENHA as string;
+
 type Props = {
   order: Pedido;
-  onMove: (id: number, status: OrderStatus) => void;
+  onMove: (id: number, status: OrderStatus, entregador?: string) => void;
   onTogglePayment: (id: number, pago: boolean) => void;
   onDetails: (order: Pedido) => void;
+  onDesignar?: (id: number, entregador: string) => void;
 };
 
 function getTimerColor(createdAt: string): string {
@@ -17,8 +20,12 @@ function getTimerColor(createdAt: string): string {
   return "#ef4444";
 }
 
-export function OrderCard({ order, onMove, onTogglePayment, onDetails }: Props) {
+export function OrderCard({ order, onMove, onTogglePayment, onDetails, onDesignar }: Props) {
   const [borderColor, setBorderColor] = useState(() => getTimerColor(order.createdAt));
+  const [trocando, setTrocando] = useState(false);
+  const [senhaTroca, setSenhaTroca] = useState("");
+  const [erroSenha, setErroSenha] = useState(false);
+  const inputSenhaRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -26,6 +33,24 @@ export function OrderCard({ order, onMove, onTogglePayment, onDetails }: Props) 
     }, 60000);
     return () => clearInterval(interval);
   }, [order.createdAt]);
+
+  useEffect(() => {
+    if (trocando) inputSenhaRef.current?.focus();
+  }, [trocando]);
+
+  function confirmarTroca(e: React.FormEvent) {
+    e.preventDefault();
+    if (senhaTroca === TROCA_SENHA) {
+      const novo = order.entregadorDesignado === "Entregador 1" ? "Entregador 2" : "Entregador 1";
+      onDesignar!(order.id, novo);
+      setTrocando(false);
+      setSenhaTroca("");
+      setErroSenha(false);
+    } else {
+      setErroSenha(true);
+      setSenhaTroca("");
+    }
+  }
   function nextStatus(): OrderStatus | null {
     if (order.status === "NOVO") return "PRODUCAO";
     if (order.status === "PRODUCAO") return "ENTREGA";
@@ -62,20 +87,57 @@ export function OrderCard({ order, onMove, onTogglePayment, onDetails }: Props) 
 
       <div className="infoendpag">
         <div className="cidade">📍 {order.cidade}</div>
-        <div className="pagamento">💳 {order.pagamento}</div>
+        <div className="pagamento-pago">
+          <span>💳 {order.pagamento}</span>
+          <button
+            className={order.pago ? "pago" : "nao-pago"}
+            onClick={(e) => { e.stopPropagation(); onTogglePayment(order.id, !order.pago); }}
+          >
+            {order.pago ? "✅ Pago" : "❌ Não Pago"}
+          </button>
+        </div>
+        {order.entregador && (
+          <div className="entregador">{order.entregador}</div>
+        )}
       </div>
 
-      <div className="footer">
+      <div className="footer" onClick={(e) => e.stopPropagation()}>
         <strong>R$ {orderTotal.toFixed(2)}</strong>
-        <button
-          className={order.pago ? "pago" : "nao-pago"}
-          onClick={(e) => { e.stopPropagation(); onTogglePayment(order.id, !order.pago); }}
-        >
-          {order.pago ? "✅ Pago" : "❌ Não Pago"}
-        </button>
+
+        {order.status === "ENTREGA" && onDesignar && (
+          <div className="designar-inline">
+            {order.entregadorDesignado ? (
+              trocando ? (
+                <form className="form-troca" onSubmit={confirmarTroca}>
+                  <input
+                    ref={inputSenhaRef}
+                    type="password"
+                    placeholder="Senha"
+                    value={senhaTroca}
+                    onChange={(e) => { setSenhaTroca(e.target.value); setErroSenha(false); }}
+                    className={erroSenha ? "erro" : ""}
+                  />
+                  <button type="submit">✓</button>
+                  <button type="button" onClick={() => { setTrocando(false); setSenhaTroca(""); setErroSenha(false); }}>✕</button>
+                </form>
+              ) : (
+                <div className="designado">
+                  <span>{order.entregadorDesignado}</span>
+                  <button className="trocar" onClick={() => setTrocando(true)}>trocar</button>
+                </div>
+              )
+            ) : (
+              <div className="sem-designacao">
+                <span>⚠️</span>
+                <button onClick={() => onDesignar(order.id, "Entregador 1")}>E1</button>
+                <button onClick={() => onDesignar(order.id, "Entregador 2")}>E2</button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      <div className="acoes">
+      <div className="acoes" onClick={(e) => e.stopPropagation()}>
         {prevStatus() && (
           <button
             className="detalhes"
@@ -91,7 +153,16 @@ export function OrderCard({ order, onMove, onTogglePayment, onDetails }: Props) 
         {nextStatus() && (
           <button
             className="avancar"
-            onClick={(e) => { e.stopPropagation(); onMove(order.id, nextStatus()!); }}
+            disabled={order.status === "ENTREGA" && onDesignar && !order.entregadorDesignado}
+            title={order.status === "ENTREGA" && !order.entregadorDesignado ? "Selecione um entregador antes de finalizar" : undefined}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (order.status === "ENTREGA") {
+                onMove(order.id, "FINALIZADO", order.entregadorDesignado);
+              } else {
+                onMove(order.id, nextStatus()!);
+              }
+            }}
           >
             Avançar
           </button>

@@ -10,6 +10,7 @@ import {
   getOrders,
   updateOrderStatus,
   updatePayment,
+  designarEntregador,
 } from "../../services/orders";
 import { checkAndAutoReset } from "../../services/menu";
 import { supabase } from "../../lib/supabase";
@@ -179,12 +180,21 @@ export function Painel() {
     });
   }, [orders, location.state]);
 
-  async function moveOrder(id: number, status: OrderStatus) {
+  async function moveOrder(id: number, status: OrderStatus, entregador?: string) {
     try {
-      const updated = await updateOrderStatus(id, status);
+      const updated = await updateOrderStatus(id, status, entregador);
       setOrders((prev) => prev.map((o) => (o.id === id ? updated : o)));
     } catch (err) {
       console.error("Erro status:", err);
+    }
+  }
+
+  async function handleDesignar(id: number, entregador: string) {
+    try {
+      const updated = await designarEntregador(id, entregador);
+      setOrders((prev) => prev.map((o) => (o.id === id ? updated : o)));
+    } catch (err) {
+      console.error("Erro designar:", err);
     }
   }
 
@@ -311,6 +321,7 @@ export function Painel() {
           onMove={moveOrder}
           onTogglePayment={togglePayment}
           onDetails={setSelectedOrder}
+          onDesignar={handleDesignar}
         />
 
         <KanbanColumn

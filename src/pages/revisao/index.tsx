@@ -25,6 +25,7 @@ export function Revisao() {
     troco,
     semTroco,
     observacao,
+    resetPedido,
   } = usePedido();
   const navigate = useNavigate();
   const [loadingConfirm, setLoadingConfirm] = useState(false);
@@ -215,8 +216,11 @@ export function Revisao() {
                 navigate("/confirmacao", { state: { erro: false } });
               } catch (err) {
                 if (err instanceof Error && err.message === "CARDAPIO_DESATUALIZADO") {
-                  toast.warning("O cardápio foi atualizado! A página será recarregada.", { duration: 3000 });
-                  setTimeout(() => window.location.reload(), 2500);
+                  toast.warning("O cardápio foi atualizado! Você será redirecionado para refazer o pedido.", { duration: 3000 });
+                  setTimeout(() => {
+                    resetPedido();
+                    navigate("/");
+                  }, 3000);
                   return;
                 }
                 console.error(err);

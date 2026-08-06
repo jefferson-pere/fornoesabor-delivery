@@ -329,6 +329,51 @@ export const Container = styled.div`
     }
   }
 
+  .entregador-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+
+    .entregador-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .nome {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0d9488;
+      }
+
+      .qtd {
+        font-size: 12px;
+        color: #888;
+      }
+    }
+
+    .entregador-frete {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(20, 184, 166, 0.08);
+      border: 1px solid rgba(20, 184, 166, 0.25);
+      border-radius: 10px;
+      padding: 10px 14px;
+
+      .frete-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #555;
+      }
+
+      .frete-valor {
+        font-size: 22px;
+        font-weight: 800;
+        color: #0d9488;
+      }
+    }
+  }
+
   .status-item {
     gap: 10px;
   }

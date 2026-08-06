@@ -7,9 +7,10 @@ type Props = {
   orders: Pedido[];
   collapsed?: boolean;
   onToggleCollapse?: () => void;
-  onMove: (id: number, status: OrderStatus) => void;
+  onMove: (id: number, status: OrderStatus, entregador?: string) => void;
   onTogglePayment: (id: number, pago: boolean) => void;
   onDetails: (order: Pedido) => void;
+  onDesignar?: (id: number, entregador: string) => void;
 };
 
 export function KanbanColumn({
@@ -20,6 +21,7 @@ export function KanbanColumn({
   onMove,
   onTogglePayment,
   onDetails,
+  onDesignar,
 }: Props) {
   return (
     <Container>
@@ -45,6 +47,7 @@ export function KanbanColumn({
               onMove={onMove}
               onTogglePayment={onTogglePayment}
               onDetails={onDetails}
+              onDesignar={onDesignar}
             />
           ))}
         </div>

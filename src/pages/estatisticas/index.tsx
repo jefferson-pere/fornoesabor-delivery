@@ -265,6 +265,21 @@ export function Estatisticas() {
     return map;
   }, [pedidosFiltrados]);
 
+  // ── Entregadores ──────────────────────────────────────────────────────────
+  const entregadoresAgregados = useMemo(() => {
+    const map: Record<string, { entregas: number; frete: number; faturamento: number }> = {};
+    pedidosFiltrados
+      .filter((p) => p.status === "FINALIZADO" && p.entregador)
+      .forEach((p) => {
+        const nome = p.entregador!;
+        if (!map[nome]) map[nome] = { entregas: 0, frete: 0, faturamento: 0 };
+        map[nome].entregas++;
+        map[nome].frete += FRETE_CIDADES[p.cidade] ?? 0;
+        map[nome].faturamento += p.total;
+      });
+    return Object.entries(map).sort((a, b) => b[1].entregas - a[1].entregas);
+  }, [pedidosFiltrados]);
+
   // ── Pagamentos ────────────────────────────────────────────────────────────
   const pagamentosAgregados = useMemo(() => {
     const map: Record<string, { quantidade: number; valor: number }> = {};
@@ -663,6 +678,29 @@ export function Estatisticas() {
           </div>
         </div>
 
+        {/* ENTREGADORES */}
+        <div className="card">
+          <h3>🛵 Entregas por Entregador</h3>
+          {entregadoresAgregados.length === 0 ? (
+            <p className="sem-dados">Nenhuma entrega finalizada neste período</p>
+          ) : (
+            <div className="lista">
+              {entregadoresAgregados.map(([nome, dados]) => (
+                <div key={nome} className="lista-item entregador-item">
+                  <div className="entregador-header">
+                    <span className="nome">{nome}</span>
+                    <span className="qtd">{dados.entregas} entregas</span>
+                  </div>
+                  <div className="entregador-frete">
+                    <span className="frete-label">Total em fretes</span>
+                    <span className="frete-valor">R$ {dados.frete.toFixed(2)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* PAGAMENTOS + STATUS */}
         <div className="card">
           <h3>💳 Formas de Pagamento</h3>
@@ -791,6 +829,9 @@ export function Estatisticas() {
                       </span>
                     </p>
                     <p><strong>Total:</strong> R$ {pedido.total.toFixed(2)}</p>
+                    {pedido.entregador && (
+                      <p><strong>Entregador:</strong> {pedido.entregador}</p>
+                    )}
                     <p><strong>Data:</strong> {new Date(pedido.createdAt).toLocaleString("pt-BR")}</p>
                   </div>
 

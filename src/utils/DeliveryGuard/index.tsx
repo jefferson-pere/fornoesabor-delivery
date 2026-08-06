@@ -1,9 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { supabase } from "../../lib/supabase";
 
-const DELIVERY_EMAIL = import.meta.env.VITE_DELIVERY_EMAIL as string;
+const DELIVERY_EMAIL_1 = import.meta.env.VITE_DELIVERY_EMAIL as string;
+const DELIVERY_EMAIL_2 = import.meta.env.VITE_DELIVERY_EMAIL_2 as string;
+const DELIVERY_PASSWORD_1 = import.meta.env.VITE_DELIVERY_PASSWORD_1 as string;
+const DELIVERY_PASSWORD_2 = import.meta.env.VITE_DELIVERY_PASSWORD_2 as string;
+
+const SESSION_KEY = "delivery_entregador";
+
+export function getEntregadorLogado(): string | null {
+  return sessionStorage.getItem(SESSION_KEY);
+}
 
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(18px); }
@@ -222,46 +231,31 @@ const Footer = styled.p`
 `;
 
 export function DeliveryGuard() {
-  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
-  const [email, setEmail] = useState("");
+  const [authenticated, setAuthenticated] = useState(() => !!sessionStorage.getItem(SESSION_KEY));
+  const [selecionado, setSelecionado] = useState<"1" | "2">("1");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [shaking, setShaking] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      const isDelivery = session?.user?.email === DELIVERY_EMAIL;
-      setAuthenticated(!!session && isDelivery);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      const isDelivery = session?.user?.email === DELIVERY_EMAIL;
-      setAuthenticated(!!session && isDelivery);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  if (authenticated === null) return null;
   if (authenticated) return <Outlet />;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
-    const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-
-    if (authError || data.user?.email !== DELIVERY_EMAIL) {
-      if (!authError && data.user?.email !== DELIVERY_EMAIL) {
-        await supabase.auth.signOut();
-      }
+    const senhaCorreta = selecionado === "1" ? DELIVERY_PASSWORD_1 : DELIVERY_PASSWORD_2;
+    if (password !== senhaCorreta) {
       setError(true);
       setShaking(true);
       setPassword("");
       setTimeout(() => setShaking(false), 450);
       return;
     }
+    setLoading(true);
+    const email = selecionado === "1" ? DELIVERY_EMAIL_1 : DELIVERY_EMAIL_2;
+    await supabase.auth.signInWithPassword({ email, password: senhaCorreta });
+    sessionStorage.setItem(SESSION_KEY, `Entregador ${selecionado}`);
+    setLoading(false);
+    setAuthenticated(true);
   }
 
   return (
@@ -271,21 +265,35 @@ export function DeliveryGuard() {
         <Brand>Forno e Sabor</Brand>
         <Title>Área do Entregador</Title>
         <Subtitle>
-          Acesso exclusivo para entregadores
-          <br />
-          autorizados.
+          Selecione o entregador e informe a senha.
         </Subtitle>
 
         <form onSubmit={handleSubmit} style={{ width: "100%" }}>
           <InputWrap $shake={false}>
-            <InputLabel>E-mail</InputLabel>
-            <Input
-              type="email"
-              placeholder="entregador@email.com"
-              value={email}
-              autoFocus
-              onChange={(e) => { setEmail(e.target.value); setError(false); }}
-            />
+            <InputLabel>Entregador</InputLabel>
+            <div style={{ display: "flex", gap: "10px", marginBottom: "4px" }}>
+              {(["1", "2"] as const).map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => { setSelecionado(n); setError(false); }}
+                  style={{
+                    flex: 1,
+                    height: "54px",
+                    borderRadius: "14px",
+                    border: `2px solid ${selecionado === n ? "#14b8a6" : "rgba(255,255,255,0.12)"}`,
+                    background: selecionado === n ? "rgba(20,184,166,0.12)" : "rgba(255,255,255,0.07)",
+                    color: selecionado === n ? "#14b8a6" : "rgba(255,255,255,0.5)",
+                    fontWeight: 700,
+                    fontSize: "15px",
+                    cursor: "pointer",
+                    transition: "0.2s",
+                  }}
+                >
+                  Entregador {n}
+                </button>
+              ))}
+            </div>
           </InputWrap>
 
           <InputWrap $shake={shaking}>
@@ -294,18 +302,19 @@ export function DeliveryGuard() {
               type="password"
               placeholder="••••••••"
               value={password}
+              autoFocus
               onChange={(e) => { setPassword(e.target.value); setError(false); }}
             />
           </InputWrap>
 
-          {error && <ErrorMsg>Credenciais inválidas ou sem permissão.</ErrorMsg>}
+          {error && <ErrorMsg>Senha incorreta.</ErrorMsg>}
 
           <Button type="submit" disabled={loading}>
             {loading ? "Entrando..." : "Entrar"}
           </Button>
         </form>
 
-        <Footer>Sessão gerenciada com segurança</Footer>
+        <Footer>Sessão válida até fechar o navegador</Footer>
       </Card>
     </Page>
   );

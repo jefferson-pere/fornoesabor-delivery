@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "../../lib/supabase";
 import { getOrders, updateOrderStatus } from "../../services/orders";
 import type { Pedido } from "../../types/order";
@@ -19,6 +19,8 @@ import {
   Tabs,
 } from "./style";
 
+const SESSION_KEY = "delivery_entregador";
+
 type TabKey = "rota" | "historico";
 
 export function Entregador() {
@@ -26,6 +28,7 @@ export function Entregador() {
   const [emRota, setEmRota] = useState<Pedido[]>([]);
   const [historico, setHistorico] = useState<Pedido[]>([]);
   const [entregando, setEntregando] = useState<number | null>(null);
+  const nomeEntregador = useRef<string>(sessionStorage.getItem(SESSION_KEY) ?? "Entregador 1");
 
   useEffect(() => {
     document.body.style.backgroundColor = "#0f172a";
@@ -39,10 +42,10 @@ export function Entregador() {
       try {
         const data = await getOrders();
         if (!mounted) return;
-        setEmRota(data.filter((o) => o.status === "ENTREGA").sort(
+        setEmRota(data.filter((o) => o.status === "ENTREGA" && o.entregadorDesignado === nomeEntregador.current).sort(
           (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
         ));
-        setHistorico(data.filter((o) => o.status === "FINALIZADO").sort(
+        setHistorico(data.filter((o) => o.status === "FINALIZADO" && o.entregador === nomeEntregador.current).sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         ));
       } catch (err) {
@@ -61,6 +64,9 @@ export function Entregador() {
         }
         if (p.status === "ENTREGA") {
           setEmRota((prev) => {
+            if (p.entregadorDesignado !== nomeEntregador.current) {
+              return prev.filter((o) => o.id !== p.id);
+            }
             const exists = prev.find((o) => o.id === p.id);
             if (exists) return prev.map((o) => (o.id === p.id ? p : o));
             return [...prev, p].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
@@ -69,6 +75,7 @@ export function Entregador() {
         } else if (p.status === "FINALIZADO") {
           setEmRota((prev) => prev.filter((o) => o.id !== p.id));
           setHistorico((prev) => {
+            if (p.entregador !== nomeEntregador.current) return prev;
             const exists = prev.find((o) => o.id === p.id);
             if (exists) return prev;
             return [p, ...prev];
@@ -92,7 +99,7 @@ export function Entregador() {
   async function marcarEntregue(id: number) {
     setEntregando(id);
     try {
-      await updateOrderStatus(id, "FINALIZADO");
+      await updateOrderStatus(id, "FINALIZADO", nomeEntregador.current);
     } catch (err) {
       console.error("Erro ao finalizar pedido:", err);
     } finally {
@@ -116,7 +123,9 @@ export function Entregador() {
   }
 
   async function sair() {
+    sessionStorage.removeItem(SESSION_KEY);
     await supabase.auth.signOut();
+    window.location.reload();
   }
 
   return (
@@ -124,7 +133,10 @@ export function Entregador() {
       <Header>
         <div className="title">
           <span className="icon">🛵</span>
-          <h1>Entregas</h1>
+          <div>
+            <h1>Entregas</h1>
+            <span className="nome-entregador">{nomeEntregador.current}</span>
+          </div>
         </div>
         {emRota.length > 0 && (
           <span className="badge">{emRota.length} em rota</span>
@@ -238,19 +250,36 @@ export function Entregador() {
               <p>Nenhuma entrega finalizada hoje.</p>
             </Empty>
           ) : (
-            historico.map((order) => (
-              <HistoricoCard key={order.id}>
-                <div className="info">
-                  <span className="codigo">✓ {order.codigo}</span>
-                  <span className="nome">{order.nomeCliente}</span>
-                  <span className="cidade">{order.cidade}{order.endereco?.rua ? ` · ${order.endereco.rua}` : ""}</span>
-                </div>
-                <div className="direita">
-                  <span className="total">R$ {order.total.toFixed(2).replace(".", ",")}</span>
-                  <span className="hora">{formatHora(order.createdAt)}</span>
-                </div>
-              </HistoricoCard>
-            ))
+            <>
+              {historico.map((order) => {
+                const frete = order.cidade === "Retirada" ? 0 : order.cidade === "Cariús" ? 3 : 5;
+                return (
+                  <HistoricoCard key={order.id}>
+                    <div className="info">
+                      <span className="codigo">✓ {order.codigo}</span>
+                      <span className="nome">{order.nomeCliente}</span>
+                      <span className="cidade">{order.cidade}{order.endereco?.rua ? ` · ${order.endereco.rua}` : ""}</span>
+                    </div>
+                    <div className="direita">
+                      {frete > 0 && (
+                        <span className="frete">Frete R$ {frete},00</span>
+                      )}
+                      <span className="total">R$ {order.total.toFixed(2).replace(".", ",")}</span>
+                      <span className="hora">{formatHora(order.createdAt)}</span>
+                    </div>
+                  </HistoricoCard>
+                );
+              })}
+              <div className="resumo-total">
+                <span>Total em fretes</span>
+                <strong>
+                  R$ {historico.reduce((acc, o) => {
+                    const frete = o.cidade === "Retirada" ? 0 : o.cidade === "Cariús" ? 3 : 5;
+                    return acc + frete;
+                  }, 0)},00
+                </strong>
+              </div>
+            </>
           )}
         </Content>
       )}
