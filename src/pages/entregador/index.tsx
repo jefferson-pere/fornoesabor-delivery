@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { supabase } from "../../lib/supabase";
 import { getOrders, updateOrderStatus } from "../../services/orders";
 import type { Pedido } from "../../types/order";
+import alertSound from "../../../sounds/alert.mp3";
 import {
   Acoes,
   CardHeader,
@@ -29,11 +30,32 @@ export function Entregador() {
   const [historico, setHistorico] = useState<Pedido[]>([]);
   const [entregando, setEntregando] = useState<number | null>(null);
   const nomeEntregador = useRef<string>(sessionStorage.getItem(SESSION_KEY) ?? "Entregador 1");
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const seenOrders = useRef(new Set<number>());
 
   useEffect(() => {
     document.body.style.backgroundColor = "#0f172a";
     return () => { document.body.style.backgroundColor = ""; };
   }, []);
+
+  useEffect(() => {
+    const audio = new Audio(alertSound);
+    audio.preload = "auto";
+    audioRef.current = audio;
+    const desbloquear = () => {
+      audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(() => {});
+      document.removeEventListener("click", desbloquear);
+    };
+    document.addEventListener("click", desbloquear);
+    return () => document.removeEventListener("click", desbloquear);
+  }, []);
+
+  function tocarSom() {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(() => {});
+    }
+  }
 
   useEffect(() => {
     let mounted = true;
@@ -63,6 +85,10 @@ export function Entregador() {
           return;
         }
         if (p.status === "ENTREGA") {
+          if (p.entregadorDesignado === nomeEntregador.current && !seenOrders.current.has(p.id)) {
+            seenOrders.current.add(p.id);
+            tocarSom();
+          }
           setEmRota((prev) => {
             if (p.entregadorDesignado !== nomeEntregador.current) {
               return prev.filter((o) => o.id !== p.id);

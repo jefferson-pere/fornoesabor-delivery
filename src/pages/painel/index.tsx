@@ -29,6 +29,7 @@ export function Painel() {
   const [selectedOrder, setSelectedOrder] = useState<Pedido | null>(null);
   const reopened = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const seenOrders = useRef(new Set<number>());
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -123,17 +124,19 @@ export function Painel() {
         { event: "INSERT", schema: "public", table: "orders" },
         ({ new: pedido }) => {
           const p = pedido as Pedido;
+          if (seenOrders.current.has(p.id)) return;
+          seenOrders.current.add(p.id);
           setOrders((prev) => {
             if (prev.some((o) => o.id === p.id)) return prev;
-            tocarSom();
-            if ("Notification" in window && Notification.permission === "granted") {
-              new Notification("Novo pedido! 🍕", {
-                body: `Pedido Nº ${p.codigo} — ${p.nomeCliente}`,
-                icon: "/favicon.ico",
-              });
-            }
             return [p, ...prev];
           });
+          tocarSom();
+          if ("Notification" in window && Notification.permission === "granted") {
+            new Notification("Novo pedido! 🍕", {
+              body: `Pedido Nº ${p.codigo} — ${p.nomeCliente}`,
+              icon: "/favicon.ico",
+            });
+          }
         },
       )
       .on(
