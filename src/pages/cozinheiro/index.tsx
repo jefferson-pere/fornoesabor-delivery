@@ -9,6 +9,7 @@ export function Cozinheiro() {
   const [orders, setOrders] = useState<Pedido[]>([]);
   const [index, setIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const seenOrders = useRef(new Set<number>());
 
   useEffect(() => {
     document.body.style.backgroundColor = "#111827";
@@ -68,9 +69,13 @@ export function Cozinheiro() {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "orders" },
         ({ new: pedido }) => {
-          if ((pedido as Pedido).status === "PRODUCAO") {
-            setOrders((prev) => [...prev, pedido as Pedido]);
-            tocarSom();
+          const p = pedido as Pedido;
+          if (p.status === "PRODUCAO") {
+            if (!seenOrders.current.has(p.id)) {
+              seenOrders.current.add(p.id);
+              tocarSom();
+            }
+            setOrders((prev) => [...prev, p]);
           }
         },
       )
@@ -78,18 +83,24 @@ export function Cozinheiro() {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "orders" },
         ({ new: pedido }) => {
-          setOrders((prev) => {
-            if ((pedido as Pedido).deleted) {
-              return prev.filter((o) => o.id !== (pedido as Pedido).id);
-            }
-            if ((pedido as Pedido).status === "PRODUCAO") {
-              const exists = prev.find((o) => o.id === (pedido as Pedido).id);
-              if (exists) return prev.map((o) => (o.id === (pedido as Pedido).id ? (pedido as Pedido) : o));
+          const p = pedido as Pedido;
+          if (p.deleted) {
+            setOrders((prev) => prev.filter((o) => o.id !== p.id));
+            return;
+          }
+          if (p.status === "PRODUCAO") {
+            if (!seenOrders.current.has(p.id)) {
+              seenOrders.current.add(p.id);
               tocarSom();
-              return [...prev, pedido as Pedido];
             }
-            return prev.filter((o) => o.id !== (pedido as Pedido).id);
-          });
+            setOrders((prev) => {
+              const exists = prev.find((o) => o.id === p.id);
+              if (exists) return prev.map((o) => (o.id === p.id ? p : o));
+              return [...prev, p];
+            });
+          } else {
+            setOrders((prev) => prev.filter((o) => o.id !== p.id));
+          }
         },
       )
       .subscribe((status) => {
