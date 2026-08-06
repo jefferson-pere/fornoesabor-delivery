@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Pedido } from "../../types/order";
 import { Container, Wrapper } from "./style";
 import { MdVisibility, MdVisibilityOff, MdDarkMode, MdLightMode } from "react-icons/md";
@@ -18,14 +18,37 @@ type OcultoState = {
 };
 
 export function DashboardMetrics({ orders, darkMode, onToggleDark }: Props) {
-  const [ocultoTodos, setOcultoTodos] = useState(false);
-  const [oculto, setOculto] = useState<OcultoState>({
-    totalPedidos: false,
-    pendentes: false,
-    finalizados: false,
-    totalPago: false,
-    naoPago: false,
+  const [ocultoTodos, setOcultoTodos] = useState(
+    () => localStorage.getItem("metrics_hide_all") === "true",
+  );
+  const [oculto, setOculto] = useState<OcultoState>(() => {
+    try {
+      const saved = localStorage.getItem("metrics_hide_fields");
+      return saved ? JSON.parse(saved) : {
+        totalPedidos: false,
+        pendentes: false,
+        finalizados: false,
+        totalPago: false,
+        naoPago: false,
+      };
+    } catch {
+      return {
+        totalPedidos: false,
+        pendentes: false,
+        finalizados: false,
+        totalPago: false,
+        naoPago: false,
+      };
+    }
   });
+
+  useEffect(() => {
+    localStorage.setItem("metrics_hide_all", String(ocultoTodos));
+  }, [ocultoTodos]);
+
+  useEffect(() => {
+    localStorage.setItem("metrics_hide_fields", JSON.stringify(oculto));
+  }, [oculto]);
 
   const toggle = (key: keyof OcultoState) =>
     setOculto((prev) => ({ ...prev, [key]: !prev[key] }));

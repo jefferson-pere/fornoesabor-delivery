@@ -45,7 +45,13 @@ export function Painel() {
     }
     return () => document.removeEventListener("mousedown", closeMenu);
   }, [menuOpen, closeMenu]);
-  const [hideFinished, setHideFinished] = useState(true);
+  const [hideFinished, setHideFinished] = useState(
+    () => localStorage.getItem("painel_hide_finished") !== "false",
+  );
+
+  useEffect(() => {
+    localStorage.setItem("painel_hide_finished", String(hideFinished));
+  }, [hideFinished]);
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem("painel_dark") === "true",
   );
