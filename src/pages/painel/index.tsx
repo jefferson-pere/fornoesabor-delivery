@@ -5,7 +5,7 @@ import {
   useState,
   useCallback,
 } from "react";
-import alertSound from "../../../sounds/alert.mp3";
+import { useAlertSound } from "../../hook/useAlertSound";
 import {
   getOrders,
   updateOrderStatus,
@@ -28,7 +28,7 @@ export function Painel() {
   const [orders, setOrders] = useState<Pedido[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Pedido | null>(null);
   const reopened = useRef(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const tocarSom = useAlertSound();
   const seenOrders = useRef(new Set<number>());
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -77,33 +77,7 @@ export function Painel() {
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
-
-    const audio = new Audio(alertSound);
-    audio.preload = "auto";
-    audioRef.current = audio;
-
-    const desbloquear = () => {
-      audio
-        .play()
-        .then(() => {
-          audio.pause();
-          audio.currentTime = 0;
-        })
-        .catch(() => {});
-      document.removeEventListener("click", desbloquear);
-    };
-    document.addEventListener("click", desbloquear);
-    return () => document.removeEventListener("click", desbloquear);
   }, []);
-
-  function tocarSom() {
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0;
-      audioRef.current
-        .play()
-        .catch((e) => console.error("Erro ao tocar som:", e));
-    }
-  }
 
   useEffect(() => {
     let mounted = true;
