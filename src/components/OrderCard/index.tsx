@@ -93,7 +93,7 @@ export function OrderCard({ order, onMove, onTogglePayment, onDetails, onDesigna
       </div>
 
       <div className="designar-pago" onClick={(e) => e.stopPropagation()}>
-        {order.status === "ENTREGA" && onDesignar ? (
+        {order.status === "ENTREGA" && onDesignar && order.cidade !== "Retirada" ? (
           <div className="designar-inline">
             {order.entregadorDesignado ? (
               trocando ? (
@@ -152,8 +152,8 @@ export function OrderCard({ order, onMove, onTogglePayment, onDetails, onDesigna
         {nextStatus() && (
           <button
             className="avancar"
-            disabled={order.status === "ENTREGA" && onDesignar && !order.entregadorDesignado}
-            title={order.status === "ENTREGA" && !order.entregadorDesignado ? "Selecione um entregador antes de finalizar" : undefined}
+            disabled={order.status === "ENTREGA" && onDesignar && order.cidade !== "Retirada" && !order.entregadorDesignado}
+            title={order.status === "ENTREGA" && order.cidade !== "Retirada" && !order.entregadorDesignado ? "Selecione um entregador antes de finalizar" : undefined}
             onClick={(e) => {
               e.stopPropagation();
               if (order.status === "ENTREGA") {
