@@ -104,7 +104,7 @@ export function Configuracoes() {
 
       <div className="reset-bar">
         <div className="reset-info">
-          <span className="reset-label">Reset automático diário</span>
+          <span className="reset-label">Reset automático diário às 6h (Brasília)</span>
           <span className="reset-sub">
             {config.ultimoReset
               ? `Último reset: ${config.ultimoReset}`

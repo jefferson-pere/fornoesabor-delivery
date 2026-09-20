@@ -1,5 +1,6 @@
 import { supabase } from "../lib/supabase";
 import { combosDisponiveis, saboresLista, saboresRefri } from "../data/menu";
+import { getMenuResetDate } from "./menuResetDate";
 
 export type MenuDisponibilidade = {
   combos: Record<string, boolean>;
@@ -21,7 +22,7 @@ export function buildDefaultConfig(): MenuDisponibilidade {
     maionese: true,
     maioneseTemperada: true,
     maioneseBacon: true,
-    ultimoReset: new Date().toISOString().slice(0, 10),
+    ultimoReset: getMenuResetDate(),
   };
 }
 
@@ -57,8 +58,8 @@ export async function resetMenuConfig(): Promise<MenuDisponibilidade> {
 export async function checkAndAutoReset(): Promise<void> {
   try {
     const config = await getMenuConfig();
-    const today = new Date().toISOString().slice(0, 10);
-    if (config.ultimoReset !== today) {
+    const today = getMenuResetDate();
+    if (!config.ultimoReset || config.ultimoReset < today) {
       await resetMenuConfig();
     }
   } catch {
