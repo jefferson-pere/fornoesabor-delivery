@@ -7,6 +7,7 @@ import {
   cidades,
   combosDisponiveis,
   saboresLista,
+  saboresChocolateComLimite,
   saboresRefri,
   getPrecoRefri,
   type ComboType,
@@ -98,6 +99,16 @@ export default function CreateOrder() {
     return Object.values(sabores).reduce((acc, item) => acc + item, 0);
   }, [sabores]);
 
+  const chocolatesEmOutrosItens = itens.reduce((total, item, index) => {
+    if (index === editingIndex) return total;
+    return total + Object.entries(item.sabores).reduce(
+      (subtotal, [sabor, qtd]) => subtotal + (saboresChocolateComLimite.includes(sabor) ? qtd : 0), 0,
+    );
+  }, 0);
+  const chocolatesSelecionados = Object.entries(sabores).reduce(
+    (total, [sabor, qtd]) => total + (saboresChocolateComLimite.includes(sabor) ? qtd : 0), 0,
+  );
+
   const subtotal = useMemo(() => {
     return itens.reduce((acc, item) => {
       return (
@@ -144,6 +155,13 @@ export default function CreateOrder() {
     }, 0);
 
     if (totalAtual + quantidade > comboSelecionado.unidades) {
+      return;
+    }
+    const chocolatesDosOutrosSabores = Object.entries(sabores).reduce(
+      (total, [nome, qtd]) => total + (nome !== sabor && saboresChocolateComLimite.includes(nome) ? qtd : 0), 0,
+    );
+    if (saboresChocolateComLimite.includes(sabor) && chocolatesEmOutrosItens + chocolatesDosOutrosSabores + quantidade > 5) {
+      toast.warning("Sabores de chocolate: máximo 5 unidades por pedido");
       return;
     }
     setSabores((prev) => ({
@@ -469,7 +487,7 @@ export default function CreateOrder() {
                         type="button"
                         className="qtd-btn"
                         onClick={() => alterarSabor(sabor, qty + 5)}
-                        disabled={totalSabores >= comboSelecionado.unidades}
+                        disabled={totalSabores >= comboSelecionado.unidades || (saboresChocolateComLimite.includes(sabor) && chocolatesEmOutrosItens + chocolatesSelecionados >= 5)}
                       >+</button>
                     </div>
                   </div>

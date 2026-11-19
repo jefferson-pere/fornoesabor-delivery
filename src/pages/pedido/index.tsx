@@ -4,6 +4,7 @@ import { Container } from "./style";
 import {
   combosDisponiveis,
   saboresLista,
+  saboresChocolateComLimite,
   saboresRefri,
   getPrecoRefri,
   type ComboType,
@@ -70,12 +71,20 @@ export function Pedido() {
   }, [combo]);
 
   const totalSabores = Object.values(sabores).reduce((a, b) => a + b, 0);
+  const chocolatesEmItens = itens.reduce(
+    (total, item) => total + Object.entries(item.sabores).reduce(
+      (subtotal, [sabor, qtd]) => subtotal + (saboresChocolateComLimite.includes(sabor) ? qtd : 0), 0,
+    ), 0,
+  );
+  const chocolatesSelecionados = Object.entries(sabores).reduce(
+    (total, [sabor, qtd]) => total + (saboresChocolateComLimite.includes(sabor) ? qtd : 0), 0,
+  );
 
   const alterarQtd = (s: string, delta: number) => {
     if (!combo) return;
     const totalAtual = Object.values(sabores).reduce((a, b) => a + b, 0);
     const qtdAtual = sabores[s] || 0;
-    if (s.toLowerCase().includes("chocolate") && delta > 0 && qtdAtual >= 10) {
+    if (saboresChocolateComLimite.includes(s) && delta > 0 && chocolatesEmItens + chocolatesSelecionados + delta > 5) {
       setMaxChocolate(true);
       return;
     }
@@ -315,7 +324,7 @@ export function Pedido() {
                   </p>
                 )}
                 {maxChocolate && (
-                  <p className="error-text">Chocolate: máximo 10 unidades</p>
+                  <p className="error-text">Sabores de chocolate: máximo 5 unidades por pedido</p>
                 )}
                 {saboresLista.map((s) => {
                   const qty = sabores[s] || 0;
@@ -340,7 +349,7 @@ export function Pedido() {
                         <button
                           className="qtd-btn plus"
                           onClick={() => alterarQtd(s, 5)}
-                          disabled={totalSabores >= combo.unidades || !dispSabor}
+                          disabled={totalSabores >= combo.unidades || !dispSabor || (saboresChocolateComLimite.includes(s) && chocolatesEmItens + chocolatesSelecionados >= 5)}
                         >
                           +
                         </button>

@@ -71,6 +71,7 @@ export const cidades: CidadeType[] = [
 export const saboresLista: string[] = [
   "Frango com catupiry",
   "Frango com mussarela",
+  "Frango com cheddar",
   "Frango com bacon",
   "Frango com calabresa",
   "Calabresa com catupiry",
@@ -82,6 +83,18 @@ export const saboresLista: string[] = [
   "Mussarela",
   "Bacon com mussarela",
   "Bacon com catupiry",
+  "Chocolate ao leite",
+  "Chocolate ao leite com granulado",
+  "Chocolate branco",
+  "Chocolate branco/chocolate ao leite",
+  "Chocolate",
+];
+
+export const saboresChocolateComLimite = [
+  "Chocolate ao leite",
+  "Chocolate ao leite com granulado",
+  "Chocolate branco",
+  "Chocolate branco/chocolate ao leite",
   "Chocolate",
 ];
 
